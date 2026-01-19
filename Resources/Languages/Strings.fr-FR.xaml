@@ -77,7 +77,7 @@
     
     <!-- ConsoleWindow -->
     <sys:String x:Key="Console_Title">Console</sys:String>
-    <sys:String x:Key="Console_Welcome">Bienvenue dans Butterfly ! 🦋&#x0a;Tout ici a été codé par 2014 🐰&#x0a;Vous pouvez me contacter sur Discord : coelhoszzz 💤&#x0a;J'espère que vous l'apprécierez ! ⚡&#x0a;En attente d'événements...&#x0a;</sys:String>
+    <sys:String x:Key="Console_Welcome">Bienvenue dans Butterfly ! 🦋&#x0a;Tout ici a été codé par 2014 🐰&#x0a;Vous pouvez me contacter sur Discord : 2014 💤&#x0a;J'espère que vous l'apprécierez ! ⚡&#x0a;En attente d'événements...&#x0a;</sys:String>
     
     <!-- Messages - Console Logs -->
     <sys:String x:Key="Log_CannotStartMonitoring">Impossible de démarrer la surveillance : mise à jour en cours.</sys:String>

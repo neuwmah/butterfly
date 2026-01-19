@@ -77,7 +77,7 @@
     
     <!-- ConsoleWindow -->
     <sys:String x:Key="Console_Title">Console</sys:String>
-    <sys:String x:Key="Console_Welcome">Bem-vindo ao Butterfly! 🦋&#x0a;Tudo aqui foi codificado por 2014 🐰&#x0a;Você pode me contatar no Discord: coelhoszzz 💤&#x0a;Espero que você goste! ⚡&#x0a;Aguardando eventos...&#x0a;</sys:String>
+    <sys:String x:Key="Console_Welcome">Bem-vindo ao Butterfly! 🦋&#x0a;Tudo aqui foi codificado por 2014 🐰&#x0a;Você pode me contatar no Discord: 2014 💤&#x0a;Espero que você goste! ⚡&#x0a;Aguardando eventos...&#x0a;</sys:String>
     
     <!-- Messages - Console Logs -->
     <sys:String x:Key="Log_CannotStartMonitoring">Não é possível iniciar o monitoramento: Atualização em andamento.</sys:String>

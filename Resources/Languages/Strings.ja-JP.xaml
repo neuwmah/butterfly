@@ -77,7 +77,7 @@
     
     <!-- ConsoleWindow -->
     <sys:String x:Key="Console_Title">コンソール</sys:String>
-    <sys:String x:Key="Console_Welcome">Butterflyへようこそ！ 🦋&#x0a;2014が作成したすべてのコード 🐰&#x0a;Discordで連絡可能: coelhoszzz 💤&#x0a;お楽しみください！ ⚡&#x0a;イベント待機中...&#x0a;</sys:String>
+    <sys:String x:Key="Console_Welcome">Butterflyへようこそ！ 🦋&#x0a;2014が作成したすべてのコード 🐰&#x0a;Discordで連絡可能: 2014 💤&#x0a;お楽しみください！ ⚡&#x0a;イベント待機中...&#x0a;</sys:String>
     
     <!-- Messages - Console Logs (Keeping technical terms in English where appropriate) -->
     <sys:String x:Key="Log_CannotStartMonitoring">監視を開始できません: 更新が進行中です。</sys:String>

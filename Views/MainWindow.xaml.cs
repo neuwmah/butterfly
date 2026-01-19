@@ -4233,7 +4233,7 @@ namespace Butterfly.Views
             {
                 consoleWindow.AppendLog("Welcome to Butterfly! 🦋");
                 consoleWindow.AppendLog("Everything here was coded by 2014 🐰");
-                consoleWindow.AppendLog("You can contact me on Discord: coelhoszzz 💤");
+                consoleWindow.AppendLog("You can contact me: https://discord.com/users/1187937891075231864 💤");
                 consoleWindow.AppendLog("I hope you enjoy it! ⚡");
                 consoleWindow.AppendLog("Waiting for events...");
             }

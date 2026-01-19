@@ -77,7 +77,7 @@
     
     <!-- ConsoleWindow -->
     <sys:String x:Key="Console_Title">Console</sys:String>
-    <sys:String x:Key="Console_Welcome">Welcome to Butterfly! 🦋&#x0a;Everything here was coded by 2014 🐰&#x0a;You can contact me on Discord: coelhoszzz 💤&#x0a;I hope you enjoy it! ⚡&#x0a;Waiting for events...&#x0a;</sys:String>
+    <sys:String x:Key="Console_Welcome">Welcome to Butterfly! 🦋&#x0a;Everything here was coded by 2014 🐰&#x0a;You can contact me: https://discord.com/users/1187937891075231864 💤&#x0a;I hope you enjoy it! ⚡&#x0a;Waiting for events...&#x0a;</sys:String>
     
     <!-- Messages - Console Logs -->
     <sys:String x:Key="Log_CannotStartMonitoring">Cannot start monitoring: Update in progress.</sys:String>

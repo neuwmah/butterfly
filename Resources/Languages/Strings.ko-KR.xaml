@@ -77,7 +77,7 @@
     
     <!-- ConsoleWindow -->
     <sys:String x:Key="Console_Title">콘솔</sys:String>
-    <sys:String x:Key="Console_Welcome">Butterfly에 오신 것을 환영합니다! 🦋&#x0a;2014가 만든 모든 코드 🐰&#x0a;Discord로 연락 가능: coelhoszzz 💤&#x0a;즐겁게 사용하세요! ⚡&#x0a;이벤트 대기 중...&#x0a;</sys:String>
+    <sys:String x:Key="Console_Welcome">Butterfly에 오신 것을 환영합니다! 🦋&#x0a;2014가 만든 모든 코드 🐰&#x0a;Discord로 연락 가능: 2014 💤&#x0a;즐겁게 사용하세요! ⚡&#x0a;이벤트 대기 중...&#x0a;</sys:String>
     
     <!-- Messages - Console Logs (Keeping technical terms in English where appropriate) -->
     <sys:String x:Key="Log_CannotStartMonitoring">모니터링을 시작할 수 없습니다: 업데이트 진행 중.</sys:String>
