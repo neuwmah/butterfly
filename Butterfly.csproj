@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>Resources\Assets\butterfly.ico</ApplicationIcon>
+    <ApplicationManifest>App\app.manifest</ApplicationManifest>
+    <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="Resources\Assets\butterfly.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Flags\*.png">
+      <Link>Resources\Flags\%(Filename)%(Extension)</Link>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Languages\*.xaml">
+      <Link>Resources\Languages\%(Filename)%(Extension)</Link>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ApplicationDefinition Include="App\App.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HtmlAgilityPack" Version="1.12.4" />
+    <PackageReference Include="Npgsql" Version="8.0.5" />
+    <PackageReference Include="System.Drawing.Common" Version="10.0.1" />
+    <PackageReference Include="System.Management" Version="9.0.0" />
+  </ItemGroup>
+
+</Project>

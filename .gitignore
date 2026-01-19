@@ -1,0 +1,13 @@
+# Visual Studio & C#
+.vs/
+[Bb]in/
+[Oo]bj/
+*.user
+*.userosscache
+*.sln.docstates
+
+# Butterfly Configs
+.Butterfly/
+
+# Outros
+.cursorrules

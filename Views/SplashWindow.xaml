@@ -1,0 +1,139 @@
+<Window x:Class="Butterfly.Views.SplashWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Topmost="True"
+        ShowInTaskbar="False"
+        WindowState="Maximized"
+        ResizeMode="NoResize">
+    
+    <Window.Resources>
+        <Storyboard x:Key="ContinuousFlightAnimation">
+            <!-- ENTRY: Y movement (ascent) - no repeat -->
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="ButterflyTranslateTransform"
+                                          Storyboard.TargetProperty="Y"
+                                          Duration="0:0:1.5"
+                                          FillBehavior="HoldEnd">
+                <SplineDoubleKeyFrame KeyTime="0:0:0" Value="800" KeySpline="0.4,0,0.6,1"/>
+                <SplineDoubleKeyFrame KeyTime="0:0:1.5" Value="0" KeySpline="0.4,0,0.6,1"/>
+            </DoubleAnimationUsingKeyFrames>
+            
+            <!-- LOOP: Y movement (wide oscillation) - with repeat, starts after entry, 10s -->
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="ButterflyTranslateTransform"
+                                          Storyboard.TargetProperty="Y"
+                                          BeginTime="0:0:1.5"
+                                          Duration="0:0:10"
+                                          RepeatBehavior="Forever">
+                <SplineDoubleKeyFrame KeyTime="0:0:0" Value="0" KeySpline="0.4,0,0.6,1"/>
+                <SplineDoubleKeyFrame KeyTime="0:0:2.5" Value="150" KeySpline="0.4,0,0.6,1"/>
+                <SplineDoubleKeyFrame KeyTime="0:0:5" Value="-200" KeySpline="0.4,0,0.6,1"/>
+                <SplineDoubleKeyFrame KeyTime="0:0:7.5" Value="100" KeySpline="0.4,0,0.6,1"/>
+                <SplineDoubleKeyFrame KeyTime="0:0:10" Value="0" KeySpline="0.4,0,0.6,1"/>
+            </DoubleAnimationUsingKeyFrames>
+            
+            <!-- ENTRY: X movement (lateral curve) - no repeat -->
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="ButterflyTranslateTransform"
+                                          Storyboard.TargetProperty="X"
+                                          Duration="0:0:1.5"
+                                          FillBehavior="HoldEnd">
+                <SplineDoubleKeyFrame KeyTime="0:0:0" Value="100" KeySpline="0.4,0,0.6,1"/>
+                <SplineDoubleKeyFrame KeyTime="0:0:1.5" Value="0" KeySpline="0.4,0,0.6,1"/>
+            </DoubleAnimationUsingKeyFrames>
+            
+            <!-- LOOP: X movement (wide organic curves) - with repeat, starts after entry, 10s -->
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="ButterflyTranslateTransform"
+                                          Storyboard.TargetProperty="X"
+                                          BeginTime="0:0:1.5"
+                                          Duration="0:0:10"
+                                          RepeatBehavior="Forever">
+                <SplineDoubleKeyFrame KeyTime="0:0:0" Value="0" KeySpline="0.4,0,0.6,1"/>
+                <SplineDoubleKeyFrame KeyTime="0:0:2.5" Value="400" KeySpline="0.4,0,0.6,1"/>
+                <SplineDoubleKeyFrame KeyTime="0:0:5" Value="-400" KeySpline="0.4,0,0.6,1"/>
+                <SplineDoubleKeyFrame KeyTime="0:0:7.5" Value="300" KeySpline="0.4,0,0.6,1"/>
+                <SplineDoubleKeyFrame KeyTime="0:0:10" Value="0" KeySpline="0.4,0,0.6,1"/>
+            </DoubleAnimationUsingKeyFrames>
+            
+            <!-- ENTRY: Rotation during ascent - no repeat -->
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="ButterflyRotateTransform"
+                                          Storyboard.TargetProperty="Angle"
+                                          Duration="0:0:1.5"
+                                          FillBehavior="HoldEnd">
+                <SplineDoubleKeyFrame KeyTime="0:0:0" Value="15" KeySpline="0.4,0,0.6,1"/>
+                <SplineDoubleKeyFrame KeyTime="0:0:1.5" Value="0" KeySpline="0.4,0,0.6,1"/>
+            </DoubleAnimationUsingKeyFrames>
+            
+            <!-- LOOP: Rotation proportional to X movement (up to 30 degrees) - with repeat, starts after entry, 10s -->
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="ButterflyRotateTransform"
+                                          Storyboard.TargetProperty="Angle"
+                                          BeginTime="0:0:1.5"
+                                          Duration="0:0:10"
+                                          RepeatBehavior="Forever">
+                <SplineDoubleKeyFrame KeyTime="0:0:0" Value="0" KeySpline="0.4,0,0.6,1"/>
+                <SplineDoubleKeyFrame KeyTime="0:0:2.5" Value="30" KeySpline="0.4,0,0.6,1"/>
+                <SplineDoubleKeyFrame KeyTime="0:0:5" Value="-30" KeySpline="0.4,0,0.6,1"/>
+                <SplineDoubleKeyFrame KeyTime="0:0:7.5" Value="25" KeySpline="0.4,0,0.6,1"/>
+                <SplineDoubleKeyFrame KeyTime="0:0:10" Value="0" KeySpline="0.4,0,0.6,1"/>
+            </DoubleAnimationUsingKeyFrames>
+            
+            <!-- Fade in during entry -->
+            <DoubleAnimation Storyboard.TargetName="ButterflyImage"
+                           Storyboard.TargetProperty="Opacity"
+                           From="0"
+                           To="1"
+                           Duration="0:0:1.5">
+                <DoubleAnimation.EasingFunction>
+                    <QuadraticEase EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            
+            <!-- Wing flap: independent and constant loop from 0.1s, 0.3s duration -->
+            <DoubleAnimation Storyboard.TargetName="ButterflyScaleTransform"
+                           Storyboard.TargetProperty="ScaleX"
+                           BeginTime="0:0:0.1"
+                           From="1.0"
+                           To="0.2"
+                           Duration="0:0:0.3"
+                           AutoReverse="True"
+                           RepeatBehavior="Forever">
+                <DoubleAnimation.EasingFunction>
+                    <QuadraticEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+        
+        <Storyboard x:Key="FadeOutAnimation">
+            <!-- Fade out animation when closing -->
+            <DoubleAnimation Storyboard.TargetName="ButterflyImage"
+                           Storyboard.TargetProperty="Opacity"
+                           From="1"
+                           To="0"
+                           Duration="0:0:0.5">
+                <DoubleAnimation.EasingFunction>
+                    <QuadraticEase EasingMode="EaseIn"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+    </Window.Resources>
+    
+    <Grid Background="Transparent">
+        <Image x:Name="ButterflyImage"
+               Width="64"
+               Height="64"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center"
+               Opacity="0"
+               RenderTransformOrigin="0.5,0.5"
+               Loaded="ButterflyImage_Loaded">
+            <Image.RenderTransform>
+                <TransformGroup>
+                    <TranslateTransform x:Name="ButterflyTranslateTransform" X="0" Y="800"/>
+                    <RotateTransform x:Name="ButterflyRotateTransform" Angle="0"/>
+                    <ScaleTransform x:Name="ButterflyScaleTransform" ScaleX="1.0" ScaleY="1.0"/>
+                </TransformGroup>
+            </Image.RenderTransform>
+        </Image>
+    </Grid>
+</Window>
+

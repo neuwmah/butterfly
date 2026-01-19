@@ -1,0 +1,202 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- MainWindow XAML Strings -->
+    <sys:String x:Key="Main_SelectServer">서버 선택</sys:String>
+    <sys:String x:Key="Main_Server">서버</sys:String>
+    <sys:String x:Key="Main_Players">플레이어</sys:String>
+    <sys:String x:Key="Main_ManageAccounts">계정 관리</sys:String>
+    <sys:String x:Key="Main_Character">캐릭터</sys:String>
+    <sys:String x:Key="Main_Username">사용자 이름</sys:String>
+    <sys:String x:Key="Main_Password">비밀번호</sys:String>
+    <sys:String x:Key="Main_LV">레벨</sys:String>
+    <sys:String x:Key="Main_EXP">경험치</sys:String>
+    <sys:String x:Key="Main_ClickLeftToAdd">추가하려면 "왼쪽 버튼" 클릭</sys:String>
+    <sys:String x:Key="Main_ClickRightForOptions">옵션을 보려면 "오른쪽 버튼" 클릭</sys:String>
+    <sys:String x:Key="Main_UpdatingButterfly">Butterfly 업데이트 중</sys:String>
+    <sys:String x:Key="Main_PleaseWait">잠시 기다려주세요...</sys:String>
+    
+    <!-- Context Menu Items -->
+    <sys:String x:Key="Menu_AddAccount">계정 추가</sys:String>
+    <sys:String x:Key="Menu_SaveAccounts">계정 저장</sys:String>
+    <sys:String x:Key="Menu_LoadAccounts">계정 불러오기</sys:String>
+    <sys:String x:Key="Menu_RefreshAll">모두 새로고침</sys:String>
+    <sys:String x:Key="Menu_ClearAll">모두 지우기</sys:String>
+    <sys:String x:Key="Menu_RemoveAccount">계정 제거</sys:String>
+    <sys:String x:Key="Menu_RefreshAccount">계정 새로고침</sys:String>
+    
+    <!-- ToolTips -->
+    <sys:String x:Key="ToolTip_StartPause">시작/일시정지</sys:String>
+    <sys:String x:Key="ToolTip_RefreshOnce">한 번 새로고침</sys:String>
+    <sys:String x:Key="ToolTip_OpenTerminal">터미널 열기</sys:String>
+    <sys:String x:Key="ToolTip_HideGameWindows">게임 창 숨기기</sys:String>
+    <sys:String x:Key="ToolTip_ShowGameWindows">게임 창 표시</sys:String>
+    
+    <!-- AddAccountDialog -->
+    <sys:String x:Key="Dialog_AddAccount_Title">새 계정 추가</sys:String>
+    <sys:String x:Key="Dialog_AddAccount_Subtitle">MixMaster 계정 정보를 입력하세요</sys:String>
+    <sys:String x:Key="Dialog_AddAccount_Username">사용자 이름</sys:String>
+    <sys:String x:Key="Dialog_AddAccount_Password">비밀번호</sys:String>
+    <sys:String x:Key="Dialog_AddAccount_CharacterName">캐릭터 이름</sys:String>
+    <sys:String x:Key="Dialog_AddAccount_Cancel">취소</sys:String>
+    <sys:String x:Key="Dialog_AddAccount_Add">계정 추가</sys:String>
+    <sys:String x:Key="Dialog_AddAccount_Warning">모든 필드를 입력하세요!</sys:String>
+    <sys:String x:Key="Dialog_AddAccount_WarningTitle">경고</sys:String>
+    
+    <!-- LicenseKeyWindow -->
+    <sys:String x:Key="License_PleaseEnterKey">라이선스 키를 입력하세요.</sys:String>
+    <sys:String x:Key="License_NeedKey">키가 필요하신가요? 연락처: </sys:String>
+    <sys:String x:Key="License_DiscordHandle">@2014</sys:String>
+    <sys:String x:Key="License_ValidatingKey">라이선스 키 확인 중...</sys:String>
+    <sys:String x:Key="License_ActivationSuccessful">활성화 성공! 애플리케이션 열기 중...</sys:String>
+    <sys:String x:Key="License_ErrorSaving">라이선스가 활성화되었지만 저장 오류: {0}</sys:String>
+    <sys:String x:Key="License_RequiresReactivation">라이선스 재활성화가 필요합니다. 다시 활성화해 주세요.</sys:String>
+    <sys:String x:Key="License_KeyNotFound">라이선스 키를 찾을 수 없습니다.</sys:String>
+    
+    <!-- UpdateService -->
+    <sys:String x:Key="Update_CheckingForUpdates">업데이트 확인 중...</sys:String>
+    <sys:String x:Key="Update_NewVersionAvailable">새 버전 사용 가능! 로컬: v{0} | 서버: v{1}</sys:String>
+    <sys:String x:Key="Update_VersionFormatError">버전 형식 오류: {0}. 대체 방법으로 문자열 비교를 사용합니다.</sys:String>
+    <sys:String x:Key="Update_CheckFailed">업데이트 확인 실패: {0}</sys:String>
+    <sys:String x:Key="Update_Downloading">업데이트 다운로드 중, 잠시 기다려 주세요...</sys:String>
+    <sys:String x:Key="Update_DirectoryNotExist">디렉터리가 존재하지 않습니다: {0}</sys:String>
+    <sys:String x:Key="Update_FailedWriteFile">업데이트 파일 쓰기 실패: 파일이 생성되지 않았습니다</sys:String>
+    <sys:String x:Key="Update_DownloadFailedEmpty">다운로드 실패: 다운로드한 파일이 비어 있습니다</sys:String>
+    <sys:String x:Key="Update_FileSizeMismatch">파일 크기 불일치: 예상 {0} 바이트, 실제 {1} 바이트</sys:String>
+    <sys:String x:Key="Update_PermissionDenied">권한 거부: 디렉터리에 쓸 수 없습니다. ({0})</sys:String>
+    <sys:String x:Key="Update_TipProgramFiles">팁: 봇이 'Program Files'에 있는 경우 쓰기 권한 문제를 피하기 위해 'C:\Butterfly'와 같은 폴더로 이동하는 것을 고려하세요.</sys:String>
+    <sys:String x:Key="Update_EnsureWritePermissions">애플리케이션이 디렉터리에 대한 쓰기 권한을 가지고 있는지 확인하거나 관리자로 실행하세요.</sys:String>
+    <sys:String x:Key="Update_DirectoryNotFound">디렉터리를 찾을 수 없습니다: {0} ({1})</sys:String>
+    <sys:String x:Key="Update_FileIOError">파일 I/O 오류: 업데이트 파일을 쓸 수 없습니다. 파일이 사용 중일 수 있습니다. ({0})</sys:String>
+    <sys:String x:Key="Update_NetworkError">다운로드 중 네트워크 오류: {0}</sys:String>
+    <sys:String x:Key="Update_DownloadTimeout">다운로드 타임아웃: 연결 시간이 너무 오래 걸렸습니다. ({0})</sys:String>
+    <sys:String x:Key="Update_ErrorFinalExeName">[오류] finalExeName은 파일명만 있어야 하지만 경로가 포함되어 있습니다: {0}</sys:String>
+    <sys:String x:Key="Update_ErrorGeneric">오류: {0}</sys:String>
+    <sys:String x:Key="Update_InstallationFailed">업데이트 설치 실패: {0}</sys:String>
+    
+    <!-- ConsoleWindow -->
+    <sys:String x:Key="Console_Title">콘솔</sys:String>
+    <sys:String x:Key="Console_Welcome">Butterfly에 오신 것을 환영합니다! 🦋&#x0a;2014가 만든 모든 코드 🐰&#x0a;Discord로 연락 가능: coelhoszzz 💤&#x0a;즐겁게 사용하세요! ⚡&#x0a;이벤트 대기 중...&#x0a;</sys:String>
+    
+    <!-- Messages - Console Logs (Keeping technical terms in English where appropriate) -->
+    <sys:String x:Key="Log_CannotStartMonitoring">모니터링을 시작할 수 없습니다: 업데이트 진행 중.</sys:String>
+    <sys:String x:Key="Log_StartingMonitoring">모니터링 시작 중...</sys:String>
+    <sys:String x:Key="Log_MonitoringPaused">모니터링 일시정지됨.</sys:String>
+    <sys:String x:Key="Log_CannotRefresh">새로고침할 수 없습니다: 업데이트 진행 중.</sys:String>
+    <sys:String x:Key="Log_CannotRefreshNoServer">새로고침할 수 없습니다. 먼저 서버를 선택하세요.</sys:String>
+    <sys:String x:Key="Log_RefreshSkipped">새로고침 건너뜀: 계정 연결 중.</sys:String>
+    <sys:String x:Key="Log_RefreshingOnce">한 번 새로고침 중...</sys:String>
+    <sys:String x:Key="Log_RefreshComplete">새로고침 완료. 상태 업데이트됨.</sys:String>
+    <sys:String x:Key="Log_ConsoleCleared">콘솔이 지워졌습니다. Butterfly를 사용해 주셔서 감사합니다! 🦋</sys:String>
+    <sys:String x:Key="Log_UnknownCommand">알 수 없는 명령: '{0}'. 사용 가능한 명령을 보려면 'help'를 입력하세요.</sys:String>
+    <sys:String x:Key="Log_AvailableCommands">사용 가능한 명령:</sys:String>
+    <sys:String x:Key="Log_CmdCls">cls, clear      - 콘솔 지우기</sys:String>
+    <sys:String x:Key="Log_CmdStats">stats           - 계정 현재 상태 표시</sys:String>
+    <sys:String x:Key="Log_CmdReconnect">reconnect &lt;n&gt;   - 단일 계정 재연결</sys:String>
+    <sys:String x:Key="Log_CmdLogs">logs            - 로그 폴더 열기</sys:String>
+    <sys:String x:Key="Log_CmdDisplay">display         - 모든 게임 창 표시/숨기기 전환</sys:String>
+    <sys:String x:Key="Log_CmdHelp">help            - 이 메뉴 표시</sys:String>
+    <sys:String x:Key="Log_CmdExit">exit            - 애플리케이션 닫기</sys:String>
+    <sys:String x:Key="Log_ErrorStats">오류: 계정 통계를 가져올 수 없습니다.</sys:String>
+    <sys:String x:Key="Log_CharactersStatus">=== 캐릭터 상태 ===</sys:String>
+    <sys:String x:Key="Log_CharacterOnline">{0}: Online</sys:String>
+    <sys:String x:Key="Log_CharacterOffline">{0}: Offline</sys:String>
+    <sys:String x:Key="Log_CharacterStatus">{0}: {1}</sys:String>
+    <sys:String x:Key="Log_CharactersStatusEnd">==========================</sys:String>
+    <sys:String x:Key="Log_NoCharactersFound">캐릭터를 찾을 수 없습니다.</sys:String>
+    <sys:String x:Key="Log_ReconnectUsage">사용법: reconnect &lt;캐릭터_이름&gt;</sys:String>
+    <sys:String x:Key="Log_ReconnectInitiated">'{0}'에 대한 재연결이 시작되었습니다.</sys:String>
+    <sys:String x:Key="Log_CharacterNotFound">캐릭터 '{0}'을(를) 찾을 수 없습니다.</sys:String>
+    <sys:String x:Key="Log_NoMixMasterWindow">MixMaster 창을 찾을 수 없습니다.</sys:String>
+    <sys:String x:Key="Log_ErrorTogglingWindows">프로세스 {0}의 창 전환 오류: {1}</sys:String>
+    <sys:String x:Key="Log_WindowsVisible">모든 게임 창이 이제 표시됩니다.</sys:String>
+    <sys:String x:Key="Log_WindowsHidden">모든 게임 창이 이제 숨겨집니다.</sys:String>
+    <sys:String x:Key="Log_ErrorToggleWindows">게임 창 전환 오류: {0}</sys:String>
+    <sys:String x:Key="Log_ErrorLogsFolder">오류: 로그 폴더 경로를 사용할 수 없습니다.</sys:String>
+    <sys:String x:Key="Log_OpenedLogsFolder">로그 폴더 열림: {0}</sys:String>
+    <sys:String x:Key="Log_ErrorOpeningLogs">로그 폴더 열기 오류: {0}</sys:String>
+    <sys:String x:Key="Log_ShuttingDown">[시스템] Butterfly 종료 중... 안녕히 가세요!</sys:String>
+    <sys:String x:Key="Log_ErrorMonitoringLoop">모니터링 루프 오류: {0}</sys:String>
+    <sys:String x:Key="Log_CharacterRemoved">캐릭터 '{0}'이(가) 제거되었습니다.</sys:String>
+    <sys:String x:Key="Log_AccountsSaved">계정이 '{0}'에 저장되었습니다 ({1}개 계정).</sys:String>
+    <sys:String x:Key="Log_AccountsLoaded">'{0}'에서 계정을 불러왔습니다 ({1}개 계정).</sys:String>
+    <sys:String x:Key="Log_AllAccountsCleared">모든 계정이 지워졌습니다 ({0}개 계정 제거됨).</sys:String>
+    <sys:String x:Key="Log_CharacterAdded">캐릭터가 추가되었습니다.</sys:String>
+    <sys:String x:Key="Log_BotDisabled">'{0}'에 대한 Bot이 비활성화되었습니다.</sys:String>
+    <sys:String x:Key="Log_BotEnabled">'{0}'에 대한 Bot이 활성화되었습니다.</sys:String>
+    <sys:String x:Key="Log_ErrorActivatingBot">'{0}'에 대한 Bot 활성화 오류: {1}</sys:String>
+    <sys:String x:Key="Log_WaitingReconnectionQueue">재연결 대기열 대기 중...</sys:String>
+    <sys:String x:Key="Log_GameDirectoryNotFound">'{0}'에서 게임 디렉터리를 찾을 수 없습니다</sys:String>
+    <sys:String x:Key="Log_MixMasterNotFound">'{0}'에서 MixMaster.exe를 찾을 수 없습니다</sys:String>
+    <sys:String x:Key="Log_FailedLaunchGame">게임 실행 실패.</sys:String>
+    <sys:String x:Key="Log_LauncherBypassed">[{0}] Launcher 건너뜀.</sys:String>
+    <sys:String x:Key="Log_ErrorLaunch">오류: {0}</sys:String>
+    <sys:String x:Key="Log_ListingVisibleWindows">=== 모든 표시 창 나열 ===</sys:String>
+    <sys:String x:Key="Log_WindowInfo">창: "{0}" (HWND: {1})</sys:String>
+    <sys:String x:Key="Log_EndWindowList">=== 창 목록 끝 ===</sys:String>
+    <sys:String x:Key="Log_ListingWindowsPID">=== PID {0}에 대한 창 나열 ===</sys:String>
+    <sys:String x:Key="Log_WindowInfoDetailed">창: "{0}" (HWND: {1}) [표시: {2}]</sys:String>
+    <sys:String x:Key="Log_NoWindowsFound">이 PID에 대한 창을 찾을 수 없습니다</sys:String>
+    <sys:String x:Key="Log_TotalWindows">=== 총: {0}개 창 ===</sys:String>
+    <sys:String x:Key="Log_LoginButtonFound">[{0}] ✓ Login 버튼 찾음: "{1}"</sys:String>
+    <sys:String x:Key="Log_ControlsNotFound">[{0}] 검색으로 컨트롤을 찾을 수 없음. 좌표 기반 접근 방식 시도 중...</sys:String>
+    <sys:String x:Key="Log_ButtonNotFound">[{0}] 버튼을 찾을 수 없음, ENTER 키 사용 중...</sys:String>
+    <sys:String x:Key="Log_AutoLoginError">[{0}] 자동 로그인 오류: {1}</sys:String>
+    <sys:String x:Key="Log_CoordinateBasedLogin">[{0}] 좌표 기반 로그인 사용 중...</sys:String>
+    <sys:String x:Key="Log_FailedLauncherPosition">[{0}] Launcher 창 위치 가져오기 실패</sys:String>
+    <sys:String x:Key="Log_ClickingLoginButton">[{0}] Login 버튼 클릭 중...</sys:String>
+    <sys:String x:Key="Log_CoordinateLoginError">[{0}] 좌표 기반 로그인 오류: {1}</sys:String>
+    <sys:String x:Key="Log_ErrorInvalidHandle">오류: 클릭에 대한 잘못된 창 핸들!</sys:String>
+    <sys:String x:Key="Log_ErrorWindowNotVisible">오류: 게임 창이 표시되지 않습니다!</sys:String>
+    <sys:String x:Key="Log_WarningFightingFocus">[경고] 포커스 획득 시도 중... 시도 {0}</sys:String>
+    <sys:String x:Key="Log_ErrorFailedFocus">오류: 3번 시도 후 창 포커스를 얻지 못했습니다. 클릭 취소됨.</sys:String>
+    <sys:String x:Key="Log_ErrorConvertCoordinates">오류: 클라이언트 좌표를 화면 좌표로 변환하지 못했습니다!</sys:String>
+    <sys:String x:Key="Log_ErrorInvalidHandleDoubleClick">오류: 더블 클릭에 대한 잘못된 창 핸들 (프로세스 {0})!</sys:String>
+    <sys:String x:Key="Log_ErrorProcessExited">오류: 프로세스 {0}이(가) 종료되었습니다!</sys:String>
+    <sys:String x:Key="Log_ErrorInvalidHandleDoubleClick2">오류: 더블 클릭에 대한 잘못된 창 핸들!</sys:String>
+    <sys:String x:Key="Log_ErrorWindowNotVisible2">오류: 게임 창이 표시되지 않습니다!</sys:String>
+    <sys:String x:Key="Log_ErrorProcessNotFound">오류: 캐릭터에 대한 프로세스 ID를 찾을 수 없습니다</sys:String>
+    <sys:String x:Key="Log_ErrorProcessNotFound2">오류: 프로세스 {0}을(를) 찾을 수 없습니다</sys:String>
+    <sys:String x:Key="Log_ErrorWaitingGameProcess">게임 프로세스 대기 오류: {0}</sys:String>
+    <sys:String x:Key="Log_WaitingServerScreen">서버 선택 화면 대기 중...</sys:String>
+    <sys:String x:Key="Log_GameWindowNotFound">프로세스 {0}에 대한 게임 창을 찾을 수 없습니다</sys:String>
+    <sys:String x:Key="Log_ServerScreenTimeout">서버 선택 화면을 감지하지 못했습니다 (타임아웃)</sys:String>
+    <sys:String x:Key="Log_ServerScreenDetected">서버 선택 화면 감지됨!</sys:String>
+    <sys:String x:Key="Log_WaitingCharacterScreen">캐릭터 선택 화면 대기 중...</sys:String>
+    <sys:String x:Key="Log_CharacterScreenTimeout">캐릭터 선택 화면을 감지하지 못했습니다 (타임아웃)</sys:String>
+    <sys:String x:Key="Log_CharacterScreenDetected">캐릭터 선택 화면 감지됨!</sys:String>
+    <sys:String x:Key="Log_WaitingGameMap">게임 맵 로드 대기 중...</sys:String>
+    <sys:String x:Key="Log_GameMapTimeout">게임 맵을 감지하지 못했습니다 (타임아웃)</sys:String>
+    <sys:String x:Key="Log_CharacterConnected">캐릭터 '{0}'이(가) 연결되었습니다!</sys:String>
+    <sys:String x:Key="Log_Connected">연결됨!</sys:String>
+    <sys:String x:Key="Log_ActivatingAutoPlay">AutoPlay 활성화 중 (F12)...</sys:String>
+    <sys:String x:Key="Log_AutoPlayActivated">AutoPlay 활성화됨!</sys:String>
+    <sys:String x:Key="Log_ErrorDetectingGameMap">게임 맵 감지 오류: {0}</sys:String>
+    <sys:String x:Key="Log_CharacterDisconnected">'{0}' 연결 끊김</sys:String>
+    <sys:String x:Key="Log_ConnectingCharacter">캐릭터 '{0}'을(를) 게임에 연결 중...</sys:String>
+    <sys:String x:Key="Log_ConnectingCharacterServer">캐릭터 '{0}'을(를) 서버에 연결 중...</sys:String>
+    <sys:String x:Key="Log_ConnectingCharacterMap">캐릭터 '{0}'을(를) 게임 맵에 연결 중...</sys:String>
+    <sys:String x:Key="Log_CheckingServerStatus">서버 '{0}' 상태 확인 중...</sys:String>
+    <sys:String x:Key="Log_ExitingGameWindow">현재 게임 창 종료 중...</sys:String>
+    <sys:String x:Key="Log_CharacterDisconnectedStarting">캐릭터 연결 끊김. 재연결 시작 중...</sys:String>
+    <sys:String x:Key="Log_NewVersionDetected">새 버전이 감지되었습니다. 필수 업데이트 시작 중...</sys:String>
+    <sys:String x:Key="Log_InitializingUpdate">업데이트 초기화 중...</sys:String>
+    <sys:String x:Key="Log_WaitingForEvents">이벤트 대기 중...</sys:String>
+    
+    <!-- MessageBox Messages -->
+    <sys:String x:Key="Msg_AdminRequired">Butterfly가 제대로 작동하려면 관리자 권한으로 실행해야 합니다.&#x0a;&#x0a;애플리케이션을 닫고 관리자 권한으로 실행하세요 (우클릭 &gt; 관리자 권한으로 실행).</sys:String>
+    <sys:String x:Key="Msg_AdminRequiredTitle">관리자 권한 필요</sys:String>
+    <sys:String x:Key="Msg_ErrorSavingAccounts">계정 저장 오류: {0}</sys:String>
+    <sys:String x:Key="Msg_ErrorOpeningAccounts">계정 열기 오류: {0}</sys:String>
+    <sys:String x:Key="Msg_ErrorTitle">오류</sys:String>
+    <sys:String x:Key="Msg_UpdateError">업데이트 중 오류: {0}</sys:String>
+    <sys:String x:Key="Msg_UpdateErrorTitle">업데이트 오류</sys:String>
+    
+    <!-- Status Text -->
+    <sys:String x:Key="Status_InitializingUpdate">업데이트 초기화 중...</sys:String>
+    
+    <!-- Configuration -->
+    <sys:String x:Key="Config_DateFormat">yyyy/MM/dd</sys:String>
+    
+</ResourceDictionary>

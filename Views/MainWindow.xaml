@@ -1,0 +1,1668 @@
+<Window x:Class="Butterfly.Views.MainWindow"
+        x:Name="RootWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:Butterfly.Views"
+        xmlns:converters="clr-namespace:Butterfly.Converters"
+        Height="700" 
+        Width="700"
+        WindowStartupLocation="CenterScreen"
+        Background="#000000"
+        ResizeMode="CanResize"
+        PreviewKeyDown="MainWindow_PreviewKeyDown">
+
+    <Window.Resources>
+        <converters:StatusToColorConverter x:Key="StatusToColorConverter"/>
+        <converters:ServerStatusToColorConverter x:Key="ServerStatusToColorConverter"/>
+        <converters:PasswordMaskConverter x:Key="PasswordMaskConverter"/>
+        <converters:OnlinePlayersConverter x:Key="OnlinePlayersConverter"/>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converters:InverseBooleanToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
+        <converters:InverseBoolConverter x:Key="InverseBoolConverter"/>
+        <converters:BotVisibilityConverter x:Key="BotVisibilityConverter"/>
+        <converters:SelectedLanguageVisibilityConverter x:Key="SelectedLanguageVisibilityConverter"/>
+
+        <QuadraticEase x:Key="QuadraticEase" EasingMode="EaseOut"/>
+        
+        <!-- StreamGeometry for FAB icons (Eye - Universal Visibility Standard) -->
+        <StreamGeometry x:Key="IconVisible">M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z</StreamGeometry>
+        <StreamGeometry x:Key="IconHidden">M2,4.27L3.27,3L22,21.72L20.73,23L16.18,18.45C14.88,19.11 13.47,19.5 12,19.5C7,19.5 2.73,16.39 1,12C1.69,10.24 2.79,8.69 4.19,7.46L2,5.27L2,4.27M12,9A3,3 0 0,0 9,12C9,12.32 9.06,12.63 9.17,12.91L12.5,16.24C14.18,15.91 15.5,14.6 15.83,12.92L12.08,9.17C11.81,9.06 11.5,9 12,9M12,4.5C17,4.5 21.27,7.61 23,12C22.18,14.08 20.82,15.88 19.17,17.24L17.58,15.64C18.47,14.59 18.92,13.32 19,12C17.3,7.61 13,4.5 12,4.5M12,7C12.38,7 12.74,7.07 13.08,7.2L11.3,5.42C11.53,5.41 11.76,5.4 12,5.4V7Z</StreamGeometry>
+        
+        <Style x:Key="FloatingActionButton" TargetType="Button">
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Background" Value="#000000"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <Border x:Name="FABBorder"
+                                    Width="40"
+                                    Height="40"
+                                    CornerRadius="20"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="#000000"
+                                    BorderThickness="0"
+                                    RenderTransformOrigin="0.5,0.5">
+                                <Border.RenderTransform>
+                                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                                </Border.RenderTransform>
+                            </Border>
+                            <Path x:Name="PART_Icon"
+                                  Data="{StaticResource IconVisible}"
+                                  Fill="#AE81FF"
+                                  Stretch="Uniform"
+                                  Margin="12"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <DataTrigger Binding="{Binding IsGameVisible, RelativeSource={RelativeSource AncestorType=Window}}" Value="False">
+                                <Setter TargetName="PART_Icon" Property="Data" Value="{StaticResource IconHidden}"/>
+                            </DataTrigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="FABBorder"
+                                                          Storyboard.TargetProperty="Background.(SolidColorBrush.Color)"
+                                                          To="#1A1A1A"
+                                                          Duration="0:0:0.2">
+                                                <ColorAnimation.EasingFunction>
+                                                    <QuadraticEase EasingMode="EaseOut"/>
+                                                </ColorAnimation.EasingFunction>
+                                            </ColorAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="FABBorder"
+                                                          Storyboard.TargetProperty="Background.(SolidColorBrush.Color)"
+                                                          To="#000000"
+                                                          Duration="0:0:0.2">
+                                                <ColorAnimation.EasingFunction>
+                                                    <QuadraticEase EasingMode="EaseOut"/>
+                                                </ColorAnimation.EasingFunction>
+                                            </ColorAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="PlayPauseButton" TargetType="Button">
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                                BorderBrush="Transparent"
+                                BorderThickness="0"
+                                CornerRadius="0"
+                                Padding="0"
+                                Margin="0">
+                            <Border.Background>
+                                <SolidColorBrush x:Name="ButtonBackground">
+                                    <SolidColorBrush.Color>
+                                        <Color A="0" R="0" G="0" B="0"/>
+                                    </SolidColorBrush.Color>
+                                </SolidColorBrush>
+                            </Border.Background>
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <EventTrigger RoutedEvent="Border.MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="ButtonBackground"
+                                                      Storyboard.TargetProperty="Color"
+                                                      Duration="0:0:0.25">
+                                            <ColorAnimation.To>
+                                                <Color A="255" R="26" G="26" B="26"/>
+                                            </ColorAnimation.To>
+                                            <ColorAnimation.EasingFunction>
+                                                <QuadraticEase EasingMode="EaseInOut"/>
+                                            </ColorAnimation.EasingFunction>
+                                        </ColorAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="Border.MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="ButtonBackground"
+                                                      Storyboard.TargetProperty="Color"
+                                                      Duration="0:0:0.25">
+                                            <ColorAnimation.To>
+                                                <Color A="0" R="0" G="0" B="0"/>
+                                            </ColorAnimation.To>
+                                            <ColorAnimation.EasingFunction>
+                                                <QuadraticEase EasingMode="EaseInOut"/>
+                                            </ColorAnimation.EasingFunction>
+                                        </ColorAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="ButtonBackground"
+                                                          Storyboard.TargetProperty="Color"
+                                                          Duration="0:0:0.1">
+                                                <ColorAnimation.To>
+                                                    <Color A="255" R="26" G="26" B="26"/>
+                                                </ColorAnimation.To>
+                                            </ColorAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="ToolbarButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#CCCCCC"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="2,0"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderThickness="0"
+                                CornerRadius="3">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                            VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#2D2D2D"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#3E3E3E"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+            <Style x:Key="IconButton" TargetType="Button" BasedOn="{StaticResource ToolbarButton}">
+                <Setter Property="Width" Value="28"/>
+                <Setter Property="Height" Value="28"/>
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="FontWeight" Value="Normal"/>
+            </Style>
+
+                <Style TargetType="Separator">
+                    <Setter Property="Background" Value="#1A1A1A"/>
+                    <Setter Property="Margin" Value="0,2"/>
+                    <Setter Property="Height" Value="1"/>
+                </Style>
+                
+                <Style x:Key="ConsoleInputStyle" TargetType="TextBox">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="BorderBrush" Value="Transparent"/>
+                    <Setter Property="Padding" Value="0"/>
+                    <Setter Property="Margin" Value="0"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="TextBox">
+                                <Border Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        CornerRadius="0">
+                                    <ScrollViewer x:Name="PART_ContentHost"
+                                                  Focusable="False"
+                                                  HorizontalScrollBarVisibility="Hidden"
+                                                  VerticalScrollBarVisibility="Hidden"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+
+                <Style x:Key="EditableFieldStyle" TargetType="TextBox">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="BorderBrush" Value="Transparent"/>
+                    <Setter Property="Padding" Value="0"/>
+                    <Setter Property="Margin" Value="-2,0,0,0"/>
+                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="TextBox">
+                                <Border Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        CornerRadius="0"
+                                        Padding="0"
+                                        Margin="0">
+                                    <ScrollViewer x:Name="PART_ContentHost"
+                                                  Focusable="False"
+                                                  HorizontalScrollBarVisibility="Hidden"
+                                                  VerticalScrollBarVisibility="Hidden"
+                                                  Padding="0"
+                                                  Margin="0"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Stretch"
+                                                  VerticalContentAlignment="Center"
+                                                  HorizontalContentAlignment="Left"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+
+                <Style TargetType="ScrollBar">
+                    <Setter Property="Background" Value="#1A1A1A"/>
+                    <Setter Property="Foreground" Value="#3E3E3E"/>
+                    <Setter Property="Width" Value="2"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ScrollBar">
+                                <Grid>
+                                    <Border Background="{TemplateBinding Background}" CornerRadius="0"/>
+                                    <Track x:Name="PART_Track" IsDirectionReversed="True">
+                                        <Track.Thumb>
+                                            <Thumb>
+                                                <Thumb.Style>
+                                                    <Style TargetType="Thumb">
+                                                        <Setter Property="Background" Value="#3E3E3E"/>
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="Thumb">
+                                                                    <Border Background="{TemplateBinding Background}" 
+                                                                            CornerRadius="0" 
+                                                                            Margin="1"/>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="#515151"/>
+                                                            </Trigger>
+                                                            <Trigger Property="IsDragging" Value="True">
+                                                                <Setter Property="Background" Value="#6B6B6B"/>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Thumb.Style>
+                                            </Thumb>
+                                        </Track.Thumb>
+                                    </Track>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+                
+                <!-- Style for floating button ToolTip -->
+                <Style x:Key="FloatingButtonToolTipStyle" TargetType="ToolTip">
+                    <Setter Property="Background" Value="Black"/>
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="Padding" Value="6,6"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="FontFamily" Value="Segoe UI"/>
+                    <Setter Property="FontSize" Value="12"/>
+                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    <Setter Property="IsHitTestVisible" Value="False"/>
+                </Style>
+            </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border x:Name="MainBorder"
+                Grid.Row="1" 
+                Background="#000000" 
+                BorderThickness="0"
+                Padding="0"
+                MouseLeftButtonDown="Border_MouseLeftButtonDown">
+
+            <Border.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="{DynamicResource Menu_AddAccount}" Click="AddAccountFromContext_Click"/>
+                    <MenuItem Header="{DynamicResource Menu_SaveAccounts}" Click="SaveAccountsToFile_Click"/>
+                    <MenuItem Header="{DynamicResource Menu_LoadAccounts}" Click="OpenAccountsFromFile_Click"/>
+                    <Separator/>
+                    <MenuItem Header="{DynamicResource Menu_RefreshAll}" Click="RefreshAll_Click"/>
+                    <MenuItem Header="{DynamicResource Menu_ClearAll}" Click="ClearAccounts_Click"/>
+                </ContextMenu>
+            </Border.ContextMenu>
+            
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0" 
+                        Background="#000000" 
+                        BorderBrush="#1A1A1A"
+                        BorderThickness="0,1,0,1"
+                        Height="48">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <TextBlock Text="{DynamicResource Main_SelectServer}"
+                                   Foreground="#FFFFFF"
+                                   FontSize="12"
+                                   FontWeight="Bold"
+                                   FontFamily="Segoe UI"
+                                   VerticalAlignment="Center"
+                                   Margin="16,0,0,0"/>
+                        
+                        <!-- Language Selector -->
+                        <Grid Grid.Column="1" 
+                              Margin="0,0,16,0"
+                              VerticalAlignment="Center"
+                              HorizontalAlignment="Right">
+                            <Grid.Resources>
+                                <Style x:Key="LanguageButtonStyle" TargetType="Button">
+                                    <Setter Property="Background" Value="#1A1A1A"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="Padding" Value="8"/>
+                                    <Setter Property="Cursor" Value="Hand"/>
+                                    <Setter Property="FontFamily" Value="Segoe UI"/>
+                                    <Setter Property="FontSize" Value="11"/>
+                                    <Setter Property="Foreground" Value="#FFFFFF"/>
+                                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                    <Setter Property="Width" Value="60"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border x:Name="ButtonBorder"
+                                                        BorderThickness="0"
+                                                        CornerRadius="0"
+                                                        Padding="{TemplateBinding Padding}"
+                                                        HorizontalAlignment="Stretch">
+                                                    <Border.Background>
+                                                        <SolidColorBrush x:Name="ButtonBackgroundBrush" Color="#1A1A1A"/>
+                                                    </Border.Background>
+                                                    <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Trigger.EnterActions>
+                                                            <BeginStoryboard>
+                                                                <Storyboard>
+                                                                    <ColorAnimation Storyboard.TargetName="ButtonBackgroundBrush"
+                                                                                  Storyboard.TargetProperty="Color"
+                                                                                  To="#313131"
+                                                                                  Duration="0:0:0.25"/>
+                                                                </Storyboard>
+                                                            </BeginStoryboard>
+                                                        </Trigger.EnterActions>
+                                                        <Trigger.ExitActions>
+                                                            <BeginStoryboard>
+                                                                <Storyboard>
+                                                                    <ColorAnimation Storyboard.TargetName="ButtonBackgroundBrush"
+                                                                                  Storyboard.TargetProperty="Color"
+                                                                                  To="#1A1A1A"
+                                                                                  Duration="0:0:0.25"/>
+                                                                </Storyboard>
+                                                            </BeginStoryboard>
+                                                        </Trigger.ExitActions>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                                
+                                <Style x:Key="LanguageItemStyle" TargetType="Button">
+                                    <Setter Property="Background" Value="#1A1A1A"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="Padding" Value="8,6"/>
+                                    <Setter Property="Cursor" Value="Hand"/>
+                                    <Setter Property="FontFamily" Value="Segoe UI"/>
+                                    <Setter Property="FontSize" Value="11"/>
+                                    <Setter Property="Foreground" Value="#FFFFFF"/>
+                                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                    <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border x:Name="ItemBorder"
+                                                        BorderThickness="0"
+                                                        CornerRadius="0"
+                                                        Padding="{TemplateBinding Padding}">
+                                                    <Border.Background>
+                                                        <SolidColorBrush x:Name="ItemBackgroundBrush" Color="#1A1A1A"/>
+                                                    </Border.Background>
+                                                    <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Trigger.EnterActions>
+                                                            <BeginStoryboard>
+                                                                <Storyboard>
+                                                                    <ColorAnimation Storyboard.TargetName="ItemBackgroundBrush"
+                                                                                  Storyboard.TargetProperty="Color"
+                                                                                  To="#313131"
+                                                                                  Duration="0:0:0.25"/>
+                                                                </Storyboard>
+                                                            </BeginStoryboard>
+                                                        </Trigger.EnterActions>
+                                                        <Trigger.ExitActions>
+                                                            <BeginStoryboard>
+                                                                <Storyboard>
+                                                                    <ColorAnimation Storyboard.TargetName="ItemBackgroundBrush"
+                                                                                  Storyboard.TargetProperty="Color"
+                                                                                  To="#1A1A1A"
+                                                                                  Duration="0:0:0.25"/>
+                                                                </Storyboard>
+                                                            </BeginStoryboard>
+                                                        </Trigger.ExitActions>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Grid.Resources>
+                            
+                            <!-- Selected Language Button -->
+                            <Button x:Name="LanguageSelectorButton"
+                                    Style="{StaticResource LanguageButtonStyle}"
+                                    Click="LanguageSelectorButton_Click"
+                                    HorizontalAlignment="Right">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <Image Source="{Binding SelectedLanguage.FlagPath, Mode=OneWay}"
+                                           Width="20"
+                                           Height="14"
+                                           VerticalAlignment="Center"
+                                           Margin="0,0,8,0"
+                                           RenderOptions.BitmapScalingMode="HighQuality"
+                                           Stretch="Uniform"/>
+                                    <TextBlock Text="{Binding SelectedLanguage.DisplayText, Mode=OneWay}"
+                                               FontFamily="Segoe UI"
+                                               FontSize="11"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            
+                            <!-- Language Dropdown Popup -->
+                            <Popup x:Name="LanguageDropdownPopup"
+                                   PlacementTarget="{Binding ElementName=LanguageSelectorButton}"
+                                   Placement="Bottom"
+                                   StaysOpen="False"
+                                   AllowsTransparency="True"
+                                   HorizontalOffset="0"
+                                   VerticalOffset="0">
+                                <Border x:Name="PopupBorder"
+                                        Background="#1A1A1A"
+                                        BorderBrush="Transparent"
+                                        BorderThickness="0"
+                                        CornerRadius="0"
+                                        Padding="0"
+                                        Margin="0"
+                                        DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=Window}}"
+                                        Width="{Binding ActualWidth, ElementName=LanguageSelectorButton}">
+                                    <Border.Triggers>
+                                        <EventTrigger RoutedEvent="Loaded">
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetName="PopupBorder"
+                                                                     Storyboard.TargetProperty="Opacity"
+                                                                     From="0"
+                                                                     To="1"
+                                                                     Duration="0:0:0.25"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </EventTrigger>
+                                    </Border.Triggers>
+                                    <StackPanel Orientation="Vertical" Margin="0">
+                                        <ItemsControl ItemsSource="{Binding Languages}" Margin="0">
+                                            <ItemsControl.ItemContainerStyle>
+                                                <Style TargetType="ContentPresenter">
+                                                    <Setter Property="Visibility">
+                                                        <Setter.Value>
+                                                            <MultiBinding Converter="{StaticResource SelectedLanguageVisibilityConverter}">
+                                                                <Binding Path="."/>
+                                                                <Binding Path="DataContext.SelectedLanguage" ElementName="PopupBorder"/>
+                                                            </MultiBinding>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="Visibility" Value="Collapsed">
+                                                            <Setter Property="Height" Value="0"/>
+                                                            <Setter Property="Margin" Value="0"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </ItemsControl.ItemContainerStyle>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Button Click="LanguageItem_Click"
+                                                            Tag="{Binding}"
+                                                            DataContext="{Binding}">
+                                                        <Button.Style>
+                                                            <Style TargetType="Button" BasedOn="{StaticResource LanguageItemStyle}"/>
+                                                        </Button.Style>
+                                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                            <Image Source="{Binding FlagPath}"
+                                                                   Width="20"
+                                                                   Height="14"
+                                                                   VerticalAlignment="Center"
+                                                                   Margin="0,0,8,0"
+                                                                   RenderOptions.BitmapScalingMode="HighQuality"
+                                                                   Stretch="Uniform"/>
+                                                            <TextBlock Text="{Binding DisplayText}"
+                                                                       FontFamily="Segoe UI"
+                                                                       FontSize="11"
+                                                                       VerticalAlignment="Center"/>
+                                                        </StackPanel>
+                                                    </Button>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </Grid>
+                </Border>
+
+                <Grid Grid.Row="1" Background="#000000" Height="40">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="44"/>
+                        <ColumnDefinition Width="143"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" BorderBrush="#1A1A1A" BorderThickness="0,0,0,1" Padding="0" Margin="0">
+                        <TextBlock Text="" Foreground="#515151" FontSize="11" VerticalAlignment="Center"/>
+                    </Border>
+                    <Border Grid.Column="1" BorderBrush="#1A1A1A" BorderThickness="0,0,0,1" Padding="0" Margin="0">
+                        <TextBlock Text="{DynamicResource Main_Server}" Foreground="#515151" FontSize="11" VerticalAlignment="Center"/>
+                    </Border>
+                    <Border Grid.Column="2" BorderBrush="#1A1A1A" BorderThickness="0,0,0,1" Padding="0" Margin="0">
+                        <TextBlock Text="{DynamicResource Main_Players}" Foreground="#515151" FontSize="11" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                    </Border>
+                </Grid>
+
+                <ListBox x:Name="ServersGrid"
+                         ItemsSource="{Binding Servers}" 
+                         Grid.Row="2"
+                         Background="#000000"
+                         BorderBrush="Transparent"
+                         BorderThickness="0"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         Margin="0,0,0,0"
+                         Padding="0"
+                         SelectionMode="Single"
+                         SelectionChanged="ServersGrid_SelectionChanged">
+                    <ListBox.Style>
+                        <Style TargetType="ListBox">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBox">
+                                        <Border Background="{TemplateBinding Background}"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                Padding="0">
+                                            <ScrollViewer Focusable="False" 
+                                                        Padding="0"
+                                                        HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                                                        VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}">
+                                                <ItemsPresenter Margin="0"/>
+                                            </ScrollViewer>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.Style>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Foreground" Value="#FFFFFF"/>
+                            <Setter Property="Padding" Value="0"/>
+                            <Setter Property="Margin" Value="0"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <Border x:Name="ItemBorder"
+                                                BorderBrush="#1A1A1A"
+                                                BorderThickness="0,0,0,0"
+                                                HorizontalAlignment="Stretch"
+                                                VerticalAlignment="Stretch">
+                                            <Border.Background>
+                                                <SolidColorBrush x:Name="ItemBackgroundBrush" Color="#00000000"/>
+                                            </Border.Background>
+                                            <ContentPresenter HorizontalAlignment="Stretch" 
+                                                            VerticalAlignment="Stretch"
+                                                            Margin="0"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter TargetName="ItemBorder" Property="Background" Value="#111111"/>
+                                            </Trigger>
+                                            <MultiTrigger>
+                                                <MultiTrigger.Conditions>
+                                                    <Condition Property="IsSelected" Value="False"/>
+                                                    <Condition Property="IsMouseOver" Value="True"/>
+                                                </MultiTrigger.Conditions>
+                                                <MultiTrigger.EnterActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <ColorAnimation Storyboard.TargetName="ItemBackgroundBrush"
+                                                                          Storyboard.TargetProperty="Color"
+                                                                          To="#111111"
+                                                                          Duration="0:0:0.25"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </MultiTrigger.EnterActions>
+                                                <MultiTrigger.ExitActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <ColorAnimation Storyboard.TargetName="ItemBackgroundBrush"
+                                                                          Storyboard.TargetProperty="Color"
+                                                                          To="#00000000"
+                                                                          Duration="0:0:0.25"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </MultiTrigger.ExitActions>
+                                            </MultiTrigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Height="48" Margin="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="44"/>
+                                    <ColumnDefinition Width="143"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Grid Grid.Column="0" VerticalAlignment="Center">
+                                    <Ellipse Width="12" Height="12" 
+                                             Margin="16,0,0,0"
+                                             HorizontalAlignment="Left"
+                                             Fill="{Binding Status, Converter={StaticResource ServerStatusToColorConverter}}"/>
+                                </Grid>
+
+                                <Grid Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Name}" 
+                                               FontSize="12" FontFamily="Segoe UI"
+                                               Foreground="#FFFFFF"
+                                               VerticalAlignment="Center"
+                                               HorizontalAlignment="Left"
+                                               TextAlignment="Left"/>
+                                </Grid>
+
+                                <Grid Grid.Column="2" VerticalAlignment="Center">
+                                    <TextBlock FontSize="12" FontFamily="Segoe UI"
+                                               Foreground="#FFFFFF"
+                                               VerticalAlignment="Center"
+                                               HorizontalAlignment="Left"
+                                               TextAlignment="Left">
+                                        <Run>
+                                            <Run.Text>
+                                                <MultiBinding Converter="{StaticResource OnlinePlayersConverter}">
+                                                    <Binding Path="OnlinePlayers"/>
+                                                    <Binding Path="Status"/>
+                                                </MultiBinding>
+                                            </Run.Text>
+                                        </Run>
+                                    </TextBlock>
+                                </Grid>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <Border Grid.Row="3"
+                        Background="#000000" 
+                        BorderBrush="#1A1A1A"
+                        BorderThickness="0,1,0,1"
+                        Height="48">
+                    <TextBlock Text="{DynamicResource Main_ManageAccounts}"
+                               Foreground="#FFFFFF"
+                               FontSize="12"
+                               FontWeight="Bold"
+                               FontFamily="Segoe UI"
+                               VerticalAlignment="Center"
+                               Margin="16,0,0,0"/>
+                </Border>
+
+                <Grid Grid.Row="4" Background="#000000" Height="40">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="44"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="12"/>
+                        <ColumnDefinition Width="40"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" BorderBrush="#1A1A1A" BorderThickness="0,0,0,1" Padding="0" Margin="0">
+                        <TextBlock Text="" Foreground="#515151" FontSize="11" VerticalAlignment="Center"/>
+                    </Border>
+                    <Border Grid.Column="1" BorderBrush="#1A1A1A" BorderThickness="0,0,0,1" Padding="0" Margin="0">
+                        <TextBlock Text="{DynamicResource Main_Character}" Foreground="#515151" FontSize="11" VerticalAlignment="Center"/>
+                    </Border>
+                    <Border Grid.Column="2" BorderBrush="#1A1A1A" BorderThickness="0,0,0,1" Padding="0" Margin="0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="{DynamicResource Main_Username}" Foreground="#515151" FontSize="11" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <Button Grid.Column="1" 
+                                    Width="20" Height="20"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Cursor="Hand"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Padding="0"
+                                    Click="ToggleUsernameVisibility_Click">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="Transparent" Width="20" Height="20">
+                                            <Viewbox Width="16" Height="16">
+                                                <Canvas Width="24" Height="24">
+                                                    
+                                                    <Path x:Name="EyeIcon"
+                                                          Data="M12 5C7 5 2.73 8.11 1 12.5 2.73 16.89 7 20 12 20s9.27-3.11 11-7.5C21.27 8.11 17 5 12 5zm0 12.5c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z">
+                                                        <Path.Fill>
+                                                            <SolidColorBrush Color="#515151"/>
+                                                        </Path.Fill>
+                                                        <Path.Style>
+                                                            <Style TargetType="Path">
+                                                                <Setter Property="Opacity" Value="0"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding DataContext.IsUsernameVisible, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
+                                                                        <Setter Property="Opacity" Value="1"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Path.Style>
+                                                    </Path>
+                                                    
+                                                    <Path x:Name="EyeSlashIcon"
+                                                          Data="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z">
+                                                        <Path.Fill>
+                                                            <SolidColorBrush Color="#515151"/>
+                                                        </Path.Fill>
+                                                        <Path.Style>
+                                                            <Style TargetType="Path">
+                                                                <Setter Property="Opacity" Value="1"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding DataContext.IsUsernameVisible, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
+                                                                        <Setter Property="Opacity" Value="0"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Path.Style>
+                                                    </Path>
+                                                </Canvas>
+                                            </Viewbox>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Trigger.EnterActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <ColorAnimation Storyboard.TargetName="EyeIcon"
+                                                                          Storyboard.TargetProperty="Fill.Color"
+                                                                          To="#CCCCCC"
+                                                                          Duration="0:0:0.25"/>
+                                                            <ColorAnimation Storyboard.TargetName="EyeSlashIcon"
+                                                                          Storyboard.TargetProperty="Fill.Color"
+                                                                          To="#CCCCCC"
+                                                                          Duration="0:0:0.25"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </Trigger.EnterActions>
+                                                <Trigger.ExitActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <ColorAnimation Storyboard.TargetName="EyeIcon"
+                                                                          Storyboard.TargetProperty="Fill.Color"
+                                                                          To="#515151"
+                                                                          Duration="0:0:0.25"/>
+                                                            <ColorAnimation Storyboard.TargetName="EyeSlashIcon"
+                                                                          Storyboard.TargetProperty="Fill.Color"
+                                                                          To="#515151"
+                                                                          Duration="0:0:0.25"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </Trigger.ExitActions>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Grid>
+                    </Border>
+                    <Border Grid.Column="3" BorderBrush="#1A1A1A" BorderThickness="0,0,0,1" Margin="0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="{DynamicResource Main_Password}" Foreground="#515151" FontSize="11" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <Button Grid.Column="1" 
+                                    Width="20" Height="20"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Cursor="Hand"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Padding="0"
+                                    Click="TogglePasswordVisibility_Click">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="Transparent" Width="20" Height="20">
+                                            <Viewbox Width="16" Height="16">
+                                                <Canvas Width="24" Height="24">
+                                                    
+                                                    <Path x:Name="EyeIcon"
+                                                          Data="M12 5C7 5 2.73 8.11 1 12.5 2.73 16.89 7 20 12 20s9.27-3.11 11-7.5C21.27 8.11 17 5 12 5zm0 12.5c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z">
+                                                        <Path.Fill>
+                                                            <SolidColorBrush Color="#515151"/>
+                                                        </Path.Fill>
+                                                        <Path.Style>
+                                                            <Style TargetType="Path">
+                                                                <Setter Property="Opacity" Value="0"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding DataContext.IsPasswordVisible, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
+                                                                        <Setter Property="Opacity" Value="1"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Path.Style>
+                                                    </Path>
+                                                    
+                                                    <Path x:Name="EyeSlashIcon"
+                                                          Data="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z">
+                                                        <Path.Fill>
+                                                            <SolidColorBrush Color="#515151"/>
+                                                        </Path.Fill>
+                                                        <Path.Style>
+                                                            <Style TargetType="Path">
+                                                                <Setter Property="Opacity" Value="1"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding DataContext.IsPasswordVisible, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
+                                                                        <Setter Property="Opacity" Value="0"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Path.Style>
+                                                    </Path>
+                                                </Canvas>
+                                            </Viewbox>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Trigger.EnterActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <ColorAnimation Storyboard.TargetName="EyeIcon"
+                                                                          Storyboard.TargetProperty="Fill.Color"
+                                                                          To="#CCCCCC"
+                                                                          Duration="0:0:0.25"/>
+                                                            <ColorAnimation Storyboard.TargetName="EyeSlashIcon"
+                                                                          Storyboard.TargetProperty="Fill.Color"
+                                                                          To="#CCCCCC"
+                                                                          Duration="0:0:0.25"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </Trigger.EnterActions>
+                                                <Trigger.ExitActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <ColorAnimation Storyboard.TargetName="EyeIcon"
+                                                                          Storyboard.TargetProperty="Fill.Color"
+                                                                          To="#515151"
+                                                                          Duration="0:0:0.25"/>
+                                                            <ColorAnimation Storyboard.TargetName="EyeSlashIcon"
+                                                                          Storyboard.TargetProperty="Fill.Color"
+                                                                          To="#515151"
+                                                                          Duration="0:0:0.25"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </Trigger.ExitActions>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Grid>
+                    </Border>
+                    <Border Grid.Column="4" BorderBrush="#1A1A1A" BorderThickness="0,0,0,1" Padding="0" Margin="0">
+                        <TextBlock Text="{DynamicResource Main_LV}" Foreground="#515151" FontSize="11" VerticalAlignment="Center"/>
+                    </Border>
+                    <Border Grid.Column="5" BorderBrush="#1A1A1A" BorderThickness="0,0,0,1" Padding="0" Margin="0">
+                        <TextBlock Text="{DynamicResource Main_EXP}" Foreground="#515151" FontSize="11" VerticalAlignment="Center"/>
+                    </Border>
+                    <Border Grid.Column="6" BorderBrush="#1A1A1A" BorderThickness="0,0,0,1" Padding="0" Margin="0">
+                        <TextBlock Text="" Foreground="#515151" FontSize="11" VerticalAlignment="Center"/>
+                    </Border>
+                    <Border Grid.Column="7" BorderBrush="#1A1A1A" BorderThickness="0,0,0,1" Padding="0" Margin="0">
+                        <TextBlock Text="" Foreground="#515151" FontSize="11" VerticalAlignment="Center"/>
+                    </Border>
+                </Grid>
+
+                <ScrollViewer x:Name="scrollViewerAccounts"
+                              Grid.Row="5"
+                              VerticalScrollBarVisibility="Hidden"
+                              HorizontalScrollBarVisibility="Disabled"
+                              Background="Transparent"
+                              PanningMode="VerticalOnly"
+                              CanContentScroll="True"
+                              IsDeferredScrollingEnabled="False">
+
+                    <ListBox x:Name="AccountsGrid"
+                             ItemsSource="{Binding Accounts}"
+                             Background="#000000"
+                             BorderThickness="0"
+                             Padding="0"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                             ScrollViewer.CanContentScroll="False"
+                             VirtualizingStackPanel.ScrollUnit="Pixel"
+                             SelectionChanged="AccountsGrid_SelectionChanged"
+                             AllowDrop="True"
+                             PreviewMouseMove="AccountsGrid_PreviewMouseMove"
+                             DragOver="AccountsGrid_DragOver"
+                             Drop="AccountsGrid_Drop">
+                    
+                        <ListBox.Style>
+                            <Style TargetType="ListBox">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListBox">
+                                            <ItemsPresenter />
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <EventSetter Event="PreviewMouseLeftButtonDown" Handler="EmptyListBox_Click"/>
+                                <Style.Triggers>
+                                    <Trigger Property="HasItems" Value="False">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ListBox">
+                                                    <Border Background="{TemplateBinding Background}"
+                                                            BorderThickness="0"
+                                                            VerticalAlignment="Top">
+                                                        <Grid HorizontalAlignment="Stretch" 
+                                                            Margin="16,16,16,0"
+                                                            Height="196"
+                                                            Background="Transparent">
+                                                            <Rectangle Stroke="#313131"
+                                                                    StrokeThickness="1"
+                                                                    StrokeDashArray="4 4"
+                                                                    RadiusX="8"
+                                                                    RadiusY="8"
+                                                                    Fill="#090909"/>
+                                                            <StackPanel VerticalAlignment="Center"
+                                                                        HorizontalAlignment="Center">
+                                                                <TextBlock Text="{DynamicResource Main_ClickLeftToAdd}"
+                                                                        FontSize="12"
+                                                                        FontFamily="Segoe UI"
+                                                                        Foreground="#515151"
+                                                                        TextAlignment="Center"
+                                                                        HorizontalAlignment="Center"/>
+                                                                <TextBlock Text="{DynamicResource Main_ClickRightForOptions}"
+                                                                        FontSize="12"
+                                                                        FontFamily="Segoe UI"
+                                                                        Foreground="#515151"
+                                                                        TextAlignment="Center"
+                                                                        HorizontalAlignment="Center"
+                                                                        Margin="0,4,0,0"/>
+                                                            </StackPanel>
+                                                        </Grid>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListBox.Style>
+
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <SolidColorBrush Color="#00000000"/>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="Margin" Value="0"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListBoxItem">
+                                            <Border x:Name="ItemBorder"
+                                                    BorderBrush="#1A1A1A"
+                                                    BorderThickness="0,0,0,0"
+                                                    HorizontalAlignment="Stretch"
+                                                    VerticalAlignment="Stretch">
+                                                <Border.Background>
+                                                    <SolidColorBrush x:Name="BorderBrush" Color="#00000000"/>
+                                                </Border.Background>
+                                                <Border.ContextMenu>
+                                                    <ContextMenu>
+                                                        <MenuItem Header="{DynamicResource Menu_RemoveAccount}" Click="RemoveAccount_Click" Tag="{Binding}"/>
+                                                        <MenuItem Header="{DynamicResource Menu_RefreshAccount}" Click="RefreshAccount_Click" Tag="{Binding}"/>
+                                                    </ContextMenu>
+                                                </Border.ContextMenu>
+                                                <ContentPresenter HorizontalAlignment="Stretch" 
+                                                                VerticalAlignment="Stretch"
+                                                                Margin="0"/>
+                                                <Border.Triggers>
+                                                    <EventTrigger RoutedEvent="Border.MouseEnter">
+                                                        <BeginStoryboard>
+                                                            <Storyboard>
+                                                                <ColorAnimation Storyboard.TargetName="BorderBrush"
+                                                                            Storyboard.TargetProperty="Color"
+                                                                            To="#111111"
+                                                                            Duration="0:0:0.25"/>
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </EventTrigger>
+                                                    <EventTrigger RoutedEvent="Border.MouseLeave">
+                                                        <BeginStoryboard>
+                                                            <Storyboard>
+                                                                <ColorAnimation Storyboard.TargetName="BorderBrush"
+                                                                            Storyboard.TargetProperty="Color"
+                                                                            To="#00000000"
+                                                                            Duration="0:0:0.25"/>
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </EventTrigger>
+                                                </Border.Triggers>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Trigger.EnterActions>
+                                                        <BeginStoryboard>
+                                                            <Storyboard>
+                                                                <ColorAnimation Storyboard.TargetName="BorderBrush"
+                                                                            Storyboard.TargetProperty="Color"
+                                                                            To="#1A1A1A"
+                                                                            Duration="0:0:0.25"/>
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </Trigger.EnterActions>
+                                                    <Trigger.ExitActions>
+                                                        <BeginStoryboard>
+                                                            <Storyboard>
+                                                                <ColorAnimation Storyboard.TargetName="BorderBrush"
+                                                                            Storyboard.TargetProperty="Color"
+                                                                            To="#00000000"
+                                                                            Duration="0:0:0.25"/>
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </Trigger.ExitActions>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Height="48" Margin="0,0,9.2,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="44"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="40"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Grid Grid.Column="0" VerticalAlignment="Center">
+                                        <Ellipse Width="12" Height="12" 
+                                                Margin="16,0,0,0"
+                                                HorizontalAlignment="Left"
+                                                Fill="{Binding Status, Converter={StaticResource StatusToColorConverter}}"/>
+                                    </Grid>
+
+                                    <Grid Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Character}" 
+                                                FontSize="12" FontFamily="Segoe UI"
+                                                Foreground="#FFFFFF"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Left"
+                                                TextAlignment="Left"
+                                                Margin="0"
+                                                Padding="0"
+                                                Visibility="{Binding IsEditing, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                                        <TextBox Text="{Binding Character, UpdateSourceTrigger=PropertyChanged}" 
+                                                Style="{StaticResource EditableFieldStyle}"
+                                                FontSize="12" FontFamily="Segoe UI"
+                                                VerticalAlignment="Center"
+                                                Foreground="#FFFFFF"
+                                                CaretBrush="White"
+                                                Visibility="{Binding IsEditing, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                KeyDown="EditableTextBox_KeyDown"
+                                                Tag="Character"/>
+                                    </Grid>
+                                    
+                                    <Grid Grid.Column="2" VerticalAlignment="Center">
+                                        
+                                        <TextBlock Text="•••••••" 
+                                                FontSize="12" FontFamily="Segoe UI"
+                                                Foreground="#FFFFFF"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Left"
+                                                TextAlignment="Left"
+                                                Margin="0"
+                                                Padding="0">
+                                            <TextBlock.Visibility>
+                                                <MultiBinding Converter="{StaticResource InverseBoolConverter}" ConverterParameter="MultiVisibility">
+                                                    <Binding Path="DataContext.IsUsernameVisible" RelativeSource="{RelativeSource AncestorType=Window}"/>
+                                                    <Binding Path="IsEditing"/>
+                                                </MultiBinding>
+                                            </TextBlock.Visibility>
+                                        </TextBlock>
+                                        
+                                        <TextBlock Text="{Binding Username}" 
+                                                FontSize="12" FontFamily="Segoe UI"
+                                                Foreground="#FFFFFF"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Left"
+                                                TextAlignment="Left"
+                                                Margin="0"
+                                                Padding="0">
+                                            <TextBlock.Visibility>
+                                                <MultiBinding Converter="{StaticResource InverseBoolConverter}" ConverterParameter="MultiVisibilityAnd">
+                                                    <Binding Path="IsEditing"/>
+                                                    <Binding Path="DataContext.IsUsernameVisible" RelativeSource="{RelativeSource AncestorType=Window}" Converter="{StaticResource InverseBoolConverter}"/>
+                                                </MultiBinding>
+                                            </TextBlock.Visibility>
+                                        </TextBlock>
+                                        
+                                        <TextBox Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" 
+                                                Style="{StaticResource EditableFieldStyle}"
+                                                FontSize="12" FontFamily="Segoe UI"
+                                                VerticalAlignment="Center"
+                                                Foreground="#FFFFFF"
+                                                CaretBrush="White"
+                                                Visibility="{Binding IsEditing, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                KeyDown="EditableTextBox_KeyDown"
+                                                Tag="Username"/>
+                                    </Grid>
+                                    
+                                    <Grid Grid.Column="3" VerticalAlignment="Center" x:Name="PasswordGrid">
+                                        
+                                        <TextBlock x:Name="HiddenPassword"
+                                                Text="•••••••" 
+                                                FontSize="12" FontFamily="Segoe UI"
+                                                Foreground="#FFFFFF"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Left"
+                                                TextAlignment="Left"
+                                                Margin="0"
+                                                Padding="0">
+                                            <TextBlock.Visibility>
+                                                <MultiBinding Converter="{StaticResource InverseBoolConverter}" ConverterParameter="MultiVisibility">
+                                                    <Binding Path="DataContext.IsPasswordVisible" RelativeSource="{RelativeSource AncestorType=Window}"/>
+                                                    <Binding Path="IsEditing"/>
+                                                </MultiBinding>
+                                            </TextBlock.Visibility>
+                                        </TextBlock>
+                                        
+                                        <Grid x:Name="HoverPasswordGrid">
+                                            <Grid.Style>
+                                                <Style TargetType="Grid">
+                                                    <Setter Property="IsHitTestVisible" Value="True"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding DataContext.IsPasswordVisible, RelativeSource={RelativeSource AncestorType=Window}}" Value="False">
+                                                            <Setter Property="IsHitTestVisible" Value="False"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Grid.Style>
+                                            
+                                            <TextBlock x:Name="MaskedPassword"
+                                                    Text="{Binding Password, Converter={StaticResource PasswordMaskConverter}}" 
+                                                    FontSize="12" FontFamily="Segoe UI"
+                                                    Foreground="#FFFFFF"
+                                                    VerticalAlignment="Center"
+                                                    HorizontalAlignment="Left"
+                                                    TextAlignment="Left"
+                                                    Margin="0"
+                                                    Padding="0">
+                                                <TextBlock.Visibility>
+                                                    <MultiBinding Converter="{StaticResource InverseBoolConverter}" ConverterParameter="MultiVisibilityAnd">
+                                                        <Binding Path="IsEditing"/>
+                                                        <Binding Path="DataContext.IsPasswordVisible" RelativeSource="{RelativeSource AncestorType=Window}" Converter="{StaticResource InverseBoolConverter}"/>
+                                                    </MultiBinding>
+                                                </TextBlock.Visibility>
+                                            </TextBlock>
+
+                                            <TextBlock x:Name="RealPassword"
+                                                    Text="{Binding Password}" 
+                                                    FontSize="12" FontFamily="Segoe UI"
+                                                    Foreground="#FFFFFF"
+                                                    VerticalAlignment="Center"
+                                                    HorizontalAlignment="Left"
+                                                    TextAlignment="Left"
+                                                    Margin="0"
+                                                    Padding="0"
+                                                    Visibility="Collapsed"/>
+
+                                            <Grid.Triggers>
+                                                <EventTrigger RoutedEvent="Grid.MouseEnter">
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="MaskedPassword"
+                                                                                        Storyboard.TargetProperty="Visibility">
+                                                                <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Collapsed}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RealPassword"
+                                                                                        Storyboard.TargetProperty="Visibility">
+                                                                <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Visible}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </EventTrigger>
+                                                <EventTrigger RoutedEvent="Grid.MouseLeave">
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="MaskedPassword"
+                                                                                        Storyboard.TargetProperty="Visibility">
+                                                                <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Visible}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RealPassword"
+                                                                                        Storyboard.TargetProperty="Visibility">
+                                                                <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Collapsed}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </EventTrigger>
+                                            </Grid.Triggers>
+                                        </Grid>
+
+                                        <TextBox Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}" 
+                                                Style="{StaticResource EditableFieldStyle}"
+                                                FontSize="12" FontFamily="Segoe UI"
+                                                VerticalAlignment="Center"
+                                                Foreground="#FFFFFF"
+                                                CaretBrush="White"
+                                                Visibility="{Binding IsEditing, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                KeyDown="EditableTextBox_KeyDown"
+                                                Tag="Password"/>
+                                    </Grid>
+                                    
+                                    <Grid Grid.Column="4" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Level}" 
+                                                FontSize="12" FontFamily="Segoe UI"
+                                                Foreground="#FFFFFF"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Left"
+                                                TextAlignment="Left"
+                                                Visibility="{Binding IsEditing, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                                    </Grid>
+                                    
+                                    <Grid Grid.Column="5" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Experience}" 
+                                                FontSize="12" FontFamily="Segoe UI"
+                                                Foreground="#FFFFFF"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Left"
+                                                TextAlignment="Left"
+                                                Visibility="{Binding IsEditing, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                                    </Grid>
+                                    
+                                    <Grid Grid.Column="6" VerticalAlignment="Center">
+                                        <ToggleButton x:Name="BotToggleButton"
+                                                    Width="28"
+                                                    Height="28"
+                                                    Margin="0,0,12,0"
+                                                    Background="Transparent"
+                                                    BorderThickness="0"
+                                                    Cursor="Hand"
+                                                    VerticalAlignment="Center"
+                                                    Padding="4"
+                                                    IsChecked="{Binding IsBotActive, Mode=TwoWay}"
+                                                    PreviewMouseLeftButtonDown="BotToggleButton_PreviewMouseLeftButtonDown"
+                                                    Style="{x:Null}">
+                                            <ToggleButton.Visibility>
+                                                <MultiBinding Converter="{StaticResource BotVisibilityConverter}">
+                                                    <Binding Path="DataContext.IsServerSelected" RelativeSource="{RelativeSource AncestorType=Window}"/>
+                                                    <Binding Path="Status"/>
+                                                </MultiBinding>
+                                            </ToggleButton.Visibility>
+                                            <ToggleButton.Template>
+                                                <ControlTemplate TargetType="ToggleButton">
+                                                    <Border x:Name="RootBorder"
+                                                            Width="28" 
+                                                            Height="28"
+                                                            Background="Transparent"
+                                                            BorderThickness="0"
+                                                            Padding="4">
+                                                        
+                                                        <Viewbox Width="20" Height="20"
+                                                                HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center">
+                                                            <Canvas Width="24" Height="24">
+                                                                <Path x:Name="OutlineBolt"
+                                                                    Data="M13 2L3 14h8l-1 8 10-12h-8l1-8z"
+                                                                    Stroke="#515151"
+                                                                    StrokeThickness="1.5"
+                                                                    Fill="Transparent"
+                                                                    StrokeLineJoin="Round"/>
+                                                                <Path x:Name="FilledBolt"
+                                                                    Data="M13 2L3 14h8l-1 8 10-12h-8l1-8z"
+                                                                    Fill="#AE81FF"
+                                                                    Opacity="0"/>
+                                                            </Canvas>
+                                                        </Viewbox>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsChecked" Value="True">
+                                                            <Trigger.EnterActions>
+                                                                <BeginStoryboard>
+                                                                    <Storyboard>
+                                                                        <DoubleAnimation Storyboard.TargetName="OutlineBolt"
+                                                                                    Storyboard.TargetProperty="Opacity"
+                                                                                    To="0"
+                                                                                    Duration="0:0:0.25"/>
+                                                                        <DoubleAnimation Storyboard.TargetName="FilledBolt"
+                                                                                    Storyboard.TargetProperty="Opacity"
+                                                                                    To="1"
+                                                                                    Duration="0:0:0.25"/>
+                                                                    </Storyboard>
+                                                                </BeginStoryboard>
+                                                            </Trigger.EnterActions>
+                                                            <Trigger.ExitActions>
+                                                                <BeginStoryboard>
+                                                                    <Storyboard>
+                                                                        <DoubleAnimation Storyboard.TargetName="OutlineBolt"
+                                                                                    Storyboard.TargetProperty="Opacity"
+                                                                                    To="1"
+                                                                                    Duration="0:0:0.25"/>
+                                                                        <DoubleAnimation Storyboard.TargetName="FilledBolt"
+                                                                                    Storyboard.TargetProperty="Opacity"
+                                                                                    To="0"
+                                                                                    Duration="0:0:0.25"/>
+                                                                    </Storyboard>
+                                                                </BeginStoryboard>
+                                                            </Trigger.ExitActions>
+                                                        </Trigger>
+                                                        <MultiTrigger>
+                                                            <MultiTrigger.Conditions>
+                                                                <Condition Property="IsMouseOver" Value="True"/>
+                                                                <Condition Property="IsChecked" Value="False"/>
+                                                            </MultiTrigger.Conditions>
+                                                            <MultiTrigger.EnterActions>
+                                                                <BeginStoryboard>
+                                                                    <Storyboard>
+                                                                        <ColorAnimation Storyboard.TargetName="OutlineBolt"
+                                                                                    Storyboard.TargetProperty="Stroke.Color"
+                                                                                    To="#CCCCCC"
+                                                                                    Duration="0:0:0.15"/>
+                                                                    </Storyboard>
+                                                                </BeginStoryboard>
+                                                            </MultiTrigger.EnterActions>
+                                                            <MultiTrigger.ExitActions>
+                                                                <BeginStoryboard>
+                                                                    <Storyboard>
+                                                                        <ColorAnimation Storyboard.TargetName="OutlineBolt"
+                                                                                    Storyboard.TargetProperty="Stroke.Color"
+                                                                                    To="#515151"
+                                                                                    Duration="0:0:0.15"/>
+                                                                    </Storyboard>
+                                                                </BeginStoryboard>
+                                                            </MultiTrigger.ExitActions>
+                                                        </MultiTrigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </ToggleButton.Template>
+                                        </ToggleButton>
+                                    </Grid>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+
+                    </ListBox>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+
+
+        <Border x:Name="ConsoleControlsBar"
+                Grid.Row="2"
+                Background="#000000"
+                BorderBrush="#1A1A1A"
+                BorderThickness="0,1,0,0"
+                Height="40"
+                Visibility="Visible">
+            <Grid Margin="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0"
+                        x:Name="PlayPauseButton"
+                        Style="{StaticResource PlayPauseButton}"
+                        FocusVisualStyle="{x:Null}"
+                        Click="PlayPauseButton_Click"
+                        Padding="0"
+                        Margin="0"
+                        ToolTip="{DynamicResource ToolTip_StartPause}">
+                    <Viewbox Width="14" Height="14" x:Name="PlayPauseIcon">
+                        
+                        <Canvas Width="24" Height="24">
+                            <Path x:Name="PlayIcon" 
+                                  Data="M8,5.14V19.14L19,12.14L8,5.14Z" 
+                                  Fill="#AE81FF"
+                                  Opacity="1"/>
+                            <Path x:Name="PauseIcon" 
+                                  Data="M14,19H18V5H14M6,19H10V5H6V19Z" 
+                                  Fill="#AE81FF"
+                                  Opacity="0"/>
+                        </Canvas>
+                    </Viewbox>
+                </Button>
+
+                <Rectangle Grid.Column="1"
+                           Width="1"
+                           VerticalAlignment="Stretch"
+                           Stroke="#1A1A1A"
+                           Margin="0"/>
+
+                <Button Grid.Column="2"
+                        x:Name="RefreshButton"
+                        Style="{StaticResource PlayPauseButton}"
+                        FocusVisualStyle="{x:Null}"
+                        Click="RefreshButton_Click"
+                        Padding="0"
+                        Margin="0"
+                        ToolTip="{DynamicResource ToolTip_RefreshOnce}">
+                    <Viewbox Width="14" Height="14">
+                        <Canvas Width="24" Height="24">
+                            <Path Data="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z" 
+                                  Fill="#AE81FF"/>
+                        </Canvas>
+                    </Viewbox>
+                </Button>
+
+                <Rectangle Grid.Column="3"
+                           Width="1"
+                           VerticalAlignment="Stretch"
+                           Stroke="#1A1A1A"
+                           Margin="0"/>
+
+                <Button Grid.Column="4"
+                        x:Name="TerminalButton"
+                        Style="{StaticResource PlayPauseButton}"
+                        FocusVisualStyle="{x:Null}"
+                        Click="TerminalButton_Click"
+                        Padding="0"
+                        Margin="0"
+                        ToolTip="{DynamicResource ToolTip_OpenTerminal}">
+                    <Viewbox Width="16" Height="16">
+                        
+                        <Canvas Width="24" Height="24">
+                            <Path Data="M20 19H4V5H20M20 3H4C2.89 3 2 3.89 2 5V19C2 20.1 2.9 21 4 21H20C21.1 21 22 20.1 22 19V5C22 3.89 21.1 3 20 3M13 17H11V15H13M17 13H7V11H17V13Z" 
+                                  Fill="#AE81FF"/>
+                        </Canvas>
+                    </Viewbox>
+                </Button>
+
+                <Rectangle Grid.Column="5"
+                           Width="1"
+                           VerticalAlignment="Stretch"
+                           Stroke="#1A1A1A"
+                           Margin="0"/>
+
+                <TextBlock Grid.Column="6"
+                           x:Name="txtLastLog"
+                           VerticalAlignment="Center"
+                           Foreground="#FFFFFF"
+                           Opacity="1.0"
+                           Margin="16,0,16,0"
+                           TextTrimming="CharacterEllipsis"
+                           FontFamily="Consolas"
+                           FontSize="12"/>
+            </Grid>
+        </Border>
+
+        <!-- Update Overlay -->
+        <Grid x:Name="UpdateOverlay"
+              Grid.RowSpan="3"
+              Background="#FF000000"
+              Visibility="Collapsed"
+              IsHitTestVisible="True"
+              ZIndex="1000">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <StackPanel Grid.Row="1"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center">
+                <Image x:Name="UpdateOverlayIcon"
+                       Width="64"
+                       Height="64"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,16"/>
+                
+                <TextBlock Text="{DynamicResource Main_UpdatingButterfly}"
+                          Foreground="#FFFFFF"
+                          FontFamily="Segoe UI"
+                          FontSize="18"
+                          FontWeight="SemiBold"
+                          HorizontalAlignment="Center"
+                          Margin="0,0,0,16"/>
+                
+                <ProgressBar x:Name="UpdateProgressBar"
+                            IsIndeterminate="True"
+                            Width="300"
+                            Height="1"
+                            Margin="0,0,0,16"
+                            Background="#1A1A1A"
+                            Foreground="#AE81FF"
+                            BorderThickness="0"/>
+                
+                <TextBlock x:Name="UpdateStatusText"
+                          Text="{DynamicResource Main_PleaseWait}"
+                          Foreground="#CCCCCC"
+                          FontFamily="Segoe UI"
+                          FontSize="14"
+                          HorizontalAlignment="Center"
+                          TextWrapping="Wrap"
+                          TextAlignment="Center"
+                          MaxWidth="400"
+                          Margin="0,0,0,0"/>
+            </StackPanel>
+        </Grid>
+        
+        <!-- Floating Action Button (Fixed Position) -->
+        <Button x:Name="DisplayFAB"
+                Grid.Row="0"
+                Grid.RowSpan="10"
+                Style="{StaticResource FloatingActionButton}"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Width="40"
+                Height="40"
+                Margin="0,0,16,56"
+                Click="DisplayFAB_Click"
+                MouseEnter="DisplayFAB_MouseEnter"
+                MouseLeave="DisplayFAB_MouseLeave"
+                Panel.ZIndex="999"
+                ToolTipService.InitialShowDelay="0"
+                ToolTipService.ShowDuration="5000"
+                ToolTipService.Placement="Left"
+                ToolTipService.HorizontalOffset="-5"
+                ToolTipService.VerticalOffset="6">
+        </Button>
+    </Grid>
+</Window>

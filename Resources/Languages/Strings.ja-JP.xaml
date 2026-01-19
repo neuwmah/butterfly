@@ -1,0 +1,202 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- MainWindow XAML Strings -->
+    <sys:String x:Key="Main_SelectServer">サーバーを選択</sys:String>
+    <sys:String x:Key="Main_Server">サーバー</sys:String>
+    <sys:String x:Key="Main_Players">プレイヤー</sys:String>
+    <sys:String x:Key="Main_ManageAccounts">アカウント管理</sys:String>
+    <sys:String x:Key="Main_Character">キャラクター</sys:String>
+    <sys:String x:Key="Main_Username">ユーザー名</sys:String>
+    <sys:String x:Key="Main_Password">パスワード</sys:String>
+    <sys:String x:Key="Main_LV">レベル</sys:String>
+    <sys:String x:Key="Main_EXP">経験値</sys:String>
+    <sys:String x:Key="Main_ClickLeftToAdd">追加するには「左ボタン」をクリック</sys:String>
+    <sys:String x:Key="Main_ClickRightForOptions">オプションは「右ボタン」をクリック</sys:String>
+    <sys:String x:Key="Main_UpdatingButterfly">Butterflyを更新中</sys:String>
+    <sys:String x:Key="Main_PleaseWait">お待ちください...</sys:String>
+    
+    <!-- Context Menu Items -->
+    <sys:String x:Key="Menu_AddAccount">アカウント追加</sys:String>
+    <sys:String x:Key="Menu_SaveAccounts">アカウント保存</sys:String>
+    <sys:String x:Key="Menu_LoadAccounts">アカウント読み込み</sys:String>
+    <sys:String x:Key="Menu_RefreshAll">すべて更新</sys:String>
+    <sys:String x:Key="Menu_ClearAll">すべてクリア</sys:String>
+    <sys:String x:Key="Menu_RemoveAccount">アカウント削除</sys:String>
+    <sys:String x:Key="Menu_RefreshAccount">アカウント更新</sys:String>
+    
+    <!-- ToolTips -->
+    <sys:String x:Key="ToolTip_StartPause">開始/一時停止</sys:String>
+    <sys:String x:Key="ToolTip_RefreshOnce">一度更新</sys:String>
+    <sys:String x:Key="ToolTip_OpenTerminal">ターミナルを開く</sys:String>
+    <sys:String x:Key="ToolTip_HideGameWindows">ゲームウィンドウを非表示</sys:String>
+    <sys:String x:Key="ToolTip_ShowGameWindows">ゲームウィンドウを表示</sys:String>
+    
+    <!-- AddAccountDialog -->
+    <sys:String x:Key="Dialog_AddAccount_Title">新しいアカウントを追加</sys:String>
+    <sys:String x:Key="Dialog_AddAccount_Subtitle">MixMasterアカウント情報を入力してください</sys:String>
+    <sys:String x:Key="Dialog_AddAccount_Username">ユーザー名</sys:String>
+    <sys:String x:Key="Dialog_AddAccount_Password">パスワード</sys:String>
+    <sys:String x:Key="Dialog_AddAccount_CharacterName">キャラクター名</sys:String>
+    <sys:String x:Key="Dialog_AddAccount_Cancel">キャンセル</sys:String>
+    <sys:String x:Key="Dialog_AddAccount_Add">アカウント追加</sys:String>
+    <sys:String x:Key="Dialog_AddAccount_Warning">すべてのフィールドを入力してください！</sys:String>
+    <sys:String x:Key="Dialog_AddAccount_WarningTitle">警告</sys:String>
+    
+    <!-- LicenseKeyWindow -->
+    <sys:String x:Key="License_PleaseEnterKey">ライセンスキーを入力してください。</sys:String>
+    <sys:String x:Key="License_NeedKey">キーが必要ですか？連絡先: </sys:String>
+    <sys:String x:Key="License_DiscordHandle">@2014</sys:String>
+    <sys:String x:Key="License_ValidatingKey">ライセンスキーを検証中...</sys:String>
+    <sys:String x:Key="License_ActivationSuccessful">アクティベーション成功！アプリケーションを開いています...</sys:String>
+    <sys:String x:Key="License_ErrorSaving">ライセンスがアクティベートされましたが、保存エラー: {0}</sys:String>
+    <sys:String x:Key="License_RequiresReactivation">ライセンスは再アクティベーションが必要です。再度アクティベートしてください。</sys:String>
+    <sys:String x:Key="License_KeyNotFound">ライセンスキーが見つかりません。</sys:String>
+    
+    <!-- UpdateService -->
+    <sys:String x:Key="Update_CheckingForUpdates">アップデートを確認中...</sys:String>
+    <sys:String x:Key="Update_NewVersionAvailable">新しいバージョンが利用可能です！ローカル: v{0} | サーバー: v{1}</sys:String>
+    <sys:String x:Key="Update_VersionFormatError">バージョン形式エラー: {0}。フォールバックとして文字列比較を使用します。</sys:String>
+    <sys:String x:Key="Update_CheckFailed">アップデート確認に失敗しました: {0}</sys:String>
+    <sys:String x:Key="Update_Downloading">アップデートをダウンロード中、お待ちください...</sys:String>
+    <sys:String x:Key="Update_DirectoryNotExist">ディレクトリが存在しません: {0}</sys:String>
+    <sys:String x:Key="Update_FailedWriteFile">アップデートファイルの書き込みに失敗しました: ファイルが作成されませんでした</sys:String>
+    <sys:String x:Key="Update_DownloadFailedEmpty">ダウンロードに失敗しました: ダウンロードしたファイルが空です</sys:String>
+    <sys:String x:Key="Update_FileSizeMismatch">ファイルサイズが一致しません: 期待値 {0} バイト、実際 {1} バイト</sys:String>
+    <sys:String x:Key="Update_PermissionDenied">権限が拒否されました: ディレクトリに書き込めません。({0})</sys:String>
+    <sys:String x:Key="Update_TipProgramFiles">ヒント: ボットが「Program Files」にある場合、書き込み権限の問題を避けるために「C:\Butterfly」などのフォルダに移動することを検討してください。</sys:String>
+    <sys:String x:Key="Update_EnsureWritePermissions">アプリケーションがディレクトリへの書き込み権限を持っていることを確認するか、管理者として実行してください。</sys:String>
+    <sys:String x:Key="Update_DirectoryNotFound">ディレクトリが見つかりません: {0} ({1})</sys:String>
+    <sys:String x:Key="Update_FileIOError">ファイルI/Oエラー: アップデートファイルを書き込めません。ファイルが使用中かもしれません。({0})</sys:String>
+    <sys:String x:Key="Update_NetworkError">ダウンロード中のネットワークエラー: {0}</sys:String>
+    <sys:String x:Key="Update_DownloadTimeout">ダウンロードタイムアウト: 接続に時間がかかりすぎました。({0})</sys:String>
+    <sys:String x:Key="Update_ErrorFinalExeName">[エラー] finalExeNameはファイル名のみである必要がありますが、パスが含まれています: {0}</sys:String>
+    <sys:String x:Key="Update_ErrorGeneric">エラー: {0}</sys:String>
+    <sys:String x:Key="Update_InstallationFailed">アップデートのインストールに失敗しました: {0}</sys:String>
+    
+    <!-- ConsoleWindow -->
+    <sys:String x:Key="Console_Title">コンソール</sys:String>
+    <sys:String x:Key="Console_Welcome">Butterflyへようこそ！ 🦋&#x0a;2014が作成したすべてのコード 🐰&#x0a;Discordで連絡可能: coelhoszzz 💤&#x0a;お楽しみください！ ⚡&#x0a;イベント待機中...&#x0a;</sys:String>
+    
+    <!-- Messages - Console Logs (Keeping technical terms in English where appropriate) -->
+    <sys:String x:Key="Log_CannotStartMonitoring">監視を開始できません: 更新が進行中です。</sys:String>
+    <sys:String x:Key="Log_StartingMonitoring">監視を開始しています...</sys:String>
+    <sys:String x:Key="Log_MonitoringPaused">監視が一時停止されました。</sys:String>
+    <sys:String x:Key="Log_CannotRefresh">更新できません: 更新が進行中です。</sys:String>
+    <sys:String x:Key="Log_CannotRefreshNoServer">更新できません。まずサーバーを選択してください。</sys:String>
+    <sys:String x:Key="Log_RefreshSkipped">更新をスキップしました: アカウントが接続中です。</sys:String>
+    <sys:String x:Key="Log_RefreshingOnce">一度更新中...</sys:String>
+    <sys:String x:Key="Log_RefreshComplete">更新が完了しました。ステータスが更新されました。</sys:String>
+    <sys:String x:Key="Log_ConsoleCleared">コンソールがクリアされました。Butterflyをご利用いただきありがとうございます！ 🦋</sys:String>
+    <sys:String x:Key="Log_UnknownCommand">不明なコマンド: '{0}'。使用可能なコマンドを表示するには 'help' を入力してください。</sys:String>
+    <sys:String x:Key="Log_AvailableCommands">使用可能なコマンド:</sys:String>
+    <sys:String x:Key="Log_CmdCls">cls, clear      - コンソールをクリア</sys:String>
+    <sys:String x:Key="Log_CmdStats">stats           - アカウントの現在のステータスを表示</sys:String>
+    <sys:String x:Key="Log_CmdReconnect">reconnect &lt;n&gt;   - 単一アカウントを再接続</sys:String>
+    <sys:String x:Key="Log_CmdLogs">logs            - ログフォルダーを開く</sys:String>
+    <sys:String x:Key="Log_CmdDisplay">display         - すべてのゲームウィンドウの表示/非表示を切り替え</sys:String>
+    <sys:String x:Key="Log_CmdHelp">help            - このメニューを表示</sys:String>
+    <sys:String x:Key="Log_CmdExit">exit            - アプリケーションを閉じる</sys:String>
+    <sys:String x:Key="Log_ErrorStats">エラー: アカウント統計を取得できませんでした。</sys:String>
+    <sys:String x:Key="Log_CharactersStatus">=== キャラクターステータス ===</sys:String>
+    <sys:String x:Key="Log_CharacterOnline">{0}: Online</sys:String>
+    <sys:String x:Key="Log_CharacterOffline">{0}: Offline</sys:String>
+    <sys:String x:Key="Log_CharacterStatus">{0}: {1}</sys:String>
+    <sys:String x:Key="Log_CharactersStatusEnd">==========================</sys:String>
+    <sys:String x:Key="Log_NoCharactersFound">キャラクターが見つかりません。</sys:String>
+    <sys:String x:Key="Log_ReconnectUsage">使用方法: reconnect &lt;キャラクター名&gt;</sys:String>
+    <sys:String x:Key="Log_ReconnectInitiated">'{0}'の再接続が開始されました。</sys:String>
+    <sys:String x:Key="Log_CharacterNotFound">キャラクター '{0}' が見つかりません。</sys:String>
+    <sys:String x:Key="Log_NoMixMasterWindow">MixMasterウィンドウが見つかりません。</sys:String>
+    <sys:String x:Key="Log_ErrorTogglingWindows">プロセス {0} のウィンドウ切り替えエラー: {1}</sys:String>
+    <sys:String x:Key="Log_WindowsVisible">すべてのゲームウィンドウが表示されます。</sys:String>
+    <sys:String x:Key="Log_WindowsHidden">すべてのゲームウィンドウが非表示になりました。</sys:String>
+    <sys:String x:Key="Log_ErrorToggleWindows">ゲームウィンドウの切り替えエラー: {0}</sys:String>
+    <sys:String x:Key="Log_ErrorLogsFolder">エラー: ログフォルダーのパスが利用できません。</sys:String>
+    <sys:String x:Key="Log_OpenedLogsFolder">ログフォルダーを開きました: {0}</sys:String>
+    <sys:String x:Key="Log_ErrorOpeningLogs">ログフォルダーを開くエラー: {0}</sys:String>
+    <sys:String x:Key="Log_ShuttingDown">[システム] Butterflyをシャットダウンしています... さようなら！</sys:String>
+    <sys:String x:Key="Log_ErrorMonitoringLoop">監視ループのエラー: {0}</sys:String>
+    <sys:String x:Key="Log_CharacterRemoved">キャラクター '{0}' が削除されました。</sys:String>
+    <sys:String x:Key="Log_AccountsSaved">アカウントが '{0}' に保存されました ({1} アカウント)。</sys:String>
+    <sys:String x:Key="Log_AccountsLoaded">'{0}' からアカウントを読み込みました ({1} アカウント)。</sys:String>
+    <sys:String x:Key="Log_AllAccountsCleared">すべてのアカウントがクリアされました ({0} アカウント削除)。</sys:String>
+    <sys:String x:Key="Log_CharacterAdded">キャラクターが追加されました。</sys:String>
+    <sys:String x:Key="Log_BotDisabled">'{0}' のBotが無効になりました。</sys:String>
+    <sys:String x:Key="Log_BotEnabled">'{0}' のBotが有効になりました。</sys:String>
+    <sys:String x:Key="Log_ErrorActivatingBot">'{0}' のBot有効化エラー: {1}</sys:String>
+    <sys:String x:Key="Log_WaitingReconnectionQueue">再接続キューを待機中...</sys:String>
+    <sys:String x:Key="Log_GameDirectoryNotFound">'{0}' でゲームディレクトリが見つかりません</sys:String>
+    <sys:String x:Key="Log_MixMasterNotFound">'{0}' でMixMaster.exeが見つかりません</sys:String>
+    <sys:String x:Key="Log_FailedLaunchGame">ゲームの起動に失敗しました。</sys:String>
+    <sys:String x:Key="Log_LauncherBypassed">[{0}] Launcherをバイパスしました。</sys:String>
+    <sys:String x:Key="Log_ErrorLaunch">エラー: {0}</sys:String>
+    <sys:String x:Key="Log_ListingVisibleWindows">=== すべての表示ウィンドウを一覧表示 ===</sys:String>
+    <sys:String x:Key="Log_WindowInfo">ウィンドウ: "{0}" (HWND: {1})</sys:String>
+    <sys:String x:Key="Log_EndWindowList">=== ウィンドウリストの終わり ===</sys:String>
+    <sys:String x:Key="Log_ListingWindowsPID">=== PID {0} のウィンドウを一覧表示 ===</sys:String>
+    <sys:String x:Key="Log_WindowInfoDetailed">ウィンドウ: "{0}" (HWND: {1}) [表示: {2}]</sys:String>
+    <sys:String x:Key="Log_NoWindowsFound">このPIDのウィンドウが見つかりません</sys:String>
+    <sys:String x:Key="Log_TotalWindows">=== 合計: {0} ウィンドウ ===</sys:String>
+    <sys:String x:Key="Log_LoginButtonFound">[{0}] ✓ Loginボタンが見つかりました: "{1}"</sys:String>
+    <sys:String x:Key="Log_ControlsNotFound">[{0}] 検索でコントロールが見つかりません。座標ベースのアプローチを試しています...</sys:String>
+    <sys:String x:Key="Log_ButtonNotFound">[{0}] ボタンが見つかりません、ENTERキーを使用中...</sys:String>
+    <sys:String x:Key="Log_AutoLoginError">[{0}] 自動ログインエラー: {1}</sys:String>
+    <sys:String x:Key="Log_CoordinateBasedLogin">[{0}] 座標ベースのログインを使用中...</sys:String>
+    <sys:String x:Key="Log_FailedLauncherPosition">[{0}] Launcherウィンドウの位置を取得できませんでした</sys:String>
+    <sys:String x:Key="Log_ClickingLoginButton">[{0}] Loginボタンをクリック中...</sys:String>
+    <sys:String x:Key="Log_CoordinateLoginError">[{0}] 座標ベースのログインエラー: {1}</sys:String>
+    <sys:String x:Key="Log_ErrorInvalidHandle">エラー: クリックに無効なウィンドウハンドル！</sys:String>
+    <sys:String x:Key="Log_ErrorWindowNotVisible">エラー: ゲームウィンドウが表示されていません！</sys:String>
+    <sys:String x:Key="Log_WarningFightingFocus">[警告] フォーカスを取得しようとしています... 試行 {0}</sys:String>
+    <sys:String x:Key="Log_ErrorFailedFocus">エラー: 3回試行してもウィンドウフォーカスを取得できませんでした。クリックが中止されました。</sys:String>
+    <sys:String x:Key="Log_ErrorConvertCoordinates">エラー: クライアント座標を画面座標に変換できませんでした！</sys:String>
+    <sys:String x:Key="Log_ErrorInvalidHandleDoubleClick">エラー: ダブルクリックに無効なウィンドウハンドル (プロセス {0})！</sys:String>
+    <sys:String x:Key="Log_ErrorProcessExited">エラー: プロセス {0} が終了しました！</sys:String>
+    <sys:String x:Key="Log_ErrorInvalidHandleDoubleClick2">エラー: ダブルクリックに無効なウィンドウハンドル！</sys:String>
+    <sys:String x:Key="Log_ErrorWindowNotVisible2">エラー: ゲームウィンドウが表示されていません！</sys:String>
+    <sys:String x:Key="Log_ErrorProcessNotFound">エラー: キャラクターのプロセスIDが見つかりません</sys:String>
+    <sys:String x:Key="Log_ErrorProcessNotFound2">エラー: プロセス {0} が見つかりません</sys:String>
+    <sys:String x:Key="Log_ErrorWaitingGameProcess">ゲームプロセスの待機エラー: {0}</sys:String>
+    <sys:String x:Key="Log_WaitingServerScreen">サーバー選択画面を待機中...</sys:String>
+    <sys:String x:Key="Log_GameWindowNotFound">プロセス {0} のゲームウィンドウが見つかりません</sys:String>
+    <sys:String x:Key="Log_ServerScreenTimeout">サーバー選択画面が検出されませんでした (タイムアウト)</sys:String>
+    <sys:String x:Key="Log_ServerScreenDetected">サーバー選択画面が検出されました！</sys:String>
+    <sys:String x:Key="Log_WaitingCharacterScreen">キャラクター選択画面を待機中...</sys:String>
+    <sys:String x:Key="Log_CharacterScreenTimeout">キャラクター選択画面が検出されませんでした (タイムアウト)</sys:String>
+    <sys:String x:Key="Log_CharacterScreenDetected">キャラクター選択画面が検出されました！</sys:String>
+    <sys:String x:Key="Log_WaitingGameMap">ゲームマップの読み込みを待機中...</sys:String>
+    <sys:String x:Key="Log_GameMapTimeout">ゲームマップが検出されませんでした (タイムアウト)</sys:String>
+    <sys:String x:Key="Log_CharacterConnected">キャラクター '{0}' が接続されました！</sys:String>
+    <sys:String x:Key="Log_Connected">接続されました！</sys:String>
+    <sys:String x:Key="Log_ActivatingAutoPlay">AutoPlayを有効化中 (F12)...</sys:String>
+    <sys:String x:Key="Log_AutoPlayActivated">AutoPlayが有効になりました！</sys:String>
+    <sys:String x:Key="Log_ErrorDetectingGameMap">ゲームマップの検出エラー: {0}</sys:String>
+    <sys:String x:Key="Log_CharacterDisconnected">'{0}' が切断されました</sys:String>
+    <sys:String x:Key="Log_ConnectingCharacter">キャラクター '{0}' をゲームに接続中...</sys:String>
+    <sys:String x:Key="Log_ConnectingCharacterServer">キャラクター '{0}' をサーバーに接続中...</sys:String>
+    <sys:String x:Key="Log_ConnectingCharacterMap">キャラクター '{0}' をゲームマップに接続中...</sys:String>
+    <sys:String x:Key="Log_CheckingServerStatus">サーバー '{0}' のステータスを確認中...</sys:String>
+    <sys:String x:Key="Log_ExitingGameWindow">現在のゲームウィンドウを終了中...</sys:String>
+    <sys:String x:Key="Log_CharacterDisconnectedStarting">キャラクターが切断されました。再接続を開始しています...</sys:String>
+    <sys:String x:Key="Log_NewVersionDetected">新しいバージョンが検出されました。必須更新を開始しています...</sys:String>
+    <sys:String x:Key="Log_InitializingUpdate">更新を初期化中...</sys:String>
+    <sys:String x:Key="Log_WaitingForEvents">イベント待機中...</sys:String>
+    
+    <!-- MessageBox Messages -->
+    <sys:String x:Key="Msg_AdminRequired">Butterflyが正しく機能するには、管理者として実行する必要があります。&#x0a;&#x0a;アプリケーションを閉じて、管理者として実行してください (右クリック &gt; 管理者として実行)。</sys:String>
+    <sys:String x:Key="Msg_AdminRequiredTitle">管理者権限が必要です</sys:String>
+    <sys:String x:Key="Msg_ErrorSavingAccounts">アカウント保存エラー: {0}</sys:String>
+    <sys:String x:Key="Msg_ErrorOpeningAccounts">アカウントを開くエラー: {0}</sys:String>
+    <sys:String x:Key="Msg_ErrorTitle">エラー</sys:String>
+    <sys:String x:Key="Msg_UpdateError">更新中のエラー: {0}</sys:String>
+    <sys:String x:Key="Msg_UpdateErrorTitle">更新エラー</sys:String>
+    
+    <!-- Status Text -->
+    <sys:String x:Key="Status_InitializingUpdate">更新を初期化中...</sys:String>
+    
+    <!-- Configuration -->
+    <sys:String x:Key="Config_DateFormat">yyyy/MM/dd</sys:String>
+    
+</ResourceDictionary>

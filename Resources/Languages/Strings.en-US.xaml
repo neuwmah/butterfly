@@ -1,0 +1,202 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- MainWindow XAML Strings -->
+    <sys:String x:Key="Main_SelectServer">Select the server</sys:String>
+    <sys:String x:Key="Main_Server">SERVER</sys:String>
+    <sys:String x:Key="Main_Players">PLAYERS</sys:String>
+    <sys:String x:Key="Main_ManageAccounts">Manage your accounts</sys:String>
+    <sys:String x:Key="Main_Character">CHARACTER</sys:String>
+    <sys:String x:Key="Main_Username">USERNAME</sys:String>
+    <sys:String x:Key="Main_Password">PASSWORD</sys:String>
+    <sys:String x:Key="Main_LV">LV</sys:String>
+    <sys:String x:Key="Main_EXP">EXP</sys:String>
+    <sys:String x:Key="Main_ClickLeftToAdd">Click "Left Button" to Add</sys:String>
+    <sys:String x:Key="Main_ClickRightForOptions">Click "Right Button" for Options</sys:String>
+    <sys:String x:Key="Main_UpdatingButterfly">Updating Butterfly</sys:String>
+    <sys:String x:Key="Main_PleaseWait">Please wait...</sys:String>
+    
+    <!-- Context Menu Items -->
+    <sys:String x:Key="Menu_AddAccount">Add account</sys:String>
+    <sys:String x:Key="Menu_SaveAccounts">Save accounts</sys:String>
+    <sys:String x:Key="Menu_LoadAccounts">Load accounts</sys:String>
+    <sys:String x:Key="Menu_RefreshAll">Refresh all</sys:String>
+    <sys:String x:Key="Menu_ClearAll">Clear all</sys:String>
+    <sys:String x:Key="Menu_RemoveAccount">Remove account</sys:String>
+    <sys:String x:Key="Menu_RefreshAccount">Refresh account</sys:String>
+    
+    <!-- ToolTips -->
+    <sys:String x:Key="ToolTip_StartPause">Start/Pause</sys:String>
+    <sys:String x:Key="ToolTip_RefreshOnce">Refresh Once</sys:String>
+    <sys:String x:Key="ToolTip_OpenTerminal">Open Terminal</sys:String>
+    <sys:String x:Key="ToolTip_HideGameWindows">Hide game windows</sys:String>
+    <sys:String x:Key="ToolTip_ShowGameWindows">Show game windows</sys:String>
+    
+    <!-- AddAccountDialog -->
+    <sys:String x:Key="Dialog_AddAccount_Title">Add New Account</sys:String>
+    <sys:String x:Key="Dialog_AddAccount_Subtitle">Enter your MixMaster account details</sys:String>
+    <sys:String x:Key="Dialog_AddAccount_Username">Username</sys:String>
+    <sys:String x:Key="Dialog_AddAccount_Password">Password</sys:String>
+    <sys:String x:Key="Dialog_AddAccount_CharacterName">Character Name</sys:String>
+    <sys:String x:Key="Dialog_AddAccount_Cancel">Cancel</sys:String>
+    <sys:String x:Key="Dialog_AddAccount_Add">Add Account</sys:String>
+    <sys:String x:Key="Dialog_AddAccount_Warning">Please fill in all fields!</sys:String>
+    <sys:String x:Key="Dialog_AddAccount_WarningTitle">Warning</sys:String>
+    
+    <!-- LicenseKeyWindow -->
+    <sys:String x:Key="License_PleaseEnterKey">Please enter your license key.</sys:String>
+    <sys:String x:Key="License_NeedKey">Need a key? Contact me: </sys:String>
+    <sys:String x:Key="License_DiscordHandle">@2014</sys:String>
+    <sys:String x:Key="License_ValidatingKey">Validating license key...</sys:String>
+    <sys:String x:Key="License_ActivationSuccessful">Activation successful! Opening application...</sys:String>
+    <sys:String x:Key="License_ErrorSaving">License activated, but error saving: {0}</sys:String>
+    <sys:String x:Key="License_RequiresReactivation">License requires reactivation. Please activate again.</sys:String>
+    <sys:String x:Key="License_KeyNotFound">License key not found.</sys:String>
+    
+    <!-- UpdateService -->
+    <sys:String x:Key="Update_CheckingForUpdates">Checking for updates...</sys:String>
+    <sys:String x:Key="Update_NewVersionAvailable">New version available! Local: v{0} | Server: v{1}</sys:String>
+    <sys:String x:Key="Update_VersionFormatError">Version format error: {0}. Using string comparison as fallback.</sys:String>
+    <sys:String x:Key="Update_CheckFailed">Update check failed: {0}</sys:String>
+    <sys:String x:Key="Update_Downloading">Downloading update, please wait...</sys:String>
+    <sys:String x:Key="Update_DirectoryNotExist">Directory does not exist: {0}</sys:String>
+    <sys:String x:Key="Update_FailedWriteFile">Failed to write update file: File was not created</sys:String>
+    <sys:String x:Key="Update_DownloadFailedEmpty">Download failed: Downloaded file is empty</sys:String>
+    <sys:String x:Key="Update_FileSizeMismatch">File size mismatch: Expected {0} bytes, got {1} bytes</sys:String>
+    <sys:String x:Key="Update_PermissionDenied">Permission denied: Cannot write to directory. ({0})</sys:String>
+    <sys:String x:Key="Update_TipProgramFiles">TIP: If the bot is in 'Program Files', consider moving it to a folder like 'C:\Butterfly' to avoid write permission issues.</sys:String>
+    <sys:String x:Key="Update_EnsureWritePermissions">Please ensure the application has write permissions to the directory, or run as Administrator.</sys:String>
+    <sys:String x:Key="Update_DirectoryNotFound">Directory not found: {0} ({1})</sys:String>
+    <sys:String x:Key="Update_FileIOError">File I/O error: Cannot write update file. File may be in use. ({0})</sys:String>
+    <sys:String x:Key="Update_NetworkError">Network error during download: {0}</sys:String>
+    <sys:String x:Key="Update_DownloadTimeout">Download timeout: Connection took too long. ({0})</sys:String>
+    <sys:String x:Key="Update_ErrorFinalExeName">[ERROR] finalExeName should be filename only, but contains path: {0}</sys:String>
+    <sys:String x:Key="Update_ErrorGeneric">Error: {0}</sys:String>
+    <sys:String x:Key="Update_InstallationFailed">Update installation failed: {0}</sys:String>
+    
+    <!-- ConsoleWindow -->
+    <sys:String x:Key="Console_Title">Console</sys:String>
+    <sys:String x:Key="Console_Welcome">Welcome to Butterfly! 🦋&#x0a;Everything here was coded by 2014 🐰&#x0a;You can contact me on Discord: coelhoszzz 💤&#x0a;I hope you enjoy it! ⚡&#x0a;Waiting for events...&#x0a;</sys:String>
+    
+    <!-- Messages - Console Logs -->
+    <sys:String x:Key="Log_CannotStartMonitoring">Cannot start monitoring: Update in progress.</sys:String>
+    <sys:String x:Key="Log_StartingMonitoring">Starting monitoring...</sys:String>
+    <sys:String x:Key="Log_MonitoringPaused">Monitoring paused.</sys:String>
+    <sys:String x:Key="Log_CannotRefresh">Cannot refresh: Update in progress.</sys:String>
+    <sys:String x:Key="Log_CannotRefreshNoServer">Cannot refresh. Please select a server first.</sys:String>
+    <sys:String x:Key="Log_RefreshSkipped">Refresh skipped: Account is currently connecting.</sys:String>
+    <sys:String x:Key="Log_RefreshingOnce">Refreshing once...</sys:String>
+    <sys:String x:Key="Log_RefreshComplete">Refresh complete. Status updated.</sys:String>
+    <sys:String x:Key="Log_ConsoleCleared">Console cleared. Thanks for using Butterfly! 🦋</sys:String>
+    <sys:String x:Key="Log_UnknownCommand">Unknown command: '{0}'. Type 'help' for available commands.</sys:String>
+    <sys:String x:Key="Log_AvailableCommands">Available commands:</sys:String>
+    <sys:String x:Key="Log_CmdCls">cls, clear      - Clear the console</sys:String>
+    <sys:String x:Key="Log_CmdStats">stats           - Show accounts current stats</sys:String>
+    <sys:String x:Key="Log_CmdReconnect">reconnect &lt;n&gt;   - Reconnect a single account</sys:String>
+    <sys:String x:Key="Log_CmdLogs">logs            - Open the logs folder</sys:String>
+    <sys:String x:Key="Log_CmdDisplay">display         - Toggle visibility of all game windows</sys:String>
+    <sys:String x:Key="Log_CmdHelp">help            - Show this menu</sys:String>
+    <sys:String x:Key="Log_CmdExit">exit            - Closes the application</sys:String>
+    <sys:String x:Key="Log_ErrorStats">Error: Could not retrieve account statistics.</sys:String>
+    <sys:String x:Key="Log_CharactersStatus">=== Characters Status ===</sys:String>
+    <sys:String x:Key="Log_CharacterOnline">{0}: Online</sys:String>
+    <sys:String x:Key="Log_CharacterOffline">{0}: Offline</sys:String>
+    <sys:String x:Key="Log_CharacterStatus">{0}: {1}</sys:String>
+    <sys:String x:Key="Log_CharactersStatusEnd">==========================</sys:String>
+    <sys:String x:Key="Log_NoCharactersFound">No characters found.</sys:String>
+    <sys:String x:Key="Log_ReconnectUsage">Usage: reconnect &lt;character_name&gt;</sys:String>
+    <sys:String x:Key="Log_ReconnectInitiated">Reconnection initiated for '{0}'.</sys:String>
+    <sys:String x:Key="Log_CharacterNotFound">Character '{0}' not found.</sys:String>
+    <sys:String x:Key="Log_NoMixMasterWindow">No MixMaster window found.</sys:String>
+    <sys:String x:Key="Log_ErrorTogglingWindows">Error toggling windows for process {0}: {1}</sys:String>
+    <sys:String x:Key="Log_WindowsVisible">All game windows are now VISIBLE.</sys:String>
+    <sys:String x:Key="Log_WindowsHidden">All game windows are now HIDDEN.</sys:String>
+    <sys:String x:Key="Log_ErrorToggleWindows">Error toggling game windows: {0}</sys:String>
+    <sys:String x:Key="Log_ErrorLogsFolder">Error: Logs folder path not available.</sys:String>
+    <sys:String x:Key="Log_OpenedLogsFolder">Opened logs folder: {0}</sys:String>
+    <sys:String x:Key="Log_ErrorOpeningLogs">Error opening logs folder: {0}</sys:String>
+    <sys:String x:Key="Log_ShuttingDown">[SYSTEM] Shutting down Butterfly... Goodbye!</sys:String>
+    <sys:String x:Key="Log_ErrorMonitoringLoop">Error in monitoring loop: {0}</sys:String>
+    <sys:String x:Key="Log_CharacterRemoved">Character '{0}' removed.</sys:String>
+    <sys:String x:Key="Log_AccountsSaved">Accounts saved to '{0}' ({1} accounts).</sys:String>
+    <sys:String x:Key="Log_AccountsLoaded">Accounts loaded from '{0}' ({1} accounts).</sys:String>
+    <sys:String x:Key="Log_AllAccountsCleared">All accounts cleared ({0} accounts removed).</sys:String>
+    <sys:String x:Key="Log_CharacterAdded">Character added.</sys:String>
+    <sys:String x:Key="Log_BotDisabled">Bot disabled for '{0}'.</sys:String>
+    <sys:String x:Key="Log_BotEnabled">Bot enabled for '{0}'.</sys:String>
+    <sys:String x:Key="Log_ErrorActivatingBot">Error activating bot for '{0}': {1}</sys:String>
+    <sys:String x:Key="Log_WaitingReconnectionQueue">Waiting for reconnection queue...</sys:String>
+    <sys:String x:Key="Log_GameDirectoryNotFound">Game directory not found at '{0}'</sys:String>
+    <sys:String x:Key="Log_MixMasterNotFound">MixMaster.exe not found at '{0}'</sys:String>
+    <sys:String x:Key="Log_FailedLaunchGame">Failed to launch game.</sys:String>
+    <sys:String x:Key="Log_LauncherBypassed">[{0}] Launcher bypassed.</sys:String>
+    <sys:String x:Key="Log_ErrorLaunch">ERROR: {0}</sys:String>
+    <sys:String x:Key="Log_ListingVisibleWindows">=== Listing all visible windows ===</sys:String>
+    <sys:String x:Key="Log_WindowInfo">Window: "{0}" (HWND: {1})</sys:String>
+    <sys:String x:Key="Log_EndWindowList">=== End of window list ===</sys:String>
+    <sys:String x:Key="Log_ListingWindowsPID">=== Listing windows for PID {0} ===</sys:String>
+    <sys:String x:Key="Log_WindowInfoDetailed">Window: "{0}" (HWND: {1}) [Visible: {2}]</sys:String>
+    <sys:String x:Key="Log_NoWindowsFound">No windows found for this PID</sys:String>
+    <sys:String x:Key="Log_TotalWindows">=== Total: {0} window(s) ===</sys:String>
+    <sys:String x:Key="Log_LoginButtonFound">[{0}] ✓ Login button found: "{1}"</sys:String>
+    <sys:String x:Key="Log_ControlsNotFound">[{0}] Controls not found by search. Trying coordinate-based approach...</sys:String>
+    <sys:String x:Key="Log_ButtonNotFound">[{0}] Button not found, using ENTER key...</sys:String>
+    <sys:String x:Key="Log_AutoLoginError">[{0}] Auto-login error: {1}</sys:String>
+    <sys:String x:Key="Log_CoordinateBasedLogin">[{0}] Using coordinate-based login...</sys:String>
+    <sys:String x:Key="Log_FailedLauncherPosition">[{0}] Failed to get launcher window position</sys:String>
+    <sys:String x:Key="Log_ClickingLoginButton">[{0}] Clicking login button...</sys:String>
+    <sys:String x:Key="Log_CoordinateLoginError">[{0}] Coordinate-based login error: {1}</sys:String>
+    <sys:String x:Key="Log_ErrorInvalidHandle">ERROR: Invalid window handle for click!</sys:String>
+    <sys:String x:Key="Log_ErrorWindowNotVisible">ERROR: Game window is not visible!</sys:String>
+    <sys:String x:Key="Log_WarningFightingFocus">[WARNING] Fighting for focus... attempt {0}</sys:String>
+    <sys:String x:Key="Log_ErrorFailedFocus">ERROR: Failed to obtain window focus after 3 attempts. Click aborted.</sys:String>
+    <sys:String x:Key="Log_ErrorConvertCoordinates">ERROR: Failed to convert client coordinates to screen coordinates!</sys:String>
+    <sys:String x:Key="Log_ErrorInvalidHandleDoubleClick">ERROR: Invalid window handle for double click (process {0})!</sys:String>
+    <sys:String x:Key="Log_ErrorProcessExited">ERROR: Process {0} has exited!</sys:String>
+    <sys:String x:Key="Log_ErrorInvalidHandleDoubleClick2">ERROR: Invalid window handle for double-click!</sys:String>
+    <sys:String x:Key="Log_ErrorWindowNotVisible2">ERROR: Game window is not visible!</sys:String>
+    <sys:String x:Key="Log_ErrorProcessNotFound">ERROR: Process ID not found for character</sys:String>
+    <sys:String x:Key="Log_ErrorProcessNotFound2">ERROR: Process {0} not found</sys:String>
+    <sys:String x:Key="Log_ErrorWaitingGameProcess">Error waiting for game process: {0}</sys:String>
+    <sys:String x:Key="Log_WaitingServerScreen">Waiting for server selection screen...</sys:String>
+    <sys:String x:Key="Log_GameWindowNotFound">Game window not found for process {0}</sys:String>
+    <sys:String x:Key="Log_ServerScreenTimeout">Server selection screen not detected (timeout)</sys:String>
+    <sys:String x:Key="Log_ServerScreenDetected">Server selection screen detected!</sys:String>
+    <sys:String x:Key="Log_WaitingCharacterScreen">Waiting for character selection screen...</sys:String>
+    <sys:String x:Key="Log_CharacterScreenTimeout">Character selection screen not detected (timeout)</sys:String>
+    <sys:String x:Key="Log_CharacterScreenDetected">Character selection screen detected!</sys:String>
+    <sys:String x:Key="Log_WaitingGameMap">Waiting for game map to load...</sys:String>
+    <sys:String x:Key="Log_GameMapTimeout">Game map not detected (timeout)</sys:String>
+    <sys:String x:Key="Log_CharacterConnected">Character '{0}' connected!</sys:String>
+    <sys:String x:Key="Log_Connected">Connected!</sys:String>
+    <sys:String x:Key="Log_ActivatingAutoPlay">Activating AutoPlay (F12)...</sys:String>
+    <sys:String x:Key="Log_AutoPlayActivated">AutoPlay activated!</sys:String>
+    <sys:String x:Key="Log_ErrorDetectingGameMap">Error detecting game map: {0}</sys:String>
+    <sys:String x:Key="Log_CharacterDisconnected">'{0}' disconnected</sys:String>
+    <sys:String x:Key="Log_ConnectingCharacter">Connecting character '{0}' to the game...</sys:String>
+    <sys:String x:Key="Log_ConnectingCharacterServer">Connecting character '{0}' to the server...</sys:String>
+    <sys:String x:Key="Log_ConnectingCharacterMap">Connecting character '{0}' to the game map...</sys:String>
+    <sys:String x:Key="Log_CheckingServerStatus">Checking server '{0}' status...</sys:String>
+    <sys:String x:Key="Log_ExitingGameWindow">Exiting current game window...</sys:String>
+    <sys:String x:Key="Log_CharacterDisconnectedStarting">Character disconnected. Starting reconnection...</sys:String>
+    <sys:String x:Key="Log_NewVersionDetected">New version detected. Mandatory update starting...</sys:String>
+    <sys:String x:Key="Log_InitializingUpdate">Initializing update...</sys:String>
+    <sys:String x:Key="Log_WaitingForEvents">Waiting for events...</sys:String>
+    
+    <!-- MessageBox Messages -->
+    <sys:String x:Key="Msg_AdminRequired">Butterfly must be run as Administrator to function correctly.&#x0a;&#x0a;Please close the application and run it as Administrator (right-click &gt; Run as administrator).</sys:String>
+    <sys:String x:Key="Msg_AdminRequiredTitle">Administrator Privileges Required</sys:String>
+    <sys:String x:Key="Msg_ErrorSavingAccounts">Error saving accounts: {0}</sys:String>
+    <sys:String x:Key="Msg_ErrorOpeningAccounts">Error opening accounts: {0}</sys:String>
+    <sys:String x:Key="Msg_ErrorTitle">Error</sys:String>
+    <sys:String x:Key="Msg_UpdateError">Error during update: {0}</sys:String>
+    <sys:String x:Key="Msg_UpdateErrorTitle">Update Error</sys:String>
+    
+    <!-- Status Text -->
+    <sys:String x:Key="Status_InitializingUpdate">Initializing update...</sys:String>
+    
+    <!-- Configuration -->
+    <sys:String x:Key="Config_DateFormat">MM/dd/yyyy</sys:String>
+    
+</ResourceDictionary>
