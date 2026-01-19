@@ -172,19 +172,26 @@
                         Background="#000000"
                         PanningMode="VerticalOnly"
                         CanContentScroll="True">
-            <TextBox x:Name="ConsoleOutput"
+            <RichTextBox x:Name="ConsoleOutput"
                         FontFamily="Consolas"
                         FontSize="12"
                         Foreground="#CCCCCC"
-                        TextWrapping="Wrap"
-                        Margin="16,16,16,4"
+                        Margin="16,16,16,16"
+                        Padding="0"
                         IsReadOnly="True"
                         Background="Transparent"
                         BorderThickness="0"
                         SelectionBrush="#ae81ff"
                         VerticalScrollBarVisibility="Disabled"
-                        HorizontalScrollBarVisibility="Disabled"
-                        Text=""/>
+                        HorizontalScrollBarVisibility="Disabled">
+                <RichTextBox.Resources>
+                    <Style TargetType="Paragraph">
+                        <Setter Property="Margin" Value="0"/>
+                        <Setter Property="Padding" Value="0"/>
+                        <Setter Property="LineHeight" Value="1"/>
+                    </Style>
+                </RichTextBox.Resources>
+            </RichTextBox>
         </ScrollViewer>
 
                 

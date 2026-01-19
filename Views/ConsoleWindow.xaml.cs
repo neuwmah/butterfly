@@ -2,6 +2,9 @@ using System;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media.Animation;
+using System.Windows.Documents;
+using System.Windows.Media;
+using System.Windows.Threading;
 using Butterfly.Native;
 
 namespace Butterfly.Views
@@ -28,6 +31,23 @@ namespace Butterfly.Views
             
             // Update title when window loads
             UpdateWindowTitle();
+            
+            // Ensure RichTextBox starts completely empty (no initial paragraph)
+            InitializeEmptyConsole();
+        }
+        
+        private void InitializeEmptyConsole()
+        {
+            // Clear any initial content and ensure document is empty
+            var document = ConsoleOutput.Document;
+            document.Blocks.Clear();
+            
+            // Remove any default empty paragraph that might exist
+            // FlowDocument may create an empty paragraph by default
+            if (document.Blocks.Count > 0)
+            {
+                document.Blocks.Clear();
+            }
         }
 
         private void ConsoleWindow_Loaded(object sender, RoutedEventArgs e)
@@ -108,20 +128,141 @@ namespace Butterfly.Views
 
         public void AppendLog(string message)
         {
-            Dispatcher.Invoke(() =>
+            Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
             {
-                ConsoleOutput.Text += message;
+                // Remove leading/trailing whitespace and control characters
+                string cleanedMessage = message?.TrimStart('\n', '\r', '\t', ' ') ?? string.Empty;
+                
+                // Remove trailing newline if present (we'll add it as a paragraph break)
+                cleanedMessage = cleanedMessage.TrimEnd('\n', '\r');
+                
+                // Skip empty messages
+                if (string.IsNullOrEmpty(cleanedMessage))
+                {
+                    return;
+                }
+                
+                var document = ConsoleOutput.Document;
+                
+                // Check if console is empty (first message)
+                // FlowDocument may have an empty default paragraph, so check if it's truly empty
+                bool isFirstMessage = false;
+                if (document.Blocks.Count == 0)
+                {
+                    isFirstMessage = true;
+                }
+                else if (document.Blocks.Count == 1)
+                {
+                    var firstBlock = document.Blocks.FirstBlock;
+                    if (firstBlock is Paragraph firstPara)
+                    {
+                        // Check if paragraph is empty (no inlines or only whitespace)
+                        if (firstPara.Inlines.Count == 0)
+                        {
+                            isFirstMessage = true;
+                        }
+                        else
+                        {
+                            // Check if all inlines are empty or whitespace
+                            bool allEmpty = true;
+                            foreach (var inline in firstPara.Inlines)
+                            {
+                                if (inline is Run existingRun && !string.IsNullOrWhiteSpace(existingRun.Text))
+                                {
+                                    allEmpty = false;
+                                    break;
+                                }
+                            }
+                            isFirstMessage = allEmpty;
+                        }
+                    }
+                    else
+                    {
+                        // If first block is not a paragraph, consider it empty
+                        isFirstMessage = true;
+                    }
+                }
+                
+                // If console is empty, ensure it's truly empty (remove any empty paragraph)
+                if (isFirstMessage)
+                {
+                    document.Blocks.Clear();
+                }
+                
+                var paragraph = new Paragraph();
+                paragraph.Margin = new Thickness(0);
+                paragraph.Padding = new Thickness(0);
+                paragraph.LineHeight = 1;
+                
+                // Default color
+                var defaultColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#CCCCCC"));
+                
+                // Check if message contains [REQUEST] or [SUCCESS] tags
+                int requestIndex = cleanedMessage.IndexOf("[REQUEST]");
+                int successIndex = cleanedMessage.IndexOf("[SUCCESS]");
+                
+                if (requestIndex >= 0)
+                {
+                    // Split message into parts: before tag, tag, after tag
+                    string beforeTag = cleanedMessage.Substring(0, requestIndex);
+                    string tag = "[REQUEST]";
+                    string afterTag = cleanedMessage.Substring(requestIndex + tag.Length);
+                    
+                    // Add parts with appropriate colors
+                    if (!string.IsNullOrEmpty(beforeTag))
+                    {
+                        paragraph.Inlines.Add(new Run(beforeTag) { Foreground = defaultColor });
+                    }
+                    paragraph.Inlines.Add(new Run(tag) { Foreground = Brushes.Yellow });
+                    if (!string.IsNullOrEmpty(afterTag))
+                    {
+                        paragraph.Inlines.Add(new Run(afterTag) { Foreground = defaultColor });
+                    }
+                }
+                else if (successIndex >= 0)
+                {
+                    // Split message into parts: before tag, tag, after tag
+                    string beforeTag = cleanedMessage.Substring(0, successIndex);
+                    string tag = "[SUCCESS]";
+                    string afterTag = cleanedMessage.Substring(successIndex + tag.Length);
+                    
+                    // Add parts with appropriate colors
+                    if (!string.IsNullOrEmpty(beforeTag))
+                    {
+                        paragraph.Inlines.Add(new Run(beforeTag) { Foreground = defaultColor });
+                    }
+                    paragraph.Inlines.Add(new Run(tag) { Foreground = Brushes.LimeGreen });
+                    if (!string.IsNullOrEmpty(afterTag))
+                    {
+                        paragraph.Inlines.Add(new Run(afterTag) { Foreground = defaultColor });
+                    }
+                }
+                else
+                {
+                    // No special tags, add entire message with default color
+                    paragraph.Inlines.Add(new Run(cleanedMessage) { Foreground = defaultColor });
+                }
+                
+                document.Blocks.Add(paragraph);
                 ConsoleScrollViewer.ScrollToEnd();
-            });
+            }));
         }
 
         public void ClearLog()
         {
-            Dispatcher.Invoke(() =>
+            Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
             {
-                ConsoleOutput.Text = "Console cleared. Thanks for using Butterfly! 🦋\n";
+                ConsoleOutput.Document.Blocks.Clear();
+                var defaultColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#CCCCCC"));
+                var paragraph = new Paragraph();
+                paragraph.Margin = new Thickness(0);
+                paragraph.Padding = new Thickness(0);
+                paragraph.LineHeight = 1;
+                var run = new Run("Console cleared. Thanks for using Butterfly! 🦋") { Foreground = defaultColor };
+                paragraph.Inlines.Add(run);
+                ConsoleOutput.Document.Blocks.Add(paragraph);
                 ConsoleScrollViewer.ScrollToEnd();
-            });
+            }));
         }
 
         private void ConsoleInput_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
@@ -237,7 +378,10 @@ namespace Butterfly.Views
 
         private void ExecuteClearCommand()
         {
-            ConsoleOutput.Text = "";
+            Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+            {
+                ConsoleOutput.Document.Blocks.Clear();
+            }));
             AppendLog("Console cleared. Thanks for using Butterfly! 🦋\n");
         }
 
