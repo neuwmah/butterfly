@@ -163,7 +163,9 @@
     <sys:String x:Key="Log_GameWindowNotFound">Fenêtre du jeu introuvable pour le processus {0}</sys:String>
     <sys:String x:Key="Log_ServerScreenTimeout">Écran de sélection du serveur non détecté (timeout)</sys:String>
     <sys:String x:Key="Log_ServerScreenDetected">Écran de sélection du serveur détecté !</sys:String>
+    <sys:String x:Key="Log_ConnectingToServer">Connexion au serveur...</sys:String>
     <sys:String x:Key="Log_WaitingCharacterScreen">En attente de l'écran de sélection du personnage...</sys:String>
+    <sys:String x:Key="Log_ConnectingToCharacter">Connexion au personnage...</sys:String>
     <sys:String x:Key="Log_CharacterScreenTimeout">Écran de sélection du personnage non détecté (timeout)</sys:String>
     <sys:String x:Key="Log_CharacterScreenDetected">Écran de sélection du personnage détecté !</sys:String>
     <sys:String x:Key="Log_WaitingGameMap">En attente du chargement de la carte du jeu...</sys:String>

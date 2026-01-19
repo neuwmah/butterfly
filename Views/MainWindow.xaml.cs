@@ -3370,7 +3370,7 @@ namespace Butterfly.Views
                 
                 await Dispatcher.InvokeAsync(() =>
                 {
-                    LogToConsole($"Connecting to server...", account.Character);
+                    LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_ConnectingToServer"), account.Character);
                 });
                 
                 // Coordinates relative to window Client Area (1024x768)
@@ -3413,7 +3413,7 @@ namespace Butterfly.Views
                 
                 await Dispatcher.InvokeAsync(() =>
                 {
-                    LogToConsole($"Connecting to character...", account.Character);
+                    LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_ConnectingToCharacter"), account.Character);
                 });
                 
                 // Robust double-click on Enter button using specific function (with processId to get handle dynamically)

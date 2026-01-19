@@ -163,7 +163,9 @@
     <sys:String x:Key="Log_GameWindowNotFound">프로세스 {0}에 대한 게임 창을 찾을 수 없습니다</sys:String>
     <sys:String x:Key="Log_ServerScreenTimeout">서버 선택 화면을 감지하지 못했습니다 (타임아웃)</sys:String>
     <sys:String x:Key="Log_ServerScreenDetected">서버 선택 화면 감지됨!</sys:String>
+    <sys:String x:Key="Log_ConnectingToServer">서버에 연결 중...</sys:String>
     <sys:String x:Key="Log_WaitingCharacterScreen">캐릭터 선택 화면 대기 중...</sys:String>
+    <sys:String x:Key="Log_ConnectingToCharacter">캐릭터에 연결 중...</sys:String>
     <sys:String x:Key="Log_CharacterScreenTimeout">캐릭터 선택 화면을 감지하지 못했습니다 (타임아웃)</sys:String>
     <sys:String x:Key="Log_CharacterScreenDetected">캐릭터 선택 화면 감지됨!</sys:String>
     <sys:String x:Key="Log_WaitingGameMap">게임 맵 로드 대기 중...</sys:String>

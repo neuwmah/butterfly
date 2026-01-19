@@ -163,7 +163,9 @@
     <sys:String x:Key="Log_GameWindowNotFound">Janela do jogo não encontrada para o processo {0}</sys:String>
     <sys:String x:Key="Log_ServerScreenTimeout">Tela de seleção de servidor não detectada (timeout)</sys:String>
     <sys:String x:Key="Log_ServerScreenDetected">Tela de seleção de servidor detectada!</sys:String>
+    <sys:String x:Key="Log_ConnectingToServer">Conectando ao servidor...</sys:String>
     <sys:String x:Key="Log_WaitingCharacterScreen">Aguardando tela de seleção de personagem...</sys:String>
+    <sys:String x:Key="Log_ConnectingToCharacter">Conectando ao personagem...</sys:String>
     <sys:String x:Key="Log_CharacterScreenTimeout">Tela de seleção de personagem não detectada (timeout)</sys:String>
     <sys:String x:Key="Log_CharacterScreenDetected">Tela de seleção de personagem detectada!</sys:String>
     <sys:String x:Key="Log_WaitingGameMap">Aguardando mapa do jogo carregar...</sys:String>

@@ -163,7 +163,9 @@
     <sys:String x:Key="Log_GameWindowNotFound">Game window not found for process {0}</sys:String>
     <sys:String x:Key="Log_ServerScreenTimeout">Server selection screen not detected (timeout)</sys:String>
     <sys:String x:Key="Log_ServerScreenDetected">Server selection screen detected!</sys:String>
+    <sys:String x:Key="Log_ConnectingToServer">Connecting to server...</sys:String>
     <sys:String x:Key="Log_WaitingCharacterScreen">Waiting for character selection screen...</sys:String>
+    <sys:String x:Key="Log_ConnectingToCharacter">Connecting to character...</sys:String>
     <sys:String x:Key="Log_CharacterScreenTimeout">Character selection screen not detected (timeout)</sys:String>
     <sys:String x:Key="Log_CharacterScreenDetected">Character selection screen detected!</sys:String>
     <sys:String x:Key="Log_WaitingGameMap">Waiting for game map to load...</sys:String>

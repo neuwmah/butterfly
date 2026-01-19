@@ -163,7 +163,9 @@
     <sys:String x:Key="Log_GameWindowNotFound">プロセス {0} のゲームウィンドウが見つかりません</sys:String>
     <sys:String x:Key="Log_ServerScreenTimeout">サーバー選択画面が検出されませんでした (タイムアウト)</sys:String>
     <sys:String x:Key="Log_ServerScreenDetected">サーバー選択画面が検出されました！</sys:String>
+    <sys:String x:Key="Log_ConnectingToServer">サーバーに接続中...</sys:String>
     <sys:String x:Key="Log_WaitingCharacterScreen">キャラクター選択画面を待機中...</sys:String>
+    <sys:String x:Key="Log_ConnectingToCharacter">キャラクターに接続中...</sys:String>
     <sys:String x:Key="Log_CharacterScreenTimeout">キャラクター選択画面が検出されませんでした (タイムアウト)</sys:String>
     <sys:String x:Key="Log_CharacterScreenDetected">キャラクター選択画面が検出されました！</sys:String>
     <sys:String x:Key="Log_WaitingGameMap">ゲームマップの読み込みを待機中...</sys:String>
