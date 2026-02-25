@@ -6,8 +6,6 @@
 *.userosscache
 *.sln.docstates
 
-# Butterfly Configs
-.Butterfly/
-
-# Outros
+# Other
+.publish
 .cursorrules
