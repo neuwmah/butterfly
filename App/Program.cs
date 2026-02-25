@@ -50,12 +50,12 @@ namespace Butterfly
             // Clean title if no license or Free
             if (string.IsNullOrEmpty(tier) || tier.Equals("Free", StringComparison.OrdinalIgnoreCase))
             {
-                title = "Butterfly by 2014";
+                title = "Butterfly";
             }
             else
             {
                 // Display tier only for Pro, Pro+, etc.
-                title = $"Butterfly by 2014 ({tier})";
+                title = $"Butterfly ({tier})";
             }
 
             // Add rabbit emoji only if in Debug mode (dotnet run)
