@@ -16,8 +16,8 @@ namespace Butterfly.Converters
                     return string.Empty;
                 }
                 
-                // Return full format "Online: X"
-                return $"Online: {onlinePlayers}";
+                // Return only the number
+                return onlinePlayers.ToString();
             }
             
             // Return empty string if there are no valid values
