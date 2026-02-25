@@ -4259,7 +4259,8 @@ namespace Butterfly.Views
             {
                 try
                 {
-                    bool hasUpdate = await updateService.CheckForUpdateAsync(Version);
+                    // bool hasUpdate = await updateService.CheckForUpdateAsync(Version);
+                    bool hasUpdate = false;
                     
                     if (hasUpdate)
                     {
