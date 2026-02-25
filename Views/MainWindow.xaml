@@ -6,6 +6,8 @@
         xmlns:converters="clr-namespace:Butterfly.Converters"
         Height="700" 
         Width="700"
+        MinWidth="700"
+        MinHeight="700"
         WindowStartupLocation="CenterScreen"
         Background="#000000"
         ResizeMode="CanResize"
