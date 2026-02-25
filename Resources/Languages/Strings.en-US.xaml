@@ -5,7 +5,7 @@
     <!-- MainWindow XAML Strings -->
     <sys:String x:Key="Main_SelectServer">Select the server</sys:String>
     <sys:String x:Key="Main_Server">SERVER</sys:String>
-    <sys:String x:Key="Main_Players">PLAYERS</sys:String>
+    <sys:String x:Key="Main_Players">ONLINE</sys:String>
     <sys:String x:Key="Main_ManageAccounts">Manage your accounts</sys:String>
     <sys:String x:Key="Main_Character">CHARACTER</sys:String>
     <sys:String x:Key="Main_Username">USERNAME</sys:String>
@@ -71,13 +71,15 @@
     <sys:String x:Key="Update_FileIOError">File I/O error: Cannot write update file. File may be in use. ({0})</sys:String>
     <sys:String x:Key="Update_NetworkError">Network error during download: {0}</sys:String>
     <sys:String x:Key="Update_DownloadTimeout">Download timeout: Connection took too long. ({0})</sys:String>
-    <sys:String x:Key="Update_ErrorFinalExeName">[ERROR] finalExeName should be filename only, but contains path: {0}</sys:String>
+    <sys:String x:Key="Update_ErrorFinalExeName">finalExeName should be filename only, but contains path: {0}</sys:String>
     <sys:String x:Key="Update_ErrorGeneric">Error: {0}</sys:String>
     <sys:String x:Key="Update_InstallationFailed">Update installation failed: {0}</sys:String>
     
     <!-- ConsoleWindow -->
     <sys:String x:Key="Console_Title">Console</sys:String>
-    <sys:String x:Key="Console_Welcome">Welcome to Butterfly! 🦋&#x0a;Everything here was coded by 2014 🐰&#x0a;You can contact me: https://discord.com/users/1187937891075231864 💤&#x0a;I hope you enjoy it! ⚡&#x0a;Waiting for events...&#x0a;</sys:String>
+    <sys:String x:Key="Console_Welcome_1">Welcome to Butterfly! 🦋</sys:String>
+    <sys:String x:Key="Console_Welcome_2">Discord: https://dsc.gg/butterflymixmaster</sys:String>
+    <sys:String x:Key="Console_Welcome_3">Waiting for events...</sys:String>
     
     <!-- Messages - Console Logs -->
     <sys:String x:Key="Log_CannotStartMonitoring">Cannot start monitoring: Update in progress.</sys:String>
@@ -149,7 +151,7 @@
     <sys:String x:Key="Log_CoordinateLoginError">[{0}] Coordinate-based login error: {1}</sys:String>
     <sys:String x:Key="Log_ErrorInvalidHandle">ERROR: Invalid window handle for click!</sys:String>
     <sys:String x:Key="Log_ErrorWindowNotVisible">ERROR: Game window is not visible!</sys:String>
-    <sys:String x:Key="Log_WarningFightingFocus">[WARNING] Fighting for focus... attempt {0}</sys:String>
+    <sys:String x:Key="Log_WarningFightingFocus">Fighting for focus... attempt {0}</sys:String>
     <sys:String x:Key="Log_ErrorFailedFocus">ERROR: Failed to obtain window focus after 3 attempts. Click aborted.</sys:String>
     <sys:String x:Key="Log_ErrorConvertCoordinates">ERROR: Failed to convert client coordinates to screen coordinates!</sys:String>
     <sys:String x:Key="Log_ErrorInvalidHandleDoubleClick">ERROR: Invalid window handle for double click (process {0})!</sys:String>
@@ -180,6 +182,7 @@
     <sys:String x:Key="Log_ConnectingCharacterServer">Connecting character '{0}' to the server...</sys:String>
     <sys:String x:Key="Log_ConnectingCharacterMap">Connecting character '{0}' to the game map...</sys:String>
     <sys:String x:Key="Log_CheckingServerStatus">Checking server '{0}' status...</sys:String>
+    <sys:String x:Key="Log_SuccessOnline">Success! Online: {0}</sys:String>
     <sys:String x:Key="Log_ExitingGameWindow">Exiting current game window...</sys:String>
     <sys:String x:Key="Log_CharacterDisconnectedStarting">Character disconnected. Starting reconnection...</sys:String>
     <sys:String x:Key="Log_NewVersionDetected">New version detected. Mandatory update starting...</sys:String>

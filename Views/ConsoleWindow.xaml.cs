@@ -197,51 +197,8 @@ namespace Butterfly.Views
                 // Default color
                 var defaultColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#CCCCCC"));
                 
-                // Check if message contains [REQUEST] or [SUCCESS] tags
-                int requestIndex = cleanedMessage.IndexOf("[REQUEST]");
-                int successIndex = cleanedMessage.IndexOf("[SUCCESS]");
-                
-                if (requestIndex >= 0)
-                {
-                    // Split message into parts: before tag, tag, after tag
-                    string beforeTag = cleanedMessage.Substring(0, requestIndex);
-                    string tag = "[REQUEST]";
-                    string afterTag = cleanedMessage.Substring(requestIndex + tag.Length);
-                    
-                    // Add parts with appropriate colors
-                    if (!string.IsNullOrEmpty(beforeTag))
-                    {
-                        paragraph.Inlines.Add(new Run(beforeTag) { Foreground = defaultColor });
-                    }
-                    paragraph.Inlines.Add(new Run(tag) { Foreground = Brushes.Yellow });
-                    if (!string.IsNullOrEmpty(afterTag))
-                    {
-                        paragraph.Inlines.Add(new Run(afterTag) { Foreground = defaultColor });
-                    }
-                }
-                else if (successIndex >= 0)
-                {
-                    // Split message into parts: before tag, tag, after tag
-                    string beforeTag = cleanedMessage.Substring(0, successIndex);
-                    string tag = "[SUCCESS]";
-                    string afterTag = cleanedMessage.Substring(successIndex + tag.Length);
-                    
-                    // Add parts with appropriate colors
-                    if (!string.IsNullOrEmpty(beforeTag))
-                    {
-                        paragraph.Inlines.Add(new Run(beforeTag) { Foreground = defaultColor });
-                    }
-                    paragraph.Inlines.Add(new Run(tag) { Foreground = Brushes.LimeGreen });
-                    if (!string.IsNullOrEmpty(afterTag))
-                    {
-                        paragraph.Inlines.Add(new Run(afterTag) { Foreground = defaultColor });
-                    }
-                }
-                else
-                {
-                    // No special tags, add entire message with default color
-                    paragraph.Inlines.Add(new Run(cleanedMessage) { Foreground = defaultColor });
-                }
+                // Add entire message with default color
+                paragraph.Inlines.Add(new Run(cleanedMessage) { Foreground = defaultColor });
                 
                 document.Blocks.Add(paragraph);
                 ConsoleScrollViewer.ScrollToEnd();

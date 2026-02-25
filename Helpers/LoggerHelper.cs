@@ -136,10 +136,10 @@ namespace Butterfly.Helpers
         }
 
         /// <summary>
-        /// Writes a message to the log file with timestamp and level
+        /// Writes a message to the log file with timestamp
         /// </summary>
         /// <param name="message">Message to be logged</param>
-        /// <param name="level">Log level (INFO, ERROR, WARNING, etc.)</param>
+        /// <param name="level">Log level (INFO, ERROR, WARNING, etc.) - not used anymore, kept for compatibility</param>
         public void WriteToLogFile(string message, string level = "INFO")
         {
             try
@@ -148,14 +148,7 @@ namespace Butterfly.Helpers
                 {
                     if (_logFileWriter != null)
                     {
-                        if (string.IsNullOrEmpty(level))
-                        {
-                            _logFileWriter.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {message}");
-                        }
-                        else
-                        {
-                            _logFileWriter.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [{level}] {message}");
-                        }
+                        _logFileWriter.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss} {message}");
                     }
                 }
             }
@@ -166,10 +159,10 @@ namespace Butterfly.Helpers
         }
 
         /// <summary>
-        /// Formats a log message with timestamp and level for console display
+        /// Formats a log message with timestamp for console display
         /// </summary>
         /// <param name="message">Message to be formatted</param>
-        /// <param name="level">Log level (INFO, ERROR, WARNING, etc.)</param>
+        /// <param name="level">Log level (INFO, ERROR, WARNING, etc.) - not used anymore, kept for compatibility</param>
         /// <returns>Formatted message for console</returns>
         public static string FormatConsoleMessage(string message, string level = "INFO")
         {
@@ -178,13 +171,7 @@ namespace Butterfly.Helpers
             string dateStr = DateTime.Now.ToString(dateFormat);
             string timeStr = DateTime.Now.ToString("HH:mm:ss");
             
-            // If level is empty or null, don't add [level] prefix
-            if (string.IsNullOrEmpty(level))
-            {
-                return $"[{dateStr}] [{timeStr}] {message}";
-            }
-            
-            return $"[{dateStr}] [{timeStr}] [{level}] {message}";
+            return $"{dateStr} {timeStr} {message}";
         }
 
         /// <summary>

@@ -5,7 +5,7 @@
     <!-- MainWindow XAML Strings -->
     <sys:String x:Key="Main_SelectServer">Sélectionnez le serveur</sys:String>
     <sys:String x:Key="Main_Server">SERVEUR</sys:String>
-    <sys:String x:Key="Main_Players">JOUEURS</sys:String>
+    <sys:String x:Key="Main_Players">ONLINE</sys:String>
     <sys:String x:Key="Main_ManageAccounts">Gérer vos comptes</sys:String>
     <sys:String x:Key="Main_Character">PERSONNAGE</sys:String>
     <sys:String x:Key="Main_Username">IDENTIFIANT</sys:String>
@@ -71,13 +71,15 @@
     <sys:String x:Key="Update_FileIOError">Erreur d'E/S de fichier : Impossible d'écrire le fichier de mise à jour. Le fichier peut être en cours d'utilisation. ({0})</sys:String>
     <sys:String x:Key="Update_NetworkError">Erreur réseau lors du téléchargement : {0}</sys:String>
     <sys:String x:Key="Update_DownloadTimeout">Délai d'attente du téléchargement : La connexion a pris trop de temps. ({0})</sys:String>
-    <sys:String x:Key="Update_ErrorFinalExeName">[ERREUR] finalExeName doit être uniquement le nom du fichier, mais contient un chemin : {0}</sys:String>
+    <sys:String x:Key="Update_ErrorFinalExeName">finalExeName doit être uniquement le nom du fichier, mais contient un chemin : {0}</sys:String>
     <sys:String x:Key="Update_ErrorGeneric">Erreur : {0}</sys:String>
     <sys:String x:Key="Update_InstallationFailed">Échec de l'installation de la mise à jour : {0}</sys:String>
     
     <!-- ConsoleWindow -->
     <sys:String x:Key="Console_Title">Console</sys:String>
-    <sys:String x:Key="Console_Welcome">Bienvenue dans Butterfly ! 🦋&#x0a;Tout ici a été codé par 2014 🐰&#x0a;Vous pouvez me contacter sur Discord : 2014 💤&#x0a;J'espère que vous l'apprécierez ! ⚡&#x0a;En attente d'événements...&#x0a;</sys:String>
+    <sys:String x:Key="Console_Welcome_1">Bienvenue dans Butterfly ! 🦋</sys:String>
+    <sys:String x:Key="Console_Welcome_2">Discord: https://dsc.gg/butterflymixmaster</sys:String>
+    <sys:String x:Key="Console_Welcome_3">En attente d'événements...</sys:String>
     
     <!-- Messages - Console Logs -->
     <sys:String x:Key="Log_CannotStartMonitoring">Impossible de démarrer la surveillance : mise à jour en cours.</sys:String>
@@ -149,7 +151,7 @@
     <sys:String x:Key="Log_CoordinateLoginError">[{0}] Erreur de connexion basée sur les coordonnées : {1}</sys:String>
     <sys:String x:Key="Log_ErrorInvalidHandle">ERREUR : Handle de fenêtre invalide pour le clic !</sys:String>
     <sys:String x:Key="Log_ErrorWindowNotVisible">ERREUR : La fenêtre du jeu n'est pas visible !</sys:String>
-    <sys:String x:Key="Log_WarningFightingFocus">[AVERTISSEMENT] Combat pour le focus... tentative {0}</sys:String>
+    <sys:String x:Key="Log_WarningFightingFocus">Combat pour le focus... tentative {0}</sys:String>
     <sys:String x:Key="Log_ErrorFailedFocus">ERREUR : Impossible d'obtenir le focus de la fenêtre après 3 tentatives. Clic abandonné.</sys:String>
     <sys:String x:Key="Log_ErrorConvertCoordinates">ERREUR : Impossible de convertir les coordonnées client en coordonnées écran !</sys:String>
     <sys:String x:Key="Log_ErrorInvalidHandleDoubleClick">ERREUR : Handle de fenêtre invalide pour double-clic (processus {0}) !</sys:String>
@@ -180,6 +182,7 @@
     <sys:String x:Key="Log_ConnectingCharacterServer">Connexion du personnage '{0}' au serveur...</sys:String>
     <sys:String x:Key="Log_ConnectingCharacterMap">Connexion du personnage '{0}' à la carte du jeu...</sys:String>
     <sys:String x:Key="Log_CheckingServerStatus">Vérification du statut du serveur '{0}'...</sys:String>
+    <sys:String x:Key="Log_SuccessOnline">Succès ! En ligne : {0}</sys:String>
     <sys:String x:Key="Log_ExitingGameWindow">Fermeture de la fenêtre du jeu actuelle...</sys:String>
     <sys:String x:Key="Log_CharacterDisconnectedStarting">Personnage déconnecté. Démarrage de la reconnexion...</sys:String>
     <sys:String x:Key="Log_NewVersionDetected">Nouvelle version détectée. Mise à jour obligatoire en cours...</sys:String>

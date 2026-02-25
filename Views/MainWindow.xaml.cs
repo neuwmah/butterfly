@@ -1093,66 +1093,20 @@ namespace Butterfly.Views
             {
                 if (txtLastLog != null)
                 {
-                    // Remove timestamp (e.g., [19/01/2026] [03:01:01] or [MM/dd/yyyy] [HH:mm:ss]) from formatted message
-                    // Pattern matches: [any date format] [HH:mm:ss] followed by optional space
+                    // Remove timestamp (e.g., 02/25/2026 14:34:02 or 25/02/2026 14:34:02 or 2026/02/25 14:34:02) from formatted message
+                    // Pattern matches: date format (any combination of numbers and slashes) followed by time format (HH:mm:ss) followed by optional space
                     string displayText = System.Text.RegularExpressions.Regex.Replace(
                         formattedMessage, 
-                        @"\[[^\]]+\]\s*\[\d{2}:\d{2}:\d{2}\]\s*", 
+                        @"[\d/]+\s+\d{2}:\d{2}:\d{2}\s+", 
                         string.Empty
                     );
                     
                     // Default color
                     var defaultColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFFFF"));
                     
-                    // Clear existing inlines
-                    txtLastLog.Inlines.Clear();
-                    
-                    // Check if message contains [REQUEST] or [SUCCESS] tags
-                    int requestIndex = displayText.IndexOf("[REQUEST]");
-                    int successIndex = displayText.IndexOf("[SUCCESS]");
-                    
-                    if (requestIndex >= 0)
-                    {
-                        // Split message into parts: before tag, tag, after tag
-                        string beforeTag = displayText.Substring(0, requestIndex);
-                        string tag = "[REQUEST]";
-                        string afterTag = displayText.Substring(requestIndex + tag.Length);
-                        
-                        // Add parts with appropriate colors
-                        if (!string.IsNullOrEmpty(beforeTag))
-                        {
-                            txtLastLog.Inlines.Add(new Run(beforeTag) { Foreground = defaultColor });
-                        }
-                        txtLastLog.Inlines.Add(new Run(tag) { Foreground = Brushes.Yellow });
-                        if (!string.IsNullOrEmpty(afterTag))
-                        {
-                            txtLastLog.Inlines.Add(new Run(afterTag) { Foreground = defaultColor });
-                        }
-                    }
-                    else if (successIndex >= 0)
-                    {
-                        // Split message into parts: before tag, tag, after tag
-                        string beforeTag = displayText.Substring(0, successIndex);
-                        string tag = "[SUCCESS]";
-                        string afterTag = displayText.Substring(successIndex + tag.Length);
-                        
-                        // Add parts with appropriate colors
-                        if (!string.IsNullOrEmpty(beforeTag))
-                        {
-                            txtLastLog.Inlines.Add(new Run(beforeTag) { Foreground = defaultColor });
-                        }
-                        txtLastLog.Inlines.Add(new Run(tag) { Foreground = Brushes.LimeGreen });
-                        if (!string.IsNullOrEmpty(afterTag))
-                        {
-                            txtLastLog.Inlines.Add(new Run(afterTag) { Foreground = defaultColor });
-                        }
-                    }
-                    else
-                    {
-                        // No special tags, add entire message with default color
-                        txtLastLog.Text = displayText;
-                        txtLastLog.Foreground = defaultColor;
-                    }
+                    // Display message with default color
+                    txtLastLog.Text = displayText;
+                    txtLastLog.Foreground = defaultColor;
                 }
                 
                 // If overlay is visible and it's an update-related log, update overlay
@@ -2852,7 +2806,7 @@ namespace Butterfly.Views
                 {
                     await Dispatcher.InvokeAsync(() =>
                     {
-                        LogToConsole($"[WARNING] Fighting for focus... attempt {attempt + 1}", "WARNING");
+                        LogToConsole($"Fighting for focus... attempt {attempt + 1}", "WARNING");
                     });
                 }
                 
@@ -3037,7 +2991,7 @@ namespace Butterfly.Views
                 {
                     await Dispatcher.InvokeAsync(() =>
                     {
-                        LogToConsole($"[WARNING] Fighting for focus... attempt {attempt + 1}", "WARNING");
+                        LogToConsole($"Fighting for focus... attempt {attempt + 1}", "WARNING");
                     });
                 }
                 
@@ -4277,11 +4231,9 @@ namespace Butterfly.Views
             // Display welcome message in console (line by line, without timestamp/level prefix)
             if (consoleWindow != null)
             {
-                consoleWindow.AppendLog("Welcome to Butterfly! 🦋");
-                consoleWindow.AppendLog("Everything here was coded by 2014 🐰");
-                consoleWindow.AppendLog("You can contact me: https://discord.com/users/1187937891075231864 💤");
-                consoleWindow.AppendLog("I hope you enjoy it! ⚡");
-                consoleWindow.AppendLog("Waiting for events...");
+                consoleWindow.AppendLog(Butterfly.Services.LocalizationManager.GetString("Console_Welcome_1"));
+                consoleWindow.AppendLog(Butterfly.Services.LocalizationManager.GetString("Console_Welcome_2"));
+                consoleWindow.AppendLog(Butterfly.Services.LocalizationManager.GetString("Console_Welcome_3"));
             }
 
             // Initialize servers (moved from constructor)

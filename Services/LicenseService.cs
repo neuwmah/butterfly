@@ -239,7 +239,7 @@ namespace Butterfly.Services
                                 }
 
                                 // Only return valid if HWID exists and matches the machine
-                                Console.WriteLine($"[DB SUCCESS] Tier retrieved: {formattedTier}");
+                                Console.WriteLine($"Tier retrieved: {formattedTier}");
                                 return new LicenseValidationResult
                                 {
                                     IsValid = true,
@@ -382,7 +382,7 @@ namespace Butterfly.Services
                                     await updateCommand.ExecuteNonQueryAsync();
                                 }
 
-                                Console.WriteLine($"[DB SUCCESS Activate] Tier retrieved: {formattedTier}");
+                                Console.WriteLine($"Tier retrieved: {formattedTier}");
                                 return new LicenseValidationResult
                                 {
                                     IsValid = true,
@@ -397,7 +397,7 @@ namespace Butterfly.Services
                             {
                                 if (dbHwid == currentHwid)
                                 {
-                                    Console.WriteLine($"[DB SUCCESS Activate] Tier retrieved: {formattedTier}");
+                                    Console.WriteLine($"Tier retrieved: {formattedTier}");
                                     return new LicenseValidationResult
                                     {
                                         IsValid = true,

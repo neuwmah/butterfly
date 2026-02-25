@@ -5,7 +5,7 @@
     <!-- MainWindow XAML Strings -->
     <sys:String x:Key="Main_SelectServer">サーバーを選択</sys:String>
     <sys:String x:Key="Main_Server">サーバー</sys:String>
-    <sys:String x:Key="Main_Players">プレイヤー</sys:String>
+    <sys:String x:Key="Main_Players">ONLINE</sys:String>
     <sys:String x:Key="Main_ManageAccounts">アカウント管理</sys:String>
     <sys:String x:Key="Main_Character">キャラクター</sys:String>
     <sys:String x:Key="Main_Username">ユーザー名</sys:String>
@@ -14,7 +14,7 @@
     <sys:String x:Key="Main_EXP">経験値</sys:String>
     <sys:String x:Key="Main_ClickLeftToAdd">追加するには「左ボタン」をクリック</sys:String>
     <sys:String x:Key="Main_ClickRightForOptions">オプションは「右ボタン」をクリック</sys:String>
-    <sys:String x:Key="Main_UpdatingButterfly">Butterflyを更新中</sys:String>
+    <sys:String x:Key="Main_UpdatingButterfly">Butterfly を更新中</sys:String>
     <sys:String x:Key="Main_PleaseWait">お待ちください...</sys:String>
     
     <!-- Context Menu Items -->
@@ -71,13 +71,15 @@
     <sys:String x:Key="Update_FileIOError">ファイルI/Oエラー: アップデートファイルを書き込めません。ファイルが使用中かもしれません。({0})</sys:String>
     <sys:String x:Key="Update_NetworkError">ダウンロード中のネットワークエラー: {0}</sys:String>
     <sys:String x:Key="Update_DownloadTimeout">ダウンロードタイムアウト: 接続に時間がかかりすぎました。({0})</sys:String>
-    <sys:String x:Key="Update_ErrorFinalExeName">[エラー] finalExeNameはファイル名のみである必要がありますが、パスが含まれています: {0}</sys:String>
+    <sys:String x:Key="Update_ErrorFinalExeName">finalExeNameはファイル名のみである必要がありますが、パスが含まれています: {0}</sys:String>
     <sys:String x:Key="Update_ErrorGeneric">エラー: {0}</sys:String>
     <sys:String x:Key="Update_InstallationFailed">アップデートのインストールに失敗しました: {0}</sys:String>
     
     <!-- ConsoleWindow -->
     <sys:String x:Key="Console_Title">コンソール</sys:String>
-    <sys:String x:Key="Console_Welcome">Butterflyへようこそ！ 🦋&#x0a;2014が作成したすべてのコード 🐰&#x0a;Discordで連絡可能: 2014 💤&#x0a;お楽しみください！ ⚡&#x0a;イベント待機中...&#x0a;</sys:String>
+    <sys:String x:Key="Console_Welcome_1">Butterfly へようこそ！ 🦋</sys:String>
+    <sys:String x:Key="Console_Welcome_2">Discord: https://dsc.gg/butterflymixmaster</sys:String>
+    <sys:String x:Key="Console_Welcome_3">イベント待機中...</sys:String>
     
     <!-- Messages - Console Logs (Keeping technical terms in English where appropriate) -->
     <sys:String x:Key="Log_CannotStartMonitoring">監視を開始できません: 更新が進行中です。</sys:String>
@@ -88,7 +90,7 @@
     <sys:String x:Key="Log_RefreshSkipped">更新をスキップしました: アカウントが接続中です。</sys:String>
     <sys:String x:Key="Log_RefreshingOnce">一度更新中...</sys:String>
     <sys:String x:Key="Log_RefreshComplete">更新が完了しました。ステータスが更新されました。</sys:String>
-    <sys:String x:Key="Log_ConsoleCleared">コンソールがクリアされました。Butterflyをご利用いただきありがとうございます！ 🦋</sys:String>
+    <sys:String x:Key="Log_ConsoleCleared">コンソールがクリアされました。Butterfly をご利用いただきありがとうございます！ 🦋</sys:String>
     <sys:String x:Key="Log_UnknownCommand">不明なコマンド: '{0}'。使用可能なコマンドを表示するには 'help' を入力してください。</sys:String>
     <sys:String x:Key="Log_AvailableCommands">使用可能なコマンド:</sys:String>
     <sys:String x:Key="Log_CmdCls">cls, clear      - コンソールをクリア</sys:String>
@@ -116,7 +118,7 @@
     <sys:String x:Key="Log_ErrorLogsFolder">エラー: ログフォルダーのパスが利用できません。</sys:String>
     <sys:String x:Key="Log_OpenedLogsFolder">ログフォルダーを開きました: {0}</sys:String>
     <sys:String x:Key="Log_ErrorOpeningLogs">ログフォルダーを開くエラー: {0}</sys:String>
-    <sys:String x:Key="Log_ShuttingDown">[システム] Butterflyをシャットダウンしています... さようなら！</sys:String>
+    <sys:String x:Key="Log_ShuttingDown">[システム] Butterfly をシャットダウンしています... さようなら！</sys:String>
     <sys:String x:Key="Log_ErrorMonitoringLoop">監視ループのエラー: {0}</sys:String>
     <sys:String x:Key="Log_CharacterRemoved">キャラクター '{0}' が削除されました。</sys:String>
     <sys:String x:Key="Log_AccountsSaved">アカウントが '{0}' に保存されました ({1} アカウント)。</sys:String>
@@ -149,7 +151,7 @@
     <sys:String x:Key="Log_CoordinateLoginError">[{0}] 座標ベースのログインエラー: {1}</sys:String>
     <sys:String x:Key="Log_ErrorInvalidHandle">エラー: クリックに無効なウィンドウハンドル！</sys:String>
     <sys:String x:Key="Log_ErrorWindowNotVisible">エラー: ゲームウィンドウが表示されていません！</sys:String>
-    <sys:String x:Key="Log_WarningFightingFocus">[警告] フォーカスを取得しようとしています... 試行 {0}</sys:String>
+    <sys:String x:Key="Log_WarningFightingFocus">フォーカスを取得しようとしています... 試行 {0}</sys:String>
     <sys:String x:Key="Log_ErrorFailedFocus">エラー: 3回試行してもウィンドウフォーカスを取得できませんでした。クリックが中止されました。</sys:String>
     <sys:String x:Key="Log_ErrorConvertCoordinates">エラー: クライアント座標を画面座標に変換できませんでした！</sys:String>
     <sys:String x:Key="Log_ErrorInvalidHandleDoubleClick">エラー: ダブルクリックに無効なウィンドウハンドル (プロセス {0})！</sys:String>
@@ -180,6 +182,7 @@
     <sys:String x:Key="Log_ConnectingCharacterServer">キャラクター '{0}' をサーバーに接続中...</sys:String>
     <sys:String x:Key="Log_ConnectingCharacterMap">キャラクター '{0}' をゲームマップに接続中...</sys:String>
     <sys:String x:Key="Log_CheckingServerStatus">サーバー '{0}' のステータスを確認中...</sys:String>
+    <sys:String x:Key="Log_SuccessOnline">成功！オンライン: {0}</sys:String>
     <sys:String x:Key="Log_ExitingGameWindow">現在のゲームウィンドウを終了中...</sys:String>
     <sys:String x:Key="Log_CharacterDisconnectedStarting">キャラクターが切断されました。再接続を開始しています...</sys:String>
     <sys:String x:Key="Log_NewVersionDetected">新しいバージョンが検出されました。必須更新を開始しています...</sys:String>
@@ -187,7 +190,7 @@
     <sys:String x:Key="Log_WaitingForEvents">イベント待機中...</sys:String>
     
     <!-- MessageBox Messages -->
-    <sys:String x:Key="Msg_AdminRequired">Butterflyが正しく機能するには、管理者として実行する必要があります。&#x0a;&#x0a;アプリケーションを閉じて、管理者として実行してください (右クリック &gt; 管理者として実行)。</sys:String>
+    <sys:String x:Key="Msg_AdminRequired">Butterfly が正しく機能するには、管理者として実行する必要があります。&#x0a;&#x0a;アプリケーションを閉じて、管理者として実行してください (右クリック &gt; 管理者として実行)。</sys:String>
     <sys:String x:Key="Msg_AdminRequiredTitle">管理者権限が必要です</sys:String>
     <sys:String x:Key="Msg_ErrorSavingAccounts">アカウント保存エラー: {0}</sys:String>
     <sys:String x:Key="Msg_ErrorOpeningAccounts">アカウントを開くエラー: {0}</sys:String>

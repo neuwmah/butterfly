@@ -68,7 +68,7 @@ namespace Butterfly.Services
                 {
                     cache = ProcessOriginRanking();
                     // Success log for Origin even when online = 0 (so console doesn't stay 'silent')
-                    OnLogRequested?.Invoke($"Online: {cache.OnlineCount}", "SUCCESS");
+                    OnLogRequested?.Invoke(LocalizationManager.GetString("Log_SuccessOnline", cache.OnlineCount), "SUCCESS");
                     return cache;
                 }
                 else
@@ -108,7 +108,7 @@ namespace Butterfly.Services
                 }
                 
                 // Log de sucesso unificado no final - qualquer servidor que chegue aqui teve sucesso
-                OnLogRequested?.Invoke($"Online: {cache.OnlineCount}", "SUCCESS");
+                OnLogRequested?.Invoke(LocalizationManager.GetString("Log_SuccessOnline", cache.OnlineCount), "SUCCESS");
                 
                 return cache;
             }
