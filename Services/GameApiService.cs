@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using HtmlAgilityPack;
 using Butterfly.Models;
 
@@ -55,7 +56,9 @@ namespace Butterfly.Services
         {
             // Detectar qual servidor baseado na URL
             bool isMixMasterOrigin = rankingUrl.Contains("31.97.91.174");
-            string displayName = isMixMasterOrigin ? "MixMaster Origin" : (serverName ?? "server");
+            bool isMixMasterAdventure = rankingUrl.Contains("mixmasteradventure.com/api/v1/rankings");
+            string displayName = isMixMasterOrigin ? "MixMaster Origin" : 
+                                (isMixMasterAdventure ? "MixMaster Adventure" : (serverName ?? "server"));
             RankingCache? cache;
             
             try
@@ -78,15 +81,24 @@ namespace Butterfly.Services
                         return null;
                     }
 
-                    string html = await response.Content.ReadAsStringAsync();
+                    string content = await response.Content.ReadAsStringAsync();
                     
-                    if (string.IsNullOrWhiteSpace(html))
+                    if (string.IsNullOrWhiteSpace(content))
                     {
                         OnLogRequested?.Invoke($"Empty response received from '{displayName}'", "ERROR");
                         return null;
                     }
                     
-                    cache = ProcessSourceRanking(html);
+                    // Adventure: Process XML API response
+                    if (isMixMasterAdventure)
+                    {
+                        cache = ProcessAdventureRanking(content);
+                    }
+                    else
+                    {
+                        // Source: Process HTML response
+                        cache = ProcessSourceRanking(content);
+                    }
                 }
                 
                 // Aviso de ranking vazio apenas quando realmente estiver vazio
@@ -186,6 +198,76 @@ namespace Butterfly.Services
                         }
                     }
                 }
+            }
+
+            return cache;
+        }
+
+        /// <summary>
+        /// Processes MixMaster Adventure XML API to extract ranking data
+        /// </summary>
+        /// <param name="xmlContent">XML content from API response</param>
+        /// <returns>RankingCache with processed data</returns>
+        private RankingCache ProcessAdventureRanking(string xmlContent)
+        {
+            var cache = new RankingCache
+            {
+                LastUpdate = DateTime.Now
+            };
+
+            try
+            {
+                var doc = XDocument.Parse(xmlContent);
+                var items = doc.Descendants("item");
+
+                int onlineCount = 0;
+
+                foreach (var item in items)
+                {
+                    var characterNameElement = item.Element("character_name");
+                    var statusElement = item.Element("status");
+                    var levelElement = item.Element("level");
+                    var expElement = item.Element("exp");
+
+                    if (characterNameElement != null && statusElement != null)
+                    {
+                        var characterName = characterNameElement.Value.Trim();
+                        var status = statusElement.Value.Trim().ToLower();
+
+                        // Map status: "online" = true, "offline" = false
+                        bool isOnline = status == "online";
+                        cache.CharacterStatus[characterName] = isOnline;
+
+                        if (isOnline)
+                        {
+                            onlineCount++;
+                        }
+
+                        // Extract level if available
+                        if (levelElement != null && !string.IsNullOrWhiteSpace(levelElement.Value))
+                        {
+                            cache.CharacterLevel[characterName] = levelElement.Value.Trim();
+                        }
+
+                        // Extract experience if available
+                        if (expElement != null && !string.IsNullOrWhiteSpace(expElement.Value))
+                        {
+                            cache.CharacterExperience[characterName] = expElement.Value.Trim();
+                        }
+                    }
+                }
+
+                cache.OnlineCount = onlineCount;
+            }
+            catch (Exception ex)
+            {
+                // If XML parsing fails, return empty cache
+                OnLogRequested?.Invoke($"Failed to parse XML data: {ex.Message}", "ERROR");
+                return new RankingCache
+                {
+                    LastUpdate = DateTime.Now,
+                    OnlineCount = 0
+                };
             }
 
             return cache;

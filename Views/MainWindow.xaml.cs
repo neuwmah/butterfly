@@ -37,11 +37,24 @@ namespace Butterfly.Views
         private SemaphoreSlim checkStatusSemaphore = new SemaphoreSlim(1, 1);
         private static readonly SemaphoreSlim _reconnectionSemaphore = new SemaphoreSlim(1, 1); // Semaphore to control simultaneous reconnections
         
-        // Constant for game folder name (relative to executable directory)
-        private const string GAME_FOLDER_NAME = "MM Source Ultra";
-        
         // Application version
         public const string Version = "1.0.8";
+        
+        /// <summary>
+        /// Gets the game folder name based on the selected server
+        /// </summary>
+        private string GameFolderName
+        {
+            get
+            {
+                if (selectedServer == null)
+                {
+                    // Fallback to default if no server is selected
+                    return "MixMaster Source";
+                }
+                return selectedServer.Name;
+            }
+        }
         
         private Account? draggedItem = null;
         private Server? selectedServer = null;
@@ -886,6 +899,15 @@ namespace Butterfly.Views
                 Name = "MixMaster Source",
                 Url = "https://mixmastersource.com/",
                 RankingUrl = "https://mixmastersource.com/RankingHero?p=1&=1&count=500",
+                Status = "Idle",
+                OnlinePlayers = 0
+            });
+
+            viewModel.Servers.Add(new Server
+            {
+                Name = "MixMaster Adventure",
+                Url = "https://mixmasteradventure.com/",
+                RankingUrl = "https://mixmasteradventure.com/api/v1/rankings/hero?limit=1000",
                 Status = "Idle",
                 OnlinePlayers = 0
             });
@@ -2140,7 +2162,7 @@ namespace Butterfly.Views
             try
             {
                 // Game folder path (relative to executable directory)
-                string gameDirectory = Path.Combine(App.RealExecutablePath, GAME_FOLDER_NAME);
+                string gameDirectory = Path.Combine(App.RealExecutablePath, GameFolderName);
                 
                 // Check if folder exists
                 if (!Directory.Exists(gameDirectory))
@@ -2171,10 +2193,34 @@ namespace Butterfly.Views
                     });
                     return; // Exit try, finally will release semaphore
                 }
-                
-                // Build dynamic arguments using Account data
-                // Structure: "3.40125 92.113.38.54 101 0 {Username} {Password} 1 AURORA_BR"
-                string arguments = $"3.40125 92.113.38.54 101 0 {account.Username} {account.Password} 1 AURORA_BR";
+
+                // Build dynamic arguments based on selected server
+                string arguments;
+                if (selectedServer == null)
+                {
+                    // Fallback to Source arguments if no server is selected
+                    arguments = $"3.40125 92.113.38.54 101 0 {account.Username} {account.Password} 1 AURORA_BR";
+                }
+                else
+                {
+                    switch (selectedServer.Name)
+                    {
+                        case "MixMaster Source":
+                            arguments = $"3.40125 92.113.38.54 101 0 {account.Username} {account.Password} 1 AURORA_BR";
+                            break;
+                        case "MixMaster Adventure":
+                            arguments = $"3.40022 66.94.104.174 22005 0 {account.Username} {account.Password} 1 AURORA_BR";
+                            break;
+                        case "MixMaster Origin":
+                            // Origin: empty arguments for now
+                            arguments = string.Empty;
+                            break;
+                        default:
+                            // Fallback to Source arguments for unknown servers
+                            arguments = $"3.40125 92.113.38.54 101 0 {account.Username} {account.Password} 1 AURORA_BR";
+                            break;
+                    }
+                }
                 
                 // Start MixMaster.exe directly with arguments
                 ProcessStartInfo startInfo = new ProcessStartInfo
