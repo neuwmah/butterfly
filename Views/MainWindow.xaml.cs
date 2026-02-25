@@ -2163,7 +2163,7 @@ namespace Butterfly.Views
                             arguments = $"3.40125 92.113.38.54 101 0 {account.Username} {account.Password} 1 AURORA_BR";
                             break;
                         case "MixMaster Adventure":
-                            arguments = $"3.40022 66.94.104.174 22005 0 {account.Username} {account.Password} 1 AURORA_BR";
+                            arguments = $"3.85511 54.39.96.194 22005 0 {account.Username} {account.Password} 1 AURORA_BR";
                             break;
                         case "MixMaster Origin":
                             // Origin: empty arguments for now
