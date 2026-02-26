@@ -3337,6 +3337,13 @@ namespace Butterfly.Views
             }
         }
 
+        private void AccountsGrid_GiveFeedback(object sender, GiveFeedbackEventArgs e)
+        {
+            e.UseDefaultCursors = false;
+            Mouse.SetCursor(Cursors.SizeNS);
+            e.Handled = true;
+        }
+
         private T? FindParent<T>(DependencyObject child) where T : DependencyObject
         {
             DependencyObject parentObject = System.Windows.Media.VisualTreeHelper.GetParent(child);

@@ -1018,6 +1018,7 @@
                              SelectionChanged="AccountsGrid_SelectionChanged"
                              AllowDrop="True"
                              PreviewMouseMove="AccountsGrid_PreviewMouseMove"
+                             GiveFeedback="AccountsGrid_GiveFeedback"
                              DragOver="AccountsGrid_DragOver"
                              Drop="AccountsGrid_Drop">
                     
