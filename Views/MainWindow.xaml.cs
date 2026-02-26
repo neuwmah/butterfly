@@ -553,8 +553,6 @@ namespace Butterfly.Views
                 { "cls", (args) => { consoleWindow?.ClearLog(); LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_ConsoleCleared"), "INFO"); } },
                 { "clear", (args) => { consoleWindow?.ClearLog(); LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_ConsoleCleared"), "INFO"); } },
                 { "help", (args) => ExecuteHelpCommand() },
-                { "stats", (args) => ExecuteStatsCommand() },
-                { "reconnect", (args) => ExecuteReconnectCommand(args) },
                 { "logs", (args) => ExecuteLogsCommand() },
                 { "display", (args) => ExecuteToggleGameWindowsCommand() },
                 { "exit", (args) => ExecuteExitCommand() }
@@ -566,7 +564,6 @@ namespace Butterfly.Views
             }
             else
             {
-                // Unknown command
                 LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_UnknownCommand", originalCommand), "INFO");
             }
         }
@@ -576,67 +573,10 @@ namespace Butterfly.Views
             LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_AvailableCommands"), "INFO");
             LogToConsole("  " + Butterfly.Services.LocalizationManager.GetString("Log_CmdCls"), "INFO");
             LogToConsole("  " + Butterfly.Services.LocalizationManager.GetString("Log_CmdStats"), "INFO");
-            LogToConsole("  " + Butterfly.Services.LocalizationManager.GetString("Log_CmdReconnect"), "INFO");
             LogToConsole("  " + Butterfly.Services.LocalizationManager.GetString("Log_CmdLogs"), "INFO");
             LogToConsole("  " + Butterfly.Services.LocalizationManager.GetString("Log_CmdDisplay"), "INFO");
             LogToConsole("  " + Butterfly.Services.LocalizationManager.GetString("Log_CmdHelp"), "INFO");
             LogToConsole("  " + Butterfly.Services.LocalizationManager.GetString("Log_CmdExit"), "INFO");
-        }
-
-        private void ExecuteStatsCommand()
-        {
-            var stats = GetAccountStats();
-            if (stats == null)
-            {
-                LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_ErrorStats"), "INFO");
-                return;
-            }
-
-            var accountsList = GetAllAccounts();
-            if (accountsList != null && accountsList.Count > 0)
-            {
-                LogToConsole("\n" + Butterfly.Services.LocalizationManager.GetString("Log_CharactersStatus") + "\n", "INFO");
-                foreach (var account in accountsList)
-                {
-                    string status = account.Status;
-                    if (status == "Online")
-                    {
-                        LogToConsole("  " + Butterfly.Services.LocalizationManager.GetString("Log_CharacterOnline", account.Character), "INFO");
-                    }
-                    else if (status == "Offline")
-                    {
-                        LogToConsole("  " + Butterfly.Services.LocalizationManager.GetString("Log_CharacterOffline", account.Character), "INFO");
-                    }
-                    else
-                    {
-                        LogToConsole("  " + Butterfly.Services.LocalizationManager.GetString("Log_CharacterStatus", account.Character, status), "INFO");
-                    }
-                }
-                LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_CharactersStatusEnd") + "\n", "INFO");
-            }
-            else
-            {
-                LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_NoCharactersFound"), "INFO");
-            }
-        }
-
-        private void ExecuteReconnectCommand(string characterName)
-        {
-            if (string.IsNullOrWhiteSpace(characterName))
-            {
-                LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_ReconnectUsage"), "INFO");
-                return;
-            }
-
-            var success = ReconnectCharacter(characterName.Trim());
-            if (success)
-            {
-                LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_ReconnectInitiated", characterName), "INFO");
-            }
-            else
-            {
-                LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_CharacterNotFound", characterName), "INFO");
-            }
         }
 
         private void ExecuteToggleGameWindowsCommand()
@@ -2286,24 +2226,6 @@ namespace Butterfly.Views
             return true; // Continue enumeration
         }
 
-        private void ListAllVisibleWindows()
-        {
-            LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_ListingVisibleWindows"), "INFO");
-            Win32Service.EnumWindows((hWnd, lParam) =>
-            {
-                if (Win32Service.IsWindowVisible(hWnd))
-                {
-                    string title = GetWindowTitle(hWnd);
-                    if (!string.IsNullOrWhiteSpace(title))
-                    {
-                        LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_WindowInfo", title, hWnd), "INFO");
-                    }
-                }
-                return true;
-            }, IntPtr.Zero);
-            LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_EndWindowList"), "INFO");
-        }
-
         /// <summary>
         /// Waits for launcher MainWindowHandle using only PID (no enumeration).
         /// RULE: Never uses FindWindow or enumeration - only process MainWindowHandle by PID.
@@ -2312,171 +2234,6 @@ namespace Butterfly.Views
         {
             // Use same robust wait function for handle
             return await WaitForWindowHandleByProcessId(processId, maxAttempts: timeoutSeconds * 2, delayMs: 500, account);
-        }
-
-        private void ListWindowsForProcess(int processId)
-        {
-            LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_ListingWindowsPID", processId), "INFO");
-            int count = 0;
-            
-            Win32Service.EnumWindows((hWnd, lParam) =>
-            {
-                GetWindowThreadProcessId(hWnd, out uint windowProcessId);
-                
-                if (windowProcessId == processId)
-                {
-                    string title = GetWindowTitle(hWnd);
-                    bool visible = IsWindowVisible(hWnd);
-                    LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_WindowInfoDetailed", title, hWnd, visible), "INFO");
-                    count++;
-                }
-                return true;
-            }, IntPtr.Zero);
-            
-            if (count == 0)
-            {
-                LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_NoWindowsFound"), "INFO");
-            }
-            LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_TotalWindows", count), "INFO");
-        }
-
-        private async Task<bool> PerformAutoLogin(IntPtr launcherWindow, Account account)
-        {
-            try
-            {
-                // Wait a bit to ensure window is fully loaded
-                await Task.Delay(2000);
-                
-                // Find all window controls
-                List<IntPtr> controls = FindAllChildControls(launcherWindow);
-                
-                
-                // Try to identify controls by type and order
-                IntPtr usernameTextBox = IntPtr.Zero;
-                IntPtr passwordTextBox = IntPtr.Zero;
-                IntPtr loginButton = IntPtr.Zero;
-                List<IntPtr> buttonCandidates = new List<IntPtr>();
-                
-                // Search for TextBoxes and ANY control that could be the PLAY button
-                List<IntPtr> editControls = new List<IntPtr>();
-                List<IntPtr> allControlsWithText = new List<IntPtr>();
-                
-                foreach (var ctrl in controls)
-                {
-                    string className = Win32Service.GetClassName(ctrl);
-                    string controlText = GetWindowTitle(ctrl).Trim();
-                    
-                    // Search for UNIQUE Edit controls
-                    if ((className.Contains("Edit") || className == "Edit") && 
-                        !className.Contains("Button") && 
-                        !editControls.Contains(ctrl))
-                    {
-                        editControls.Add(ctrl);
-                    }
-                    else if (className.Contains("Button") || className == "Button")
-                    {
-                        buttonCandidates.Add(ctrl);
-                    }
-                    
-                    // Search SPECIFICALLY for "JOGAR" (exact and uppercase)
-                    if (controlText.ToUpper() == "JOGAR" && loginButton == IntPtr.Zero)
-                    {
-                        loginButton = ctrl;
-                        // DON'T break here - continue to get all Edit controls
-                    }
-                }
-                
-                // Identify username and password
-                if (editControls.Count >= 2)
-                {
-                    usernameTextBox = editControls[0];
-                    passwordTextBox = editControls[1];
-                }
-                
-                // Analyze buttons ONLY if "JOGAR" control not found yet
-                if (loginButton == IntPtr.Zero && buttonCandidates.Count > 0)
-                {
-                    foreach (var btn in buttonCandidates)
-                    {
-                        string buttonText = GetWindowTitle(btn).Trim().ToLower();
-                        
-                        // Search for positive keywords
-                        if (buttonText.Contains("jogar") || buttonText.Contains("entrar") || 
-                            buttonText.Contains("login") || buttonText.Contains("start") ||
-                            buttonText.Contains("enter") || buttonText.Contains("play"))
-                        {
-                            loginButton = btn;
-                            await Dispatcher.InvokeAsync(() =>
-                            {
-                                LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_LoginButtonFound", account.Character, GetWindowTitle(btn)), "SUCCESS");
-                            });
-                            break;
-                        }
-                        
-                        // Avoid unwanted buttons
-                        if (buttonText.Contains("sair") || buttonText.Contains("exit") || 
-                            buttonText.Contains("fechar") || buttonText.Contains("close") ||
-                            buttonText.Contains("×") || buttonText.Contains("✕") ||
-                            buttonText.Contains("―") || buttonText.Contains("cancelar") ||
-                            buttonText.Contains("cancel"))
-                        {
-                            continue;
-                        }
-                    }
-                }
-                
-                // If controls not found, try alternative coordinate-based approach
-                if (usernameTextBox == IntPtr.Zero || passwordTextBox == IntPtr.Zero)
-                {
-                    await Dispatcher.InvokeAsync(() =>
-                    {
-                        LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_ControlsNotFound", account.Character), "INFO");
-                    });
-                    
-                    return await PerformAutoLoginByCoordinates(launcherWindow, account);
-                }
-                
-                // Fill username using WM_SETTEXT
-                await SetControlText(usernameTextBox, account.Username);
-                await Task.Delay(300);
-                
-                // Fill password using WM_SETTEXT
-                await SetControlText(passwordTextBox, account.Password);
-                await Task.Delay(300);
-                
-                // Click login button
-                if (loginButton != IntPtr.Zero)
-                {
-                    // Try multiple methods to ensure it works
-                    Win32Service.SendMessage(loginButton, Win32Service.BM_CLICK, IntPtr.Zero, IntPtr.Zero);
-                    await Task.Delay(200);
-                    await ClickButton(loginButton);
-                    await Task.Delay(200);
-                    await SendKey(launcherWindow, Win32Service.VK_RETURN);
-                }
-                else
-                {
-                    await Dispatcher.InvokeAsync(() =>
-                    {
-                        LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_ButtonNotFound", account.Character), "WARNING");
-                    });
-                    await SendKey(launcherWindow, Win32Service.VK_RETURN);
-                    await Task.Delay(200);
-                    await SendKey(launcherWindow, Win32Service.VK_RETURN);
-                }
-                
-                await Task.Delay(500);
-                
-                return true;
-            }
-            catch (Exception ex)
-            {
-                await Dispatcher.InvokeAsync(() =>
-                {
-                    LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_AutoLoginError", account.Character, ex.Message), "ERROR");
-                });
-                return false;
-            }
         }
 
         private async Task<bool> PerformAutoLoginByCoordinates(IntPtr launcherWindow, Account account)
@@ -2601,7 +2358,7 @@ namespace Butterfly.Views
         /// Uses WaitForInputIdle followed by Refresh() loop until handle is available.
         /// RULE: Never uses FindWindow or enumeration - only process MainWindowHandle by PID.
         /// </summary>
-        private async Task<IntPtr> WaitForWindowHandleByProcessId(int processId, int maxAttempts = 30, int delayMs = 500, Account? account = null)
+        private async Task<IntPtr> WaitForWindowHandleByProcessId(int processId, int maxAttempts = 10, int delayMs = 500, Account? account = null)
         {
             Process? process = null;
             
@@ -3285,7 +3042,7 @@ namespace Butterfly.Views
                 await Dispatcher.InvokeAsync(() =>
                 {
                     isConnecting = true;
-                    LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_WaitingServerScreen"), account.Character);
+                    LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_WaitingServerScreen", account.Character), "");
                 });
                 
                 // WAIT ROBUSTLY FOR HANDLE using only PID (no enumeration)
@@ -3336,14 +3093,14 @@ namespace Butterfly.Views
                     {
                         isConnecting = false;
                         account.GameProcessId = 0; // Clear PID to force new search
-                        LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_ServerScreenTimeout"), account.Character);
+                        LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_ServerScreenTimeout", account.Character), "");
                     });
                     return;
                 }
                 
                 await Dispatcher.InvokeAsync(() =>
                 {
-                    LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_ServerScreenDetected"), account.Character);
+                    LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_ServerScreenDetected", account.Character), "");
                 });
                 
                 // FOCUS PERSISTENCE LOOP: Try to get focus up to 3 times
@@ -3415,7 +3172,7 @@ namespace Butterfly.Views
                 
                 await Dispatcher.InvokeAsync(() =>
                 {
-                    LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_ConnectingToServer"), account.Character);
+                    LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_ConnectingToServer", account.Character), "");
                 });
                 
                 // Coordinates relative to window Client Area (1024x768)
@@ -3429,7 +3186,7 @@ namespace Butterfly.Views
                 // WAIT FOR CHARACTER SELECTION SCREEN (automatic detection already waits)
                 await Dispatcher.InvokeAsync(() =>
                 {
-                    LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_WaitingCharacterScreen"), account.Character);
+                    LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_WaitingCharacterScreen", account.Character), "");
                 });
                 
                 bool characterScreenDetected = await WaitForCharacterSelectionScreen(gameWindow, processId, account);
@@ -3441,14 +3198,14 @@ namespace Butterfly.Views
                     {
                         isConnecting = false;
                         account.GameProcessId = 0; // Clear PID to force new search
-                        LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_CharacterScreenTimeout"), account.Character);
+                        LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_CharacterScreenTimeout", account.Character), "");
                     });
                     return;
                 }
                 
                 await Dispatcher.InvokeAsync(() =>
                 {
-                    LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_CharacterScreenDetected"), account.Character);
+                    LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_CharacterScreenDetected", account.Character), "");
                 });
                 
                 // Click ENTER button (coordinates relative to Client Area: 600, 654)
@@ -3458,7 +3215,7 @@ namespace Butterfly.Views
                 
                 await Dispatcher.InvokeAsync(() =>
                 {
-                    LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_ConnectingToCharacter"), account.Character);
+                    LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_ConnectingToCharacter", account.Character), "");
                 });
                 
                 // Robust double-click on Enter button using specific function (with processId to get handle dynamically)
@@ -3467,7 +3224,7 @@ namespace Butterfly.Views
                 // WAIT TO ENTER GAME MAP
                 await Dispatcher.InvokeAsync(() =>
                 {
-                    LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_WaitingGameMap"), account.Character);
+                    LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_WaitingGameMap", account.Character), "");
                 });
                 
                 bool mapLoaded = await WaitForGameMapLoad(gameWindow, processId, account);
@@ -3479,20 +3236,20 @@ namespace Butterfly.Views
                     {
                         isConnecting = false;
                         account.GameProcessId = 0; // Clear PID to force new search
-                        LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_GameMapTimeout"), account.Character);
+                        LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_GameMapTimeout", account.Character), "");
                     });
                     return;
                 }
                 
                 await Dispatcher.InvokeAsync(() =>
                 {
-                    LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_Connected"), account.Character);
+                    LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_Connected", account.Character), "");
                 });
                 
                 // PRESS F12 TO ACTIVATE AUTOPLAY (map already loaded)
                 await Dispatcher.InvokeAsync(() =>
                 {
-                    LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_ActivatingAutoPlay"), account.Character);
+                    LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_ActivatingAutoPlay", account.Character), "");
                 });
                 
                 // Send F12 using processId to get handle dynamically
@@ -3500,7 +3257,7 @@ namespace Butterfly.Views
                 
                 await Dispatcher.InvokeAsync(() =>
                 {
-                    LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_AutoPlayActivated"), account.Character);
+                    LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_AutoPlayActivated", account.Character), "");
                 });
                 
                 // Wait 2 seconds for server to update character status in ranking
@@ -4035,8 +3792,8 @@ namespace Butterfly.Views
                     // On first iteration, skip delay and individual check (already detected offline in global return)
                     if (!isFirstIteration)
                     {
-                        // Wait 5 seconds before trying to reconnect again (after failure)
-                        await Task.Delay(5000);
+                        // Wait 1 second before trying to reconnect again (after failure)
+                        await Task.Delay(1000);
                         
                         // Do individual refresh to check current status (only in subsequent iterations)
                         bool isOnline = await RefreshIndividualAccount(account);
@@ -4063,7 +3820,7 @@ namespace Butterfly.Views
                         // First iteration: immediate reconnection log
                         await Dispatcher.InvokeAsync(() =>
                         {
-                            LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_CharacterDisconnectedStarting"), characterName);
+                            LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_CharacterDisconnectedStarting", characterName), "");
                         });
                         isFirstIteration = false;
                     }
@@ -4078,7 +3835,7 @@ namespace Butterfly.Views
                     {
                         // Game connected successfully - WaitAndMonitorGameProcess will call Play()
                         // Wait a bit to ensure process was started
-                        await Task.Delay(2000);
+                        await Task.Delay(1000);
                         break;
                     }
                     

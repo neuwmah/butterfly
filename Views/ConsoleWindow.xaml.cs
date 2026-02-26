@@ -311,8 +311,6 @@ namespace Butterfly.Views
                 { "cls", (args) => ExecuteClearCommand() },
                 { "clear", (args) => ExecuteClearCommand() },
                 { "help", (args) => ExecuteHelpCommand() },
-                { "stats", (args) => ExecuteStatsCommand() },
-                { "reconnect", (args) => ExecuteReconnectCommand(args) },
                 { "logs", (args) => ExecuteLogsCommand() },
                 { "display", (args) => ExecuteToggleGameWindowsCommand() },
                 { "exit", (args) => ExecuteExitCommand() }
@@ -344,14 +342,11 @@ namespace Butterfly.Views
 
         private void ExecuteHelpCommand()
         {
-            AppendLog("Available commands:\n");
-            AppendLog("  cls, clear      - Clear the console\n");
-            AppendLog("  stats           - Show accounts current stats\n");
-            AppendLog("  reconnect <n>   - Reconnect a single account\n");
-            AppendLog("  logs            - Open the logs folder\n");
-            AppendLog("  display         - Toggle visibility of all game windows\n");
-            AppendLog("  help            - Show this menu\n");
-            AppendLog("  exit            - Closes the application\n");
+            AppendLog("clear - Clear the console\n");
+            AppendLog("logs - Open the logs folder\n");
+            AppendLog("display - Toggle visibility of all game windows\n");
+            AppendLog("help - Show this menu\n");
+            AppendLog("exit - Closes the application\n");
         }
 
         private void ExecuteToggleGameWindowsCommand()
@@ -363,74 +358,6 @@ namespace Butterfly.Views
             }
 
             mainWindow.ToggleGameWindows();
-        }
-
-        private void ExecuteStatsCommand()
-        {
-            if (mainWindow == null)
-            {
-                AppendLog("Error: MainWindow not available.\n");
-                return;
-            }
-
-            var stats = mainWindow.GetAccountStats();
-            if (stats == null)
-            {
-                AppendLog("Error: Could not retrieve account statistics.\n");
-                return;
-            }
-
-            var accounts = mainWindow.GetAllAccounts();
-            if (accounts != null && accounts.Count > 0)
-            {
-                AppendLog($"\n=== Characters Status ===\n");
-                foreach (var account in accounts)
-                {
-                    string status = account.Status;
-                    if (status == "Online")
-                    {
-                        AppendLog($"  {account.Character}: Online\n");
-                    }
-                    else if (status == "Offline")
-                    {
-                        AppendLog($"  {account.Character}: Offline\n");
-                    }
-                    else
-                    {
-                        AppendLog($"  {account.Character}: {status}\n");
-                    }
-                }
-                AppendLog($"==========================\n\n");
-            }
-            else
-            {
-                AppendLog("No characters found.\n");
-            }
-        }
-
-        private void ExecuteReconnectCommand(string characterName)
-        {
-            if (mainWindow == null)
-            {
-                AppendLog("Error: MainWindow not available.\n");
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(characterName))
-            {
-                AppendLog("Usage: reconnect <character_name>\n");
-                return;
-            }
-
-            var success = mainWindow.ReconnectCharacter(characterName.Trim());
-            if (success)
-            {
-                AppendLog($"Reconnection initiated for '{characterName}'.\n");
-            }
-            else
-            {
-                AppendLog($"Character '{characterName}' not found.\n");
-            }
         }
 
         private void ExecuteLogsCommand()
