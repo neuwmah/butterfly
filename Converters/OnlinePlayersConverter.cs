@@ -10,17 +10,14 @@ namespace Butterfly.Converters
         {
             if (values.Length == 2 && values[0] is int onlinePlayers && values[1] is string status)
             {
-                // Return empty string if value is 0, null or not available
                 if (onlinePlayers == 0 || string.IsNullOrEmpty(status) || status == "-")
                 {
                     return string.Empty;
                 }
                 
-                // Return only the number
                 return onlinePlayers.ToString();
             }
             
-            // Return empty string if there are no valid values
             return string.Empty;
         }
 

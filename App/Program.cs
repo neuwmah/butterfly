@@ -11,21 +11,12 @@ namespace Butterfly
 {
     public partial class App : Application
     {
-        /// <summary>
-        /// Gets the real path of the executable directory, ignoring the temporary folder from Single File Publish
-        /// </summary>
         public static string RealExecutablePath => Path.GetDirectoryName(Environment.ProcessPath) ?? AppContext.BaseDirectory;
 
-        /// <summary>
-        /// Event fired when the license type changes
-        /// </summary>
         public static event Action<string>? OnLicenseTypeChanged;
         
         private static string _licenseType = "";
         
-        /// <summary>
-        /// User's license type (e.g.: "Free", "Pro", "Pro+")
-        /// </summary>
         public static string LicenseType 
         { 
             get => _licenseType; 
@@ -36,29 +27,19 @@ namespace Butterfly
             } 
         }
 
-        /// <summary>
-        /// Gets the formatted window title with the tier information.
-        /// Adds rabbit emoji 🐰 only in DEBUG mode (dotnet run).
-        /// </summary>
-        /// <param name="tier">The license tier (e.g., "Pro", "Pro+", "Free", or null/empty)</param>
-        /// <returns>The formatted title string</returns>
         public static string GetFormattedTitle(string tier)
         {
-            // Base title that always appears
             string title;
             
-            // Clean title if no license or Free
             if (string.IsNullOrEmpty(tier) || tier.Equals("Free", StringComparison.OrdinalIgnoreCase))
             {
                 title = "Butterfly";
             }
             else
             {
-                // Display tier only for Pro, Pro+, etc.
                 title = $"Butterfly ({tier})";
             }
 
-            // Add rabbit emoji only if in Debug mode (dotnet run)
 #if DEBUG
             title += " 🐰";
 #endif
@@ -68,16 +49,13 @@ namespace Butterfly
 
         public App()
         {
-            // Handle unhandled exceptions in the UI thread
             this.DispatcherUnhandledException += App_DispatcherUnhandledException;
             
-            // Handle unhandled exceptions in other threads
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
         }
 
         private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            // Log error if possible (without throwing a new exception)
             try
             {
                 string errorMsg = $"Unhandled UI Exception: {e.Exception?.Message ?? "Unknown"}";
@@ -86,7 +64,6 @@ namespace Butterfly
             }
             catch { }
 
-            // Try to show message to user
             try
             {
                 MessageBox.Show(
@@ -98,13 +75,11 @@ namespace Butterfly
             }
             catch { }
 
-            // Mark as handled to prevent app shutdown
             e.Handled = true;
         }
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            // Log error if possible (without throwing a new exception)
             try
             {
                 Exception? ex = e.ExceptionObject as Exception;
@@ -115,7 +90,6 @@ namespace Butterfly
             }
             catch { }
 
-            // Try to show message to user (only if not terminating)
             if (!e.IsTerminating)
             {
                 try
@@ -136,17 +110,11 @@ namespace Butterfly
         {
             try
             {
-                // Initialize localization FIRST (before any windows are created)
-                // LocalizationManager constructor loads saved preference, but SwitchLanguage may not apply
-                // if Application.Current wasn't available. Ensure language is applied now.
                 var localizationManager = Butterfly.Services.LocalizationManager.Instance;
                 localizationManager.SwitchLanguage(localizationManager.CurrentLanguageCode);
                 
-                // CRITICAL: Set ShutdownMode to OnExplicitShutdown to prevent app from closing
-                // when SplashWindow closes before MainWindow is shown
                 this.ShutdownMode = ShutdownMode.OnExplicitShutdown;
                 
-                // Step 1: Verify BaseDirectory
                 string baseDir = AppDomain.CurrentDomain.BaseDirectory;
                 if (string.IsNullOrEmpty(baseDir) || !Directory.Exists(baseDir))
                 {
@@ -161,7 +129,6 @@ namespace Butterfly
                     return;
                 }
 
-                // Step 2: Configure TLS protocols (without blocking)
                 try
                 {
                     System.Net.ServicePointManager.SecurityProtocol = 
@@ -172,25 +139,21 @@ namespace Butterfly
                 }
                 catch
                 {
-                    // Continue even if TLS fails
+                    // continue even if TLS fails
                 }
                 
-                // Step 3: Call base.OnStartup (CRITICAL - must be called)
                 base.OnStartup(e);
                 
-                // Step 4: SHOW WINDOW FIRST (before any heavy processing)
                 Views.SplashWindow? splashWindow = null;
                 try
                 {
                     splashWindow = new Views.SplashWindow();
                     splashWindow.Show();
                     
-                    // Force immediate rendering
                     splashWindow.Dispatcher.Invoke(DispatcherPriority.Render, new Action(() => { }));
                 }
                 catch (Exception ex)
                 {
-                    // If splash fails, try to show LicenseKeyWindow directly
                     try
                     {
                         var licenseWindow = new Views.LicenseKeyWindow();
@@ -198,7 +161,6 @@ namespace Butterfly
                         this.MainWindow = licenseWindow;
                         licenseWindow.Activate();
                         
-                        // Restore normal shutdown mode (no splash transition needed)
                         this.ShutdownMode = ShutdownMode.OnMainWindowClose;
                     }
                     catch (Exception ex2)
@@ -214,17 +176,14 @@ namespace Butterfly
                     }
                 }
                 
-                // Step 5: Process license in background (WITHOUT blocking the UI)
-                // The window is already shown, so we can process license without rush
                 const string LICENSE_FILE = "license.key";
                 string licensePath = Path.Combine(baseDir, LICENSE_FILE);
                 
-                // Process license asynchronously, but without blocking
                 _ = Task.Run(async () =>
                 {
                     try
                     {
-                        await Task.Delay(500); // Give time for splash to render
+                        await Task.Delay(500);
                         
                         if (File.Exists(licensePath))
                         {
@@ -235,10 +194,8 @@ namespace Butterfly
                                 var licenseService = new LicenseService();
                                 var result = await licenseService.ValidateLicenseAsync(savedKey);
                                 
-                                // Return to UI thread to update App.LicenseType (thread safety)
                                 await Application.Current.Dispatcher.InvokeAsync(async () =>
                                 {
-                                    // Ensure App.LicenseType is updated before creating windows
                                     if (result.IsValid && !string.IsNullOrEmpty(result.Tier))
                                     {
                                         App.LicenseType = result.Tier;
@@ -260,12 +217,10 @@ namespace Butterfly
                                     
                                     if (nextWindow != null)
                                     {
-                                        // Show new window BEFORE closing splash (atomic transition)
                                         nextWindow.Show();
                                         this.MainWindow = nextWindow;
                                         nextWindow.Activate();
                                         
-                                        // Close splash only after new window is shown
                                         try
                                         {
                                             if (splashWindow != null)
@@ -276,7 +231,6 @@ namespace Butterfly
                                         }
                                         catch { }
                                         
-                                        // Restore normal shutdown mode after successful transition
                                         this.ShutdownMode = ShutdownMode.OnMainWindowClose;
                                     }
                                 });
@@ -284,16 +238,13 @@ namespace Butterfly
                             }
                         }
                         
-                        // If license does not exist or is empty
                         await Application.Current.Dispatcher.InvokeAsync(async () =>
                         {
-                            // Create and show new window BEFORE closing splash (atomic transition)
                             var licenseWindow = new Views.LicenseKeyWindow();
                             licenseWindow.Show();
                             this.MainWindow = licenseWindow;
                             licenseWindow.Activate();
                             
-                            // Close splash only after new window is shown
                             try
                             {
                                 if (splashWindow != null)
@@ -304,26 +255,22 @@ namespace Butterfly
                             }
                             catch { }
                             
-                            // Restore normal shutdown mode after successful transition
                             this.ShutdownMode = ShutdownMode.OnMainWindowClose;
                         });
                     }
                     catch
                     {
-                        // In case of error, show LicenseKeyWindow
                         try
                         {
                             await Application.Current.Dispatcher.InvokeAsync(async () =>
                             {
                                 try { if (File.Exists(licensePath)) File.Delete(licensePath); } catch { }
                                 
-                                // Create and show new window BEFORE closing splash (atomic transition)
                                 var licenseWindow = new Views.LicenseKeyWindow();
                                 licenseWindow.Show();
                                 this.MainWindow = licenseWindow;
                                 licenseWindow.Activate();
                                 
-                                // Close splash only after new window is shown
                                 try
                                 {
                                     if (splashWindow != null)
@@ -334,7 +281,6 @@ namespace Butterfly
                                 }
                                 catch { }
                                 
-                                // Restore normal shutdown mode after successful transition
                                 this.ShutdownMode = ShutdownMode.OnMainWindowClose;
                             });
                         }
@@ -343,9 +289,7 @@ namespace Butterfly
                 });
             }
             catch (Exception ex)
-            {
-                // Last line of defense - catch any unhandled exception in OnStartup
-                
+            {                
                 try
                 {
                     MessageBox.Show(
@@ -357,11 +301,9 @@ namespace Butterfly
                 }
                 catch
                 {
-                    // If even MessageBox fails, at least log
                     System.Diagnostics.Debug.WriteLine("Fatal error during startup - unable to show message");
                 }
                 
-                // Shutdown application if there is a critical error during initialization
                 this.Shutdown();
             }
         }

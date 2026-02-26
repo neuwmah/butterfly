@@ -2,9 +2,6 @@ using System.ComponentModel;
 
 namespace Butterfly.Models
 {
-    /// <summary>
-    /// Modelo de servidor do jogo
-    /// </summary>
     public class Server : INotifyPropertyChanged
     {
         private string name = string.Empty;

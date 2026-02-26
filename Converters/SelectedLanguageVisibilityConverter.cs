@@ -19,7 +19,6 @@ namespace Butterfly.Converters
             if (currentLanguage == null || selectedLanguage == null)
                 return Visibility.Visible;
 
-            // Hide if current language is the same as selected language
             if (currentLanguage.Code == selectedLanguage.Code)
                 return Visibility.Collapsed;
 

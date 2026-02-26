@@ -6,9 +6,6 @@ using Butterfly.Models;
 
 namespace Butterfly.Services
 {
-    /// <summary>
-    /// Service for account data persistence
-    /// </summary>
     public class AccountDataService
     {
         private readonly string _filePath;
@@ -18,10 +15,6 @@ namespace Butterfly.Services
             _filePath = filePath;
         }
 
-        /// <summary>
-        /// Loads accounts from file automatically
-        /// </summary>
-        /// <returns>List of accounts loaded from file</returns>
         public List<Account> LoadAccounts()
         {
             var loadedAccounts = new List<Account>();
@@ -56,25 +49,20 @@ namespace Butterfly.Services
             }
             catch
             {
-                // Silently ignore loading errors
+                // silently ignore loading errors
             }
 
             return loadedAccounts;
         }
 
-        /// <summary>
-        /// Saves accounts to file automatically
-        /// </summary>
         public void SaveAccounts(IEnumerable<Account> accounts)
         {
             try
             {
-                // Ensure directory exists before saving
                 string? directory = Path.GetDirectoryName(_filePath);
                 if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
                 {
                     var directoryInfo = Directory.CreateDirectory(directory);
-                    // Make .Butterfly folder hidden if it's the root directory
                     if (directory.EndsWith(".Butterfly", StringComparison.OrdinalIgnoreCase))
                     {
                         if ((directoryInfo.Attributes & FileAttributes.Hidden) != FileAttributes.Hidden)
@@ -84,7 +72,6 @@ namespace Butterfly.Services
                     }
                     else
                     {
-                        // Check if parent directory is .Butterfly and make it hidden
                         var parentDir = Directory.GetParent(directory);
                         if (parentDir != null && parentDir.Name.Equals(".Butterfly", StringComparison.OrdinalIgnoreCase))
                         {
@@ -102,7 +89,7 @@ namespace Butterfly.Services
             }
             catch
             {
-                // Silently ignore save errors
+                // silently ignore save errors
             }
         }
     }

@@ -10,22 +10,14 @@ using Butterfly.Models;
 
 namespace Butterfly.Services
 {
-    /// <summary>
-    /// Service for HTTP communication with game APIs and HTML parsing
-    /// </summary>
     public class GameApiService
     {
         private readonly HttpClient _httpClient;
         
-        /// <summary>
-        /// Event to log messages in the UI (connected to MainWindow's LogToConsole)
-        /// </summary>
         public Action<string, string>? OnLogRequested { get; set; }
 
         public GameApiService()
         {
-            // Configure HttpClientHandler with custom SSL validation
-            // This allows ignoring expired/invalid SSL certificate errors
             var handler = new HttpClientHandler
             {
                 ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
@@ -35,9 +27,6 @@ namespace Butterfly.Services
             ConfigureHttpClient();
         }
 
-        /// <summary>
-        /// Configures HttpClient headers to simulate a browser
-        /// </summary>
         private void ConfigureHttpClient()
         {
             _httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
@@ -46,15 +35,8 @@ namespace Butterfly.Services
             _httpClient.Timeout = TimeSpan.FromSeconds(30);
         }
 
-        /// <summary>
-        /// Fetches server ranking data and parses HTML to capture server and character status
-        /// </summary>
-        /// <param name="rankingUrl">Server ranking URL</param>
-        /// <param name="serverName">Server name (optional, for logs)</param>
-        /// <returns>RankingCache with character status and online player count, or null in case of error</returns>
         public async Task<RankingCache?> FetchRankingDataAsync(string rankingUrl, string? serverName = null)
         {
-            // Detectar qual servidor baseado na URL
             bool isMixMasterOrigin = rankingUrl.Contains("31.97.91.174");
             bool isMixMasterAdventure = rankingUrl.Contains("mixmasteradventure.com/api/v1/rankings");
             string displayName = isMixMasterOrigin ? "MixMaster Origin" : 
@@ -63,11 +45,9 @@ namespace Butterfly.Services
             
             try
             {
-                // Origin: Process without HTTP request (API disabled)
                 if (isMixMasterOrigin)
                 {
                     cache = ProcessOriginRanking();
-                    // Success log for Origin even when online = 0 (so console doesn't stay 'silent')
                     OnLogRequested?.Invoke(LocalizationManager.GetString("Log_SuccessOnline", cache.OnlineCount), "SUCCESS");
                     return cache;
                 }
@@ -89,25 +69,21 @@ namespace Butterfly.Services
                         return null;
                     }
                     
-                    // Adventure: Process XML API response
                     if (isMixMasterAdventure)
                     {
                         cache = ProcessAdventureRanking(content);
                     }
                     else
                     {
-                        // Source: Process HTML response
                         cache = ProcessSourceRanking(content);
                     }
                 }
                 
-                // Aviso de ranking vazio apenas quando realmente estiver vazio
                 if (cache.CharacterStatus.Count == 0 && cache.OnlineCount == 0)
                 {
                     OnLogRequested?.Invoke("Characters ranking not available yet", "INFO");
                 }
                 
-                // Log de sucesso unificado no final - qualquer servidor que chegue aqui teve sucesso
                 OnLogRequested?.Invoke(LocalizationManager.GetString("Log_SuccessOnline", cache.OnlineCount), "SUCCESS");
                 
                 return cache;
@@ -119,11 +95,6 @@ namespace Butterfly.Services
             }
         }
 
-        /// <summary>
-        /// Processes MixMaster Source HTML to extract ranking data
-        /// </summary>
-        /// <param name="html">HTML content from ranking page</param>
-        /// <returns>RankingCache with processed data</returns>
         private RankingCache ProcessSourceRanking(string html)
         {
             var doc = new HtmlDocument();
@@ -134,7 +105,6 @@ namespace Butterfly.Services
                 LastUpdate = DateTime.Now
             };
 
-            // Count online players through switch-on.png
             int count = 0;
             int index = 0;
             while ((index = html.IndexOf("switch-on.png", index)) != -1)
@@ -144,7 +114,6 @@ namespace Butterfly.Services
             }
             cache.OnlineCount = count;
 
-            // Extrair status de cada personagem
             var links = doc.DocumentNode.SelectNodes("//a[@data-toggle='modal']");
             if (links != null)
             {
@@ -157,28 +126,22 @@ namespace Butterfly.Services
                         var offlineImg = tr.SelectSingleNode(".//img[@src='../img/switch-off.png']");
                         cache.CharacterStatus[characterName] = offlineImg == null;
 
-                        // Extract Level and Experience from <td> cells in the same row
-                        // Structure: [0] Status, [1] Name, [2] Type, [3] Level, [4] Experience
                         var tds = tr.SelectNodes(".//td");
                         if (tds != null && tds.Count >= 5)
                         {
-                            // Level is at index 3: "Nv. 259" -> extract "259"
                             var levelTd = tds[3];
                             var levelText = levelTd.InnerText.Trim();
-                            // Remove "Nv. " and get only the number
                             var levelMatch = Regex.Match(levelText, @"\d+");
                             if (levelMatch.Success)
                             {
                                 cache.CharacterLevel[characterName] = levelMatch.Value;
                             }
 
-                            // Experience is at index 4: search for "%" inside progress-bar div
                             var expTd = tds[4];
                             var expDiv = expTd.SelectSingleNode(".//div[contains(@style, 'margin-left')]");
                             if (expDiv != null)
                             {
                                 var expText = expDiv.InnerText.Trim();
-                                // Extract percentage (e.g.: "93.01%")
                                 var expMatch = Regex.Match(expText, @"[\d.]+%");
                                 if (expMatch.Success)
                                 {
@@ -187,7 +150,6 @@ namespace Butterfly.Services
                             }
                             else
                             {
-                                // Fallback: search for any text with % in td
                                 var expText = expTd.InnerText.Trim();
                                 var expMatch = Regex.Match(expText, @"[\d.]+%");
                                 if (expMatch.Success)
@@ -203,11 +165,6 @@ namespace Butterfly.Services
             return cache;
         }
 
-        /// <summary>
-        /// Processes MixMaster Adventure XML API to extract ranking data
-        /// </summary>
-        /// <param name="xmlContent">XML content from API response</param>
-        /// <returns>RankingCache with processed data</returns>
         private RankingCache ProcessAdventureRanking(string xmlContent)
         {
             var cache = new RankingCache
@@ -234,7 +191,6 @@ namespace Butterfly.Services
                         var characterName = characterNameElement.Value.Trim();
                         var status = statusElement.Value.Trim().ToLower();
 
-                        // Map status: "online" = true, "offline" = false
                         bool isOnline = status == "online";
                         cache.CharacterStatus[characterName] = isOnline;
 
@@ -243,13 +199,11 @@ namespace Butterfly.Services
                             onlineCount++;
                         }
 
-                        // Extract level if available
                         if (levelElement != null && !string.IsNullOrWhiteSpace(levelElement.Value))
                         {
                             cache.CharacterLevel[characterName] = levelElement.Value.Trim();
                         }
 
-                        // Extract experience if available
                         if (expElement != null && !string.IsNullOrWhiteSpace(expElement.Value))
                         {
                             cache.CharacterExperience[characterName] = expElement.Value.Trim();
@@ -261,7 +215,6 @@ namespace Butterfly.Services
             }
             catch (Exception ex)
             {
-                // If XML parsing fails, return empty cache
                 OnLogRequested?.Invoke($"Failed to parse XML data: {ex.Message}", "ERROR");
                 return new RankingCache
                 {
@@ -273,13 +226,8 @@ namespace Butterfly.Services
             return cache;
         }
 
-        /// <summary>
-        /// Processes MixMaster Origin data (API currently disabled)
-        /// </summary>
-        /// <returns>Empty RankingCache</returns>
         private RankingCache ProcessOriginRanking()
         {
-            // Origin API is disabled - return valid empty object
             return new RankingCache
             {
                 LastUpdate = DateTime.Now,

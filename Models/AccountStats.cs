@@ -1,8 +1,5 @@
 namespace Butterfly.Models
 {
-    /// <summary>
-    /// Aggregated account statistics
-    /// </summary>
     public class AccountStats
     {
         public int Total { get; set; }

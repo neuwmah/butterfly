@@ -19,7 +19,6 @@ namespace Butterfly.Converters
                     }
                     return !boolValue;
                 }
-                // If not bool, return default value based on targetType
                 if (targetType == typeof(bool))
                 {
                     return false;
@@ -32,7 +31,6 @@ namespace Butterfly.Converters
             }
             catch
             {
-                // In case of any error, return safe default value
                 return DependencyProperty.UnsetValue;
             }
         }
@@ -45,7 +43,6 @@ namespace Butterfly.Converters
                 {
                     return !boolValue;
                 }
-                // If not bool, return default value
                 if (targetType == typeof(bool))
                 {
                     return false;
@@ -54,7 +51,6 @@ namespace Butterfly.Converters
             }
             catch
             {
-                // In case of any error, return safe default value
                 return DependencyProperty.UnsetValue;
             }
         }
@@ -63,7 +59,6 @@ namespace Butterfly.Converters
         {
             try
             {
-                // Validate that values is not null and has enough elements
                 if (values == null || values.Length < 2)
                 {
                     return Visibility.Collapsed;
@@ -73,7 +68,6 @@ namespace Butterfly.Converters
                 
                 if (paramStr == "MultiVisibility")
                 {
-                    // Validate types before casting
                     if (values[0] is bool isVisible && values[1] is bool isEditing)
                     {
                         return (!isVisible && !isEditing) ? Visibility.Visible : Visibility.Collapsed;
@@ -81,19 +75,16 @@ namespace Butterfly.Converters
                 }
                 else if (paramStr == "MultiVisibilityAnd")
                 {
-                    // Validate types before casting
                     if (values[0] is bool value1 && values[1] is bool value2)
                     {
                         return (!value1 && !value2) ? Visibility.Visible : Visibility.Collapsed;
                     }
                 }
                 
-                // Safe default value if it doesn't match any case
                 return Visibility.Collapsed;
             }
             catch
             {
-                // In case of any error, return safe default value
                 return Visibility.Collapsed;
             }
         }

@@ -2,9 +2,6 @@ using System.ComponentModel;
 
 namespace Butterfly.Models
 {
-    /// <summary>
-    /// User account model
-    /// </summary>
     public class Account : INotifyPropertyChanged
     {
         private string status = string.Empty;

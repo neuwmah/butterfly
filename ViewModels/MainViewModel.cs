@@ -5,9 +5,6 @@ using Butterfly.Models;
 
 namespace Butterfly.ViewModels
 {
-    /// <summary>
-    /// Main ViewModel for MainWindow
-    /// </summary>
     public class MainViewModel : INotifyPropertyChanged
     {
         private bool _isUsernameVisible = false;
@@ -30,14 +27,11 @@ namespace Butterfly.ViewModels
                 new Language("US", "US", "🇺🇸", "US", "/Resources/Flags/us.png")
             };
             
-            // Load saved language preference or default to US
             string savedLanguageCode = Butterfly.Services.LocalizationManager.Instance.LoadLanguagePreference();
-            // Normalize PTBR to BR for matching (since Language objects use "BR" as Code)
             if (savedLanguageCode == "PTBR")
             {
                 savedLanguageCode = "BR";
             }
-            // Find matching language or default to US
             _selectedLanguage = Languages.FirstOrDefault(l => l.Code == savedLanguageCode) 
                 ?? Languages.FirstOrDefault(l => l.Code == "US") 
                 ?? Languages[Languages.Count - 1];
@@ -53,11 +47,9 @@ namespace Butterfly.ViewModels
                     _selectedLanguage = value;
                     OnPropertyChanged(nameof(SelectedLanguage));
                     
-                    // Switch language when selected language changes
                     if (value != null)
                     {
                         Butterfly.Services.LocalizationManager.Instance.SwitchLanguage(value.Code);
-                        // Save language preference after switching
                         Butterfly.Services.LocalizationManager.Instance.SaveLanguagePreference(value.Code);
                     }
                 }

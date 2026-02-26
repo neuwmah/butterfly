@@ -26,24 +26,18 @@ namespace Butterfly.Views
             this.GotFocus += ConsoleWindow_GotFocus;
             this.Unloaded += ConsoleWindow_Unloaded;
             
-            // Subscribe to LicenseType change event
             App.OnLicenseTypeChanged += ConsoleWindow_OnLicenseTypeChanged;
             
-            // Update title when window loads
             UpdateWindowTitle();
             
-            // Ensure RichTextBox starts completely empty (no initial paragraph)
             InitializeEmptyConsole();
         }
         
         private void InitializeEmptyConsole()
         {
-            // Clear any initial content and ensure document is empty
             var document = ConsoleOutput.Document;
             document.Blocks.Clear();
             
-            // Remove any default empty paragraph that might exist
-            // FlowDocument may create an empty paragraph by default
             if (document.Blocks.Count > 0)
             {
                 document.Blocks.Clear();
@@ -59,7 +53,6 @@ namespace Butterfly.Views
 
         private void ConsoleWindow_Unloaded(object sender, RoutedEventArgs e)
         {
-            // Unsubscribe event to prevent memory leaks
             App.OnLicenseTypeChanged -= ConsoleWindow_OnLicenseTypeChanged;
         }
 
@@ -70,17 +63,12 @@ namespace Butterfly.Views
             }));
         }
 
-        /// <summary>
-        /// Updates the window title with the license type
-        /// </summary>
         private void UpdateWindowTitle()
         {
             string fullTitle = App.GetFormattedTitle(App.LicenseType);
 
-            // 1. Force on Window Title (WPF)
             this.Title = fullTitle;
 
-            // 2. Force via Win32 (Windows API)
             var helper = new System.Windows.Interop.WindowInteropHelper(this);
             if (helper.Handle != IntPtr.Zero)
             {
@@ -130,13 +118,10 @@ namespace Butterfly.Views
         {
             Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
             {
-                // Remove leading/trailing whitespace and control characters
                 string cleanedMessage = message?.TrimStart('\n', '\r', '\t', ' ') ?? string.Empty;
                 
-                // Remove trailing newline if present (we'll add it as a paragraph break)
                 cleanedMessage = cleanedMessage.TrimEnd('\n', '\r');
                 
-                // Skip empty messages
                 if (string.IsNullOrEmpty(cleanedMessage))
                 {
                     return;
@@ -144,8 +129,6 @@ namespace Butterfly.Views
                 
                 var document = ConsoleOutput.Document;
                 
-                // Check if console is empty (first message)
-                // FlowDocument may have an empty default paragraph, so check if it's truly empty
                 bool isFirstMessage = false;
                 if (document.Blocks.Count == 0)
                 {
@@ -156,14 +139,12 @@ namespace Butterfly.Views
                     var firstBlock = document.Blocks.FirstBlock;
                     if (firstBlock is Paragraph firstPara)
                     {
-                        // Check if paragraph is empty (no inlines or only whitespace)
                         if (firstPara.Inlines.Count == 0)
                         {
                             isFirstMessage = true;
                         }
                         else
                         {
-                            // Check if all inlines are empty or whitespace
                             bool allEmpty = true;
                             foreach (var inline in firstPara.Inlines)
                             {
@@ -178,12 +159,10 @@ namespace Butterfly.Views
                     }
                     else
                     {
-                        // If first block is not a paragraph, consider it empty
                         isFirstMessage = true;
                     }
                 }
                 
-                // If console is empty, ensure it's truly empty (remove any empty paragraph)
                 if (isFirstMessage)
                 {
                     document.Blocks.Clear();
@@ -194,10 +173,8 @@ namespace Butterfly.Views
                 paragraph.Padding = new Thickness(0);
                 paragraph.LineHeight = 1;
                 
-                // Default color
                 var defaultColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#CCCCCC"));
                 
-                // Add entire message with default color
                 paragraph.Inlines.Add(new Run(cleanedMessage) { Foreground = defaultColor });
                 
                 document.Blocks.Add(paragraph);

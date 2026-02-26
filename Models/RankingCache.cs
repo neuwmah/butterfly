@@ -3,9 +3,6 @@ using System.Collections.Generic;
 
 namespace Butterfly.Models
 {
-    /// <summary>
-    /// Cache para dados de ranking de servidores
-    /// </summary>
     public class RankingCache
     {
         public Dictionary<string, bool> CharacterStatus { get; set; } = new();

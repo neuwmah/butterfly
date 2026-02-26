@@ -25,35 +25,28 @@ namespace Butterfly.Views
             _licenseService = new LicenseService();
             LoadAppIcon();
             
-            // Subscribe to window events for persistent focus
             this.Loaded += LicenseKeyWindow_Loaded;
             this.Activated += LicenseKeyWindow_Activated;
             this.GotFocus += LicenseKeyWindow_GotFocus;
             this.Deactivated += LicenseKeyWindow_Deactivated;
             
-            // Update title when window loads
             UpdateWindowTitle();
             
-            // Add Unloaded event to unsubscribe and prevent memory leaks
             this.Unloaded += LicenseKeyWindow_Unloaded;
             
-            // Subscribe to LicenseType change event
             App.OnLicenseTypeChanged += LicenseKeyWindow_OnLicenseTypeChanged;
         }
         
         private void LicenseKeyWindow_Loaded(object sender, RoutedEventArgs e)
         {
             Butterfly.Helpers.FocusHelper.ForceForeground(this);
-            // Focus the text box when window is loaded
             LicenseKeyTextBox.Focus();
             
-            // Ensure title update when window loads
             UpdateWindowTitle();
         }
 
         private void LicenseKeyWindow_Unloaded(object sender, RoutedEventArgs e)
         {
-            // Unsubscribe event to prevent memory leaks
             App.OnLicenseTypeChanged -= LicenseKeyWindow_OnLicenseTypeChanged;
         }
 
@@ -66,7 +59,6 @@ namespace Butterfly.Views
         
         private void LicenseKeyWindow_Activated(object? sender, EventArgs e)
         {
-            // Focus the text box when window is activated
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 LicenseKeyTextBox.Focus();
@@ -75,7 +67,6 @@ namespace Butterfly.Views
         
         private void LicenseKeyWindow_GotFocus(object sender, RoutedEventArgs e)
         {
-            // Focus the text box when window gets focus
             if (!LicenseKeyTextBox.IsFocused)
             {
                 LicenseKeyTextBox.Focus();
@@ -84,7 +75,6 @@ namespace Butterfly.Views
         
         private void LicenseKeyWindow_Deactivated(object? sender, EventArgs e)
         {
-            // When window loses focus, refocus the text box when it regains focus
             this.Activated -= LicenseKeyWindow_Activated;
             this.Activated += LicenseKeyWindow_Activated;
         }
@@ -108,7 +98,7 @@ namespace Butterfly.Views
             }
             catch
             {
-                // If icon fails to load, just continue without it
+                // if icon fails to load, just continue without it
             }
         }
 
@@ -127,18 +117,13 @@ namespace Butterfly.Views
             {
                 int useImmersiveDarkMode = 1;
 
-                // Try with the newer flag first (Windows 10 build 18985+)
                 if (Win32Service.DwmSetWindowAttribute(hwnd, Win32Service.DWMWA_USE_IMMERSIVE_DARK_MODE, ref useImmersiveDarkMode, sizeof(int)) != 0)
                 {
-                    // If it fails, try with the old flag
                     Win32Service.DwmSetWindowAttribute(hwnd, Win32Service.DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1, ref useImmersiveDarkMode, sizeof(int));
                 }
             }
         }
 
-        /// <summary>
-        /// Sets the status message (used by Program.cs to show connection errors)
-        /// </summary>
         public void SetStatusMessage(string message)
         {
             UpdateStatus(message, false);
@@ -157,13 +142,10 @@ namespace Butterfly.Views
             ActivateButton.IsEnabled = false;
             UpdateStatus(Butterfly.Services.LocalizationManager.GetString("License_ValidatingKey"), true);
 
-            // SECURITY: Use ActivateLicenseAsync which is the ONLY method that associates HWID to the database
-            // This method performs the UPDATE in the database to link the license to the machine
             var result = await _licenseService.ActivateLicenseAsync(licenseKey);
 
             if (result.IsValid)
             {
-                // Capture license type and assign to App.LicenseType (within Dispatcher for thread safety)
                 if (!string.IsNullOrEmpty(result.Tier))
                 {
                     Application.Current.Dispatcher.Invoke(() => {
@@ -171,7 +153,6 @@ namespace Butterfly.Views
                     });
                 }
                 
-                // Save license locally
                 try
                 {
                     string licensePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, LICENSE_FILE);
@@ -186,16 +167,12 @@ namespace Butterfly.Views
 
                 UpdateStatus(Butterfly.Services.LocalizationManager.GetString("License_ActivationSuccessful"), true);
                 
-                // Wait a bit to show success message
                 await Task.Delay(1000);
                 
-                // Open MainWindow
                 OpenMainWindow();
             }
             else
             {
-                // SECURITY: If activation failed, delete local file if it exists
-                // This prevents bypass even if the file was created manually
                 try
                 {
                     string licensePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, LICENSE_FILE);
@@ -206,7 +183,6 @@ namespace Butterfly.Views
                 }
                 catch { }
 
-                // Clear text field and show error message
                 LicenseKeyTextBox.Text = "";
                 UpdateStatus(result.Message, false);
                 ActivateButton.IsEnabled = true;
@@ -215,25 +191,19 @@ namespace Butterfly.Views
 
         private void OpenMainWindow()
         {
-            // 1. Instantiate the new main window
             var mainWindow = new MainWindow();
             
-            // 2. CRITICAL: Set the new window as the application's MainWindow BEFORE closing the current one.
-            // This prevents ShutdownMode.OnMainWindowClose from killing the application.
             Application.Current.MainWindow = mainWindow;
             
-            // 3. Show the new window and ensure it's active
             mainWindow.Show();
             mainWindow.Activate();
             
-            // 4. Now it's safe to close the license window, as it's no longer the 'MainWindow'
             this.Close();
         }
 
         private void UpdateStatus(string message, bool isInfo)
         {
             StatusLabel.Text = message;
-            // Always use #888888 (gray) as in the Updating window
             StatusLabel.Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(136, 136, 136));
         }
 
@@ -246,7 +216,7 @@ namespace Butterfly.Views
             }
             catch
             {
-                // Ignore errors opening browser
+                // ignore errors opening browser
             }
         }
 
@@ -258,7 +228,6 @@ namespace Butterfly.Views
                 CustomCaret.Visibility = string.IsNullOrEmpty(textBox.Text) ? Visibility.Visible : Visibility.Collapsed;
             }
 
-            // Reset status to default when user types (but keep default if no error)
             string defaultMessage = Butterfly.Services.LocalizationManager.GetString("License_PleaseEnterKey");
             if (StatusLabel.Text != "" && StatusLabel.Text != defaultMessage)
             {
@@ -268,7 +237,6 @@ namespace Butterfly.Views
 
         private void LicenseKeyTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            // Show custom caret when focused and text is empty
             if (string.IsNullOrEmpty(LicenseKeyTextBox.Text))
             {
                 CustomCaret.Visibility = Visibility.Visible;
@@ -277,10 +245,8 @@ namespace Butterfly.Views
 
         private void LicenseKeyTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
-            // Hide custom caret when focus is lost
             CustomCaret.Visibility = Visibility.Collapsed;
             
-            // Refocus the text box after a short delay
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 if (this.IsActive)
@@ -292,7 +258,6 @@ namespace Butterfly.Views
 
         private void LicenseKeyTextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            // Allow activation with Enter
             if (e.Key == Key.Enter && ActivateButton.IsEnabled)
             {
                 ActivateButton_Click(sender, e);
@@ -301,21 +266,15 @@ namespace Butterfly.Views
 
         private void Grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            // Focus the text box when clicking on empty area
             LicenseKeyTextBox.Focus();
         }
 
-        /// <summary>
-        /// Updates the window title with the license type
-        /// </summary>
         private void UpdateWindowTitle()
         {
             string fullTitle = App.GetFormattedTitle(App.LicenseType);
 
-            // 1. Force on Window Title (WPF)
             this.Title = fullTitle;
 
-            // 2. Force via Win32 (Windows API)
             var helper = new System.Windows.Interop.WindowInteropHelper(this);
             if (helper.Handle != IntPtr.Zero)
             {

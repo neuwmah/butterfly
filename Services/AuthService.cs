@@ -6,12 +6,8 @@ using System.Threading.Tasks;
 
 namespace Butterfly.Services
 {
-    /// <summary>
-    /// HTTP API authentication service
-    /// </summary>
     public class AuthService
     {
-        // URL obfuscated in Base64 to make basic reverse engineering harder
         private const string API_VALIDATE_URL_BASE64 = "aHR0cDovL2J1dHRlcmZseS5iZWVyL2F1dGgvdmFsaWRhdGU=";
         
         private readonly HttpClient _httpClient;
@@ -23,22 +19,12 @@ namespace Butterfly.Services
             _httpClient.DefaultRequestHeaders.Add("User-Agent", "ButterflyProject_v1");
         }
 
-        /// <summary>
-        /// Gets the validation API URL by decoding the obfuscated Base64 string.
-        /// This makes basic reverse engineering harder, but is not robust protection against advanced analysis.
-        /// </summary>
         private string GetApiUrl()
         {
             var bytes = Convert.FromBase64String(API_VALIDATE_URL_BASE64);
             return Encoding.UTF8.GetString(bytes);
         }
 
-        /// <summary>
-        /// Validates a license key via HTTP API
-        /// </summary>
-        /// <param name="key">License key</param>
-        /// <param name="hwid">Machine Hardware ID (obtained via LicenseService.GetHardwareId())</param>
-        /// <returns>Validation result</returns>
         public async Task<LicenseValidationResult> ValidateWithAPI(string key, string hwid)
         {
             if (string.IsNullOrWhiteSpace(key))
@@ -110,7 +96,6 @@ namespace Butterfly.Services
             }
             catch (HttpRequestException)
             {
-                // Server offline or connection error
                 return new LicenseValidationResult
                 {
                     IsValid = false,
@@ -120,7 +105,6 @@ namespace Butterfly.Services
             }
             catch (TaskCanceledException)
             {
-                // Timeout
                 return new LicenseValidationResult
                 {
                     IsValid = false,
@@ -130,7 +114,6 @@ namespace Butterfly.Services
             }
             catch (JsonException)
             {
-                // Error deserializing JSON
                 return new LicenseValidationResult
                 {
                     IsValid = false,
@@ -155,9 +138,6 @@ namespace Butterfly.Services
         }
     }
 
-    /// <summary>
-    /// Validation API response model
-    /// </summary>
     internal class ApiValidateResponse
     {
         public bool Success { get; set; }

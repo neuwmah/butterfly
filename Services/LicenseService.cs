@@ -7,40 +7,30 @@ using System.Threading.Tasks;
 
 namespace Butterfly.Services
 {
-    /// <summary>
-    /// Service for license management and validation via PostgreSQL
-    /// </summary>
     public class LicenseService
     {
         private const string CONNECTION_STRING = "Host=ep-plain-bonus-ah11q4kg-pooler.c-3.us-east-1.aws.neon.tech;Username=neondb_owner;Password=npg_wA4PQSMyFgq8;Database=neondb;SSL Mode=Require;Trust Server Certificate=true";
 
-        /// <summary>
-        /// Gets the unique Hardware ID of the machine
-        /// </summary>
         public static string GetHardwareId()
         {
             try
             {
-                // Try to get motherboard UUID first (more reliable)
                 string? motherboardId = GetMotherboardId();
                 if (!string.IsNullOrEmpty(motherboardId))
                 {
                     return ComputeHash(motherboardId);
                 }
 
-                // Fallback: use processor ID
                 string? processorId = GetProcessorId();
                 if (!string.IsNullOrEmpty(processorId))
                 {
                     return ComputeHash(processorId);
                 }
 
-                // Last fallback: use machine name
                 return ComputeHash(Environment.MachineName);
             }
             catch (Exception)
             {
-                // In case of error, use machine name as fallback
                 return ComputeHash(Environment.MachineName);
             }
         }
@@ -63,7 +53,7 @@ namespace Butterfly.Services
             }
             catch
             {
-                // Ignore errors
+                // ignore errors
             }
             return null;
         }
@@ -86,7 +76,7 @@ namespace Butterfly.Services
             }
             catch
             {
-                // Ignore errors
+                // ignore errors
             }
             return null;
         }
@@ -105,9 +95,6 @@ namespace Butterfly.Services
             }
         }
 
-        /// <summary>
-        /// Validates a license key in the database
-        /// </summary>
         public async Task<LicenseValidationResult> ValidateLicenseAsync(string licenseKey)
         {
             if (string.IsNullOrWhiteSpace(licenseKey))
@@ -127,7 +114,6 @@ namespace Butterfly.Services
                 {
                     await connection.OpenAsync();
 
-                    // Search for the key in the database (including tier)
                     string selectQuery = "SELECT tier, status, hwid, activated_at, expires_at, key_code FROM license_keys WHERE key_code = @key";
                     using (var command = new NpgsqlCommand(selectQuery, connection))
                     {
@@ -144,16 +130,14 @@ namespace Butterfly.Services
                                 };
                             }
 
-                            // Read tier from database
                             int tierOrdinal = reader.GetOrdinal("tier");
                             string rawTier = reader.IsDBNull(tierOrdinal) ? "free" : reader.GetString(tierOrdinal);
                             
-                            // Map tier to readable format
                             string formattedTier = rawTier.ToLower().Trim() switch
                             {
                                 "pro_plus" => "Pro+",
                                 "pro" => "Pro",
-                                _ => "Free" // Default to "Free" if not recognized
+                                _ => "Free"
                             };
 
                             string dbStatus = reader["status"]?.ToString() ?? string.Empty;
@@ -161,10 +145,8 @@ namespace Butterfly.Services
                             DateTime? activatedAt = reader["activated_at"] as DateTime?;
                             DateTime? expiresAt = reader["expires_at"] as DateTime?;
 
-                            // Scenario C: Check if expired
                             if (expiresAt.HasValue && expiresAt.Value < DateTime.UtcNow)
                             {
-                                // Update status to expired
                                 await reader.CloseAsync();
                                 await UpdateLicenseStatusAsync(connection, licenseKey, "expired");
                                 
@@ -176,14 +158,10 @@ namespace Butterfly.Services
                                 };
                             }
 
-                            // Scenario A: New license (status = 'available')
-                            // SECURITY: ValidateLicenseAsync NEVER does UPDATE - only validates
-                            // Activation (HWID association) only happens in ActivateLicenseAsync
                             if (dbStatus == "available")
                             {
                                 await reader.CloseAsync();
                                 
-                                // Return that license is available but requires manual activation
                                 return new LicenseValidationResult
                                 {
                                     IsValid = false,
@@ -193,16 +171,10 @@ namespace Butterfly.Services
                                 };
                             }
 
-                            // Scenario B: License already active
-                            // SECURITY: During silent validation, NEVER associate HWID here
-                            // Association only happens in Scenario A (status = 'available')
                             if (dbStatus == "active")
                             {
                                 await reader.CloseAsync();
 
-                                // CRITICAL SECURITY: If HWID in database is NULL or empty, FORCE new activation
-                                // This prevents bypass when database is reset or HWID is deleted
-                                // User MUST click "Activate" again to associate HWID
                                 if (string.IsNullOrEmpty(dbHwid))
                                 {
                                     return new LicenseValidationResult
@@ -214,7 +186,6 @@ namespace Butterfly.Services
                                     };
                                 }
 
-                                // Verify if HWID matches current machine
                                 if (dbHwid != currentHwid)
                                 {
                                     return new LicenseValidationResult
@@ -225,7 +196,6 @@ namespace Butterfly.Services
                                     };
                                 }
 
-                                // Verify if it hasn't expired yet
                                 if (expiresAt.HasValue && expiresAt.Value < DateTime.UtcNow)
                                 {
                                     await UpdateLicenseStatusAsync(connection, licenseKey, "expired");
@@ -238,7 +208,6 @@ namespace Butterfly.Services
                                     };
                                 }
 
-                                // Only return valid if HWID exists and matches the machine
                                 Console.WriteLine($"Tier retrieved: {formattedTier}");
                                 return new LicenseValidationResult
                                 {
@@ -249,7 +218,6 @@ namespace Butterfly.Services
                                 };
                             }
 
-                            // Invalid status
                             return new LicenseValidationResult
                             {
                                 IsValid = false,
@@ -262,8 +230,6 @@ namespace Butterfly.Services
             }
             catch (NpgsqlException ex)
             {
-                // SECURITY: Block access if cannot connect to database
-                // This prevents bypass when internet is offline
                 return new LicenseValidationResult
                 {
                     IsValid = false,
@@ -273,7 +239,6 @@ namespace Butterfly.Services
             }
             catch (TaskCanceledException)
             {
-                // Connection timeout - block for security
                 return new LicenseValidationResult
                 {
                     IsValid = false,
@@ -283,7 +248,6 @@ namespace Butterfly.Services
             }
             catch (Exception ex)
             {
-                // Any other error also blocks for security
                 return new LicenseValidationResult
                 {
                     IsValid = false,
@@ -293,10 +257,6 @@ namespace Butterfly.Services
             }
         }
 
-        /// <summary>
-        /// Activates a license by associating the HWID to the database
-        /// This method is called ONLY when the user clicks "Activate" in the UI
-        /// </summary>
         public async Task<LicenseValidationResult> ActivateLicenseAsync(string licenseKey)
         {
             if (string.IsNullOrWhiteSpace(licenseKey))
@@ -316,7 +276,6 @@ namespace Butterfly.Services
                 {
                     await connection.OpenAsync();
 
-                    // Search for the key in the database (including tier)
                     string selectQuery = "SELECT tier, status, hwid, activated_at, expires_at, key_code FROM license_keys WHERE key_code = @key";
                     using (var command = new NpgsqlCommand(selectQuery, connection))
                     {
@@ -333,16 +292,14 @@ namespace Butterfly.Services
                                 };
                             }
 
-                            // Read tier from database
                             int tierOrdinal = reader.GetOrdinal("tier");
                             string rawTier = reader.IsDBNull(tierOrdinal) ? "free" : reader.GetString(tierOrdinal);
                             
-                            // Map tier to readable format
                             string formattedTier = rawTier.ToLower().Trim() switch
                             {
                                 "pro_plus" => "Pro+",
                                 "pro" => "Pro",
-                                _ => "Free" // Default to "Free" if not recognized
+                                _ => "Free"
                             };
 
                             string dbStatus = reader["status"]?.ToString() ?? string.Empty;
@@ -351,7 +308,6 @@ namespace Butterfly.Services
 
                             await reader.CloseAsync();
 
-                            // Check if expired
                             if (expiresAt.HasValue && expiresAt.Value < DateTime.UtcNow)
                             {
                                 await UpdateLicenseStatusAsync(connection, licenseKey, "expired");
@@ -364,10 +320,8 @@ namespace Butterfly.Services
                                 };
                             }
 
-                            // Only allow activation if status is 'available' or if status is 'active' but HWID is NULL
                             if (dbStatus == "available" || (dbStatus == "active" && string.IsNullOrEmpty(dbHwid)))
                             {
-                                // Update to active, save HWID and activated_at
                                 string updateQuery = @"
                                     UPDATE license_keys 
                                     SET status = 'active', 
@@ -392,7 +346,6 @@ namespace Butterfly.Services
                                 };
                             }
 
-                            // If already active and has HWID, verify if it's the same
                             if (dbStatus == "active" && !string.IsNullOrEmpty(dbHwid))
                             {
                                 if (dbHwid == currentHwid)
@@ -468,25 +421,13 @@ namespace Butterfly.Services
         }
     }
 
-    /// <summary>
-    /// License validation result
-    /// </summary>
     public class LicenseValidationResult
     {
         public bool IsValid { get; set; }
         public string Message { get; set; } = "";
         public DateTime? ExpiresAt { get; set; }
-        /// <summary>
-        /// Indicates if there was a connection error with the server (blocks access)
-        /// </summary>
         public bool ConnectionError { get; set; } = false;
-        /// <summary>
-        /// Indicates if the license requires reactivation (HWID NULL in database)
-        /// </summary>
         public bool RequiresReactivation { get; set; } = false;
-        /// <summary>
-        /// License type/tier (e.g.: "Free", "Pro", "Pro+")
-        /// </summary>
         public string Tier { get; set; } = "";
     }
 }

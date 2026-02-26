@@ -36,13 +36,12 @@ namespace Butterfly.Views
             }
             catch
             {
-                // If icon fails, continue without it
+                // if icon fails, continue without it
             }
         }
 
         private void ButterflyImage_Loaded(object sender, RoutedEventArgs e)
         {
-            // Start continuous animation when image loads
             var continuousFlightStoryboard = (Storyboard)Resources["ContinuousFlightAnimation"];
             continuousFlightStoryboard.Begin();
         }

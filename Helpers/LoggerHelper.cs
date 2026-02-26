@@ -4,29 +4,18 @@ using Butterfly.Services;
 
 namespace Butterfly.Helpers
 {
-    /// <summary>
-    /// Centralized helper for application log management
-    /// </summary>
     public class LoggerHelper : IDisposable
     {
         private StreamWriter? _logFileWriter;
         private string _logFilePath = string.Empty;
         private readonly object _lockObject = new object();
 
-        /// <summary>
-        /// Path to logs folder (inside .Butterfly folder)
-        /// </summary>
         public static string LogsFolderPath => Path.Combine(App.RealExecutablePath, ".Butterfly", "logs");
 
-        /// <summary>
-        /// Initializes the logging system, creating the logs folder and log file
-        /// </summary>
-        /// <returns>Path to created log file, or empty string if it fails</returns>
         public string InitializeLogging()
         {
             try
             {
-                // Create .Butterfly/logs folder if it doesn't exist (CreateDirectory creates all necessary subfolders)
                 if (!Directory.Exists(LogsFolderPath))
                 {
                     try
@@ -35,22 +24,18 @@ namespace Butterfly.Helpers
                     }
                     catch (UnauthorizedAccessException)
                     {
-                        // No permission to create folder - continue without file logging
                         return string.Empty;
                     }
                     catch (IOException)
                     {
-                        // I/O error (disk full, etc.) - continue without file logging
                         return string.Empty;
                     }
                     catch (Exception)
                     {
-                        // Any other error - continue without file logging
                         return string.Empty;
                     }
                 }
 
-                // Try to make .Butterfly folder hidden (optional operation - should not crash the app)
                 try
                 {
                     string butterflyFolder = Path.Combine(App.RealExecutablePath, ".Butterfly");
@@ -59,7 +44,6 @@ namespace Butterfly.Helpers
                         var butterflyDirInfo = new DirectoryInfo(butterflyFolder);
                         if ((butterflyDirInfo.Attributes & FileAttributes.Hidden) != FileAttributes.Hidden)
                         {
-                            // Check if we have permission before trying to change attributes
                             if (SecurityHelper.IsRunningAsAdministrator() || 
                                 (butterflyDirInfo.Attributes & FileAttributes.ReadOnly) != FileAttributes.ReadOnly)
                             {
@@ -70,7 +54,7 @@ namespace Butterfly.Helpers
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    // No permission to change attributes - silently ignore
+                    // no permission to change attributes - silently ignore
                 }
                 catch (IOException)
                 {
@@ -78,20 +62,17 @@ namespace Butterfly.Helpers
                 }
                 catch (Exception)
                 {
-                    // Any other error when changing attributes - silently ignore
+                    // any other error when changing attributes - silently ignore
                 }
 
-                // File name: butterfly_PID_YYYYMMDD_HHMMSS.log (includes PID to avoid conflicts)
                 int processId = System.Diagnostics.Process.GetCurrentProcess().Id;
                 string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
                 _logFilePath = Path.Combine(LogsFolderPath, $"butterfly_{processId}_{timestamp}.log");
 
-                // Open file for writing with FileShare.ReadWrite to allow multiple processes
                 try
                 {
                     lock (_lockObject)
                     {
-                        // Use FileStream with FileShare.ReadWrite to allow multiple processes
                         var fileStream = new FileStream(
                             _logFilePath,
                             FileMode.Append,
@@ -101,7 +82,7 @@ namespace Butterfly.Helpers
                         
                         _logFileWriter = new StreamWriter(fileStream)
                         {
-                            AutoFlush = true // Auto-save
+                            AutoFlush = true
                         };
                     }
 
@@ -109,37 +90,27 @@ namespace Butterfly.Helpers
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    // No permission to create file - continue without file logging
                     _logFilePath = string.Empty;
                     return string.Empty;
                 }
                 catch (IOException)
                 {
-                    // File in use or I/O error - continue without file logging
                     _logFilePath = string.Empty;
                     return string.Empty;
                 }
                 catch (Exception)
                 {
-                    // Any other error - continue without file logging
                     _logFilePath = string.Empty;
                     return string.Empty;
                 }
             }
             catch (Exception)
             {
-                // Last line of defense - never throw exception
-                // If we got here, something very unexpected happened, but the app should continue
                 _logFilePath = string.Empty;
                 return string.Empty;
             }
         }
 
-        /// <summary>
-        /// Writes a message to the log file with timestamp
-        /// </summary>
-        /// <param name="message">Message to be logged</param>
-        /// <param name="level">Log level (INFO, ERROR, WARNING, etc.) - not used anymore, kept for compatibility</param>
         public void WriteToLogFile(string message, string level = "INFO")
         {
             try
@@ -154,19 +125,12 @@ namespace Butterfly.Helpers
             }
             catch
             {
-                // Silently ignore file write errors
+                // silently ignore file write errors
             }
         }
 
-        /// <summary>
-        /// Formats a log message with timestamp for console display
-        /// </summary>
-        /// <param name="message">Message to be formatted</param>
-        /// <param name="level">Log level (INFO, ERROR, WARNING, etc.) - not used anymore, kept for compatibility</param>
-        /// <returns>Formatted message for console</returns>
         public static string FormatConsoleMessage(string message, string level = "INFO")
         {
-            // Get date format from LocalizationManager based on current language
             string dateFormat = LocalizationManager.GetDateFormat();
             string dateStr = DateTime.Now.ToString(dateFormat);
             string timeStr = DateTime.Now.ToString("HH:mm:ss");
@@ -174,18 +138,11 @@ namespace Butterfly.Helpers
             return $"{dateStr} {timeStr} {message}";
         }
 
-        /// <summary>
-        /// Gets the full path to the logs folder
-        /// </summary>
-        /// <returns>Path to logs folder</returns>
         public static string GetLogsFolderPath()
         {
             return LogsFolderPath;
         }
 
-        /// <summary>
-        /// Releases logger resources (closes the log file)
-        /// </summary>
         public void Dispose()
         {
             lock (_lockObject)
@@ -198,7 +155,7 @@ namespace Butterfly.Helpers
                 }
                 catch
                 {
-                    // Ignore errors when closing log
+                    // ignore errors when closing log
                 }
             }
         }
