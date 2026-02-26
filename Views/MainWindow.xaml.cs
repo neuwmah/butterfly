@@ -56,6 +56,7 @@ namespace Butterfly.Views
         private bool isInitialLoadComplete = false;
         private CancellationTokenSource? autoRefreshCancellationTokenSource;
         private readonly object autoRefreshLock = new object();
+        private bool _isServerRequestInProgress = false;
         private ConsoleWindow? consoleWindow;
         private bool isPlaying = false;
         private volatile bool isConnecting = false;
@@ -662,7 +663,31 @@ namespace Butterfly.Views
                                 }
                             });
                             
-                            await CheckAllServersAndAccountsStatus();
+                            _isServerRequestInProgress = true;
+                            await Dispatcher.InvokeAsync(() =>
+                            {
+                                if (ServersGrid != null)
+                                {
+                                    ServersGrid.IsEnabled = false;
+                                }
+                            });
+                            
+                            try
+                            {
+                                await CheckAllServersAndAccountsStatus();
+                            }
+                            finally
+                            {
+                                _isServerRequestInProgress = false;
+                                await Dispatcher.InvokeAsync(() =>
+                                {
+                                    if (ServersGrid != null)
+                                    {
+                                        ServersGrid.IsEnabled = true;
+                                    }
+                                });
+                            }
+                            
                             await Task.Delay(15000, cancellationToken);
                         }
                         catch (OperationCanceledException)
@@ -682,6 +707,16 @@ namespace Butterfly.Views
                             {
                                 // if unable to log, continue silently
                             }
+                            
+                            // Garantir que o ServersGrid seja reabilitado em caso de erro
+                            _isServerRequestInProgress = false;
+                            await Dispatcher.InvokeAsync(() =>
+                            {
+                                if (ServersGrid != null)
+                                {
+                                    ServersGrid.IsEnabled = true;
+                                }
+                            });
                             
                             try
                             {
@@ -3364,6 +3399,12 @@ namespace Butterfly.Views
 
         private async void ServersGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            // Ignorar mudanças durante request em progresso
+            if (_isServerRequestInProgress)
+            {
+                return;
+            }
+            
             if (ServersGrid.SelectedItem is Server server)
             {
                 bool isServerChange = selectedServer != null && selectedServer != server;
