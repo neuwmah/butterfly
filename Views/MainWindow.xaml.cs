@@ -35,21 +35,16 @@ namespace Butterfly.Views
         private readonly AccountStatsService accountStatsService;
         private readonly MainViewModel viewModel;
         private SemaphoreSlim checkStatusSemaphore = new SemaphoreSlim(1, 1);
-        private static readonly SemaphoreSlim _reconnectionSemaphore = new SemaphoreSlim(1, 1); // Semaphore to control simultaneous reconnections
+        private static readonly SemaphoreSlim _reconnectionSemaphore = new SemaphoreSlim(1, 1);
         
-        // Application version
         public const string Version = "1.0.8";
         
-        /// <summary>
-        /// Gets the game folder name based on the selected server
-        /// </summary>
         private string GameFolderName
         {
             get
             {
                 if (selectedServer == null)
                 {
-                    // Fallback to default if no server is selected
                     return "MixMaster Source";
                 }
                 return selectedServer.Name;
@@ -60,11 +55,11 @@ namespace Butterfly.Views
         private Server? selectedServer = null;
         private bool isInitialLoadComplete = false;
         private CancellationTokenSource? autoRefreshCancellationTokenSource;
-        private readonly object autoRefreshLock = new object(); // Lock for concurrency protection
+        private readonly object autoRefreshLock = new object();
         private ConsoleWindow? consoleWindow;
-        private bool isPlaying = false; // Play/pause state
-        private volatile bool isConnecting = false; // Thread-safe flag to prevent requests during login process
-        private bool _gameWindowsVisible = true; // Game windows visibility state
+        private bool isPlaying = false;
+        private volatile bool isConnecting = false;
+        private bool _gameWindowsVisible = true;
         
         public bool IsGameVisible
         {
@@ -74,7 +69,6 @@ namespace Butterfly.Views
                 if (_gameWindowsVisible != value)
                 {
                     _gameWindowsVisible = value;
-                    // Notify change to XAML
                     OnPropertyChanged(nameof(IsGameVisible));
                 }
             }
@@ -82,9 +76,7 @@ namespace Butterfly.Views
 
         private readonly LoggerHelper loggerHelper;
 
-        // Cache for ranking data
         private RankingCache? rankingCache = null;
-
 
         public MainWindow()
         {
@@ -2212,7 +2204,7 @@ namespace Butterfly.Views
                 
                 // WAIT ROBUSTLY FOR HANDLE: WaitForInputIdle + Refresh() loop
                 // MainWindowHandle may take a few seconds to be assigned by Windows
-                IntPtr gameWindow = await WaitForWindowHandleByProcessId(targetProcessId, maxAttempts: 30, delayMs: 500);
+                IntPtr gameWindow = await WaitForWindowHandleByProcessId(targetProcessId, maxAttempts: 30, delayMs: 500, account);
                 
                 if (gameWindow != IntPtr.Zero)
                 {
@@ -2319,7 +2311,7 @@ namespace Butterfly.Views
         private async Task<IntPtr> WaitForLauncherWindowByPID(Account account, int processId, int timeoutSeconds)
         {
             // Use same robust wait function for handle
-            return await WaitForWindowHandleByProcessId(processId, maxAttempts: timeoutSeconds * 2, delayMs: 500);
+            return await WaitForWindowHandleByProcessId(processId, maxAttempts: timeoutSeconds * 2, delayMs: 500, account);
         }
 
         private void ListWindowsForProcess(int processId)
@@ -2609,7 +2601,7 @@ namespace Butterfly.Views
         /// Uses WaitForInputIdle followed by Refresh() loop until handle is available.
         /// RULE: Never uses FindWindow or enumeration - only process MainWindowHandle by PID.
         /// </summary>
-        private async Task<IntPtr> WaitForWindowHandleByProcessId(int processId, int maxAttempts = 30, int delayMs = 500)
+        private async Task<IntPtr> WaitForWindowHandleByProcessId(int processId, int maxAttempts = 30, int delayMs = 500, Account? account = null)
         {
             Process? process = null;
             
@@ -2705,7 +2697,60 @@ namespace Butterfly.Views
                 return IntPtr.Zero;
             }
 
-            return IntPtr.Zero; // Timeout - handle did not become available
+            // Timeout - handle did not become available
+            // Close process if account is provided
+            if (account != null)
+            {
+                await Dispatcher.InvokeAsync(() =>
+                {
+                    if (account.GameProcessId == processId)
+                    {
+                        try
+                        {
+                            var timeoutProcess = Process.GetProcessById(processId);
+                            if (!timeoutProcess.HasExited)
+                            {
+                                timeoutProcess.Kill();
+                            }
+                        }
+                        catch (System.ComponentModel.Win32Exception)
+                        {
+                            // Access Denied - process already hung or was closed
+                        }
+                        catch (InvalidOperationException)
+                        {
+                            // Process was already disposed
+                        }
+                        catch (ArgumentException)
+                        {
+                            // Process no longer exists
+                        }
+                        catch
+                        {
+                            // Any other error
+                        }
+                        account.GameProcessId = 0;
+                    }
+                });
+            }
+            else
+            {
+                // If no account provided, try to close process directly
+                try
+                {
+                    var timeoutProcess = Process.GetProcessById(processId);
+                    if (!timeoutProcess.HasExited)
+                    {
+                        timeoutProcess.Kill();
+                    }
+                }
+                catch
+                {
+                    // Process no longer exists or cannot be closed
+                }
+            }
+
+            return IntPtr.Zero;
         }
 
         /// <summary>
@@ -3245,7 +3290,7 @@ namespace Butterfly.Views
                 
                 // WAIT ROBUSTLY FOR HANDLE using only PID (no enumeration)
                 // RULE: Use only process MainWindowHandle by specific PID
-                IntPtr gameWindow = await WaitForWindowHandleByProcessId(processId, maxAttempts: 30, delayMs: 500);
+                IntPtr gameWindow = await WaitForWindowHandleByProcessId(processId, maxAttempts: 30, delayMs: 500, account);
                 
                 if (gameWindow == IntPtr.Zero)
                 {
@@ -3387,7 +3432,7 @@ namespace Butterfly.Views
                     LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_WaitingCharacterScreen"), account.Character);
                 });
                 
-                bool characterScreenDetected = await WaitForCharacterSelectionScreen(gameWindow, processId);
+                bool characterScreenDetected = await WaitForCharacterSelectionScreen(gameWindow, processId, account);
                 
                 if (!characterScreenDetected)
                 {
@@ -3425,7 +3470,7 @@ namespace Butterfly.Views
                     LogToConsole(Butterfly.Services.LocalizationManager.GetString("Log_WaitingGameMap"), account.Character);
                 });
                 
-                bool mapLoaded = await WaitForGameMapLoad(gameWindow, processId);
+                bool mapLoaded = await WaitForGameMapLoad(gameWindow, processId, account);
                 
                 if (!mapLoaded)
                 {
@@ -3527,9 +3572,8 @@ namespace Butterfly.Views
         {
             try
             {
-                // Wait up to 30 seconds for selection screen to appear (60 attempts of 500ms)
                 int attempts = 0;
-                int maxAttempts = 60; // 30 seconds (500ms * 60)
+                int maxAttempts = 20;
                 IntPtr currentWindow = gameWindow;
                 
                 while (attempts < maxAttempts)
@@ -3537,38 +3581,30 @@ namespace Butterfly.Views
                     await Task.Delay(500);
                     attempts++;
                     
-                    // PROCESS VALIDATION: Check if process is still alive before continuing
                     try
                     {
                         var process = Process.GetProcessById(processId);
                         process.Refresh();
                         if (process.HasExited)
                         {
-                            // Processo morreu
                             return (false, IntPtr.Zero);
                         }
                     }
                     catch (System.ComponentModel.Win32Exception)
                     {
-                        // Access Denied - process hung or closed incorrectly
                         return (false, IntPtr.Zero);
                     }
                     catch (InvalidOperationException)
                     {
-                        // Processo foi descartado
                         return (false, IntPtr.Zero);
                     }
                     catch (ArgumentException)
                     {
-                        // Process no longer exists
                         return (false, IntPtr.Zero);
                     }
 
-                    // ACTIVE WINDOW VALIDATION (INTERNAL RETRY): If hWnd is invalid, try to re-find by PID
-                    // RULE: Always use only PID, never generic enumeration
                     if (!IsWindow(currentWindow) || !IsWindowVisible(currentWindow))
                     {
-                        // Try to re-find window by specific PID
                         IntPtr newWindow = GetWindowHandleDynamically(processId);
                         if (newWindow != IntPtr.Zero && IsWindow(newWindow) && IsWindowVisible(newWindow))
                         {
@@ -3576,18 +3612,15 @@ namespace Butterfly.Views
                         }
                         else
                         {
-                            // Window not found, continue trying
                             continue;
                         }
                     }
                     
-                    // ENSURE FOCUS: At each attempt, ensure window is in foreground
-                    // This is important because window may lose focus during loading
                     IntPtr foregroundWindow = GetForegroundWindow();
                     if (foregroundWindow != currentWindow)
                     {
                         SetForegroundWindow(currentWindow);
-                        await Task.Delay(100); // Small delay after focusing
+                        await Task.Delay(100);
                     }
                     
                     IntPtr hdc = GetDC(currentWindow);
@@ -3595,39 +3628,28 @@ namespace Butterfly.Views
                     {
                         try
                         {
-                            // Check pixel from golden panel area (X:815, Y:350)
-                            // NOTE: GetPixel with GetDC(gameWindow) uses coordinates relative to window Client Area
-                            // These coordinates are for 1024x768 resolution in windowed mode
-                            uint pixel1 = Win32Service.GetPixel(hdc, 815, 350);
-                            
-                            // Extract RGB components
-                            byte r1 = (byte)(pixel1 & 0xFF);
-                            byte g1 = (byte)((pixel1 >> 8) & 0xFF);
-                            byte b1 = (byte)((pixel1 >> 16) & 0xFF);
-                            
-                            // Check if we detected characteristic colors of selection screen
-                            // ADD TOLERANCE: More flexible values for rendering variations
-                            // Original: (r1 > 150 && g1 > 100) && (b1 < 150)
-                            // With tolerance: allow variations of ±20 in each component
-                            bool hasPanelColor = (r1 > 130 && g1 > 80) && (b1 < 170);
-                            
-                            // ADDITIONAL CHECK: Check a second pixel for greater confidence
-                            // Check adjacent pixel (X:820, Y:350) to confirm
-                            uint pixel2 = Win32Service.GetPixel(hdc, 820, 350);
-                            byte r2 = (byte)(pixel2 & 0xFF);
-                            byte g2 = (byte)((pixel2 >> 8) & 0xFF);
-                            byte b2 = (byte)((pixel2 >> 16) & 0xFF);
-                            bool hasPanelColor2 = (r2 > 130 && g2 > 80) && (b2 < 170);
-                            
-                            // If both pixels indicate golden panel, screen detected
-                            if (hasPanelColor || hasPanelColor2)
+                            uint pixelSource = Win32Service.GetPixel(hdc, 815, 350);
+                            byte r1 = (byte)(pixelSource & 0xFF);
+                            byte g1 = (byte)((pixelSource >> 8) & 0xFF);
+                            byte b1 = (byte)((pixelSource >> 16) & 0xFF);                            
+                            bool isSource = (r1 > 130 && g1 > 80) && (b1 < 170);
+
+                            uint pixelAdventure = Win32Service.GetPixel(hdc, 815, 350);
+                            byte r2 = (byte)(pixelAdventure & 0xFF);
+                            byte g2 = (byte)((pixelAdventure >> 8) & 0xFF);
+                            byte b2 = (byte)((pixelAdventure >> 16) & 0xFF);
+                            bool isAdventure = (r2 > 190 && r2 < 220) && (g2 > 180 && g2 < 210) && (b2 > 160 && b2 < 190);
+
+                            uint pixelLoaded = Win32Service.GetPixel(hdc, 733, 309);
+                            byte r3 = (byte)(pixelLoaded & 0xFF);
+                            byte g3 = (byte)((pixelLoaded >> 8) & 0xFF);
+                            byte b3 = (byte)((pixelLoaded >> 16) & 0xFF);
+                            bool isLoaded = !((r3 > 195 && r3 < 220) && (g3 > 185 && g3 < 210) && (b3 > 160 && b3 < 185));
+
+                            if ((isSource || isAdventure) && isLoaded)
                             {
                                 ReleaseDC(currentWindow, hdc);
-                                
-                                // SAFETY DELAY: Wait 1 second after detection to ensure elements are clickable
                                 await Task.Delay(1000);
-                                
-                                // Return success and window handle (may be different if re-found)
                                 return (true, currentWindow);
                             }
                         }
@@ -3638,13 +3660,41 @@ namespace Butterfly.Views
                     }
                 }
                 
-                // TIMEOUT: Simplified log
-                // STATE RESET AFTER ERROR: Clear flags to allow new attempt
+                // Timeout - close process
                 await Dispatcher.InvokeAsync(() =>
                 {
                     isConnecting = false;
-                    account.GameProcessId = 0; // Clear PID to force new search
                     LogToConsole($"Timeout: Server screen not detected.", account.Character);
+                    
+                    // Close failed game process
+                    if (account.GameProcessId == processId)
+                    {
+                        try
+                        {
+                            var process = Process.GetProcessById(processId);
+                            if (!process.HasExited)
+                            {
+                                process.Kill();
+                            }
+                        }
+                        catch (System.ComponentModel.Win32Exception)
+                        {
+                            // Access Denied - process already hung or was closed
+                        }
+                        catch (InvalidOperationException)
+                        {
+                            // Process was already disposed
+                        }
+                        catch (ArgumentException)
+                        {
+                            // Process no longer exists
+                        }
+                        catch
+                        {
+                            // Any other error
+                        }
+                        account.GameProcessId = 0;
+                    }
                 });
                 
                 return (false, IntPtr.Zero);
@@ -3659,13 +3709,12 @@ namespace Butterfly.Views
             }
         }
 
-        private async Task<bool> WaitForCharacterSelectionScreen(IntPtr gameWindow, int processId)
+        private async Task<bool> WaitForCharacterSelectionScreen(IntPtr gameWindow, int processId, Account account)
         {
             try
             {
-                // Wait up to 60 seconds for character selection screen
                 int attempts = 0;
-                int maxAttempts = 120; // 60 seconds (500ms * 120)
+                int maxAttempts = 20;
                 IntPtr currentWindow = gameWindow;
                 
                 while (attempts < maxAttempts)
@@ -3673,18 +3722,15 @@ namespace Butterfly.Views
                     await Task.Delay(500);
                     attempts++;
                     
-                    // PROCESS VALIDATION: Check if process is still alive before continuing
                     try
                     {
                         var process = Process.GetProcessById(processId);
                         process.Refresh();
                         if (process.HasExited)
                         {
-                            // Process died
                             return false;
                         }
                         
-                        // Get handle dynamically (may have changed)
                         IntPtr newWindow = GetWindowHandleDynamically(processId);
                         if (newWindow != IntPtr.Zero && IsWindow(newWindow) && IsWindowVisible(newWindow))
                         {
@@ -3693,17 +3739,14 @@ namespace Butterfly.Views
                     }
                     catch (System.ComponentModel.Win32Exception)
                     {
-                        // Access Denied - process hung or closed incorrectly
                         return false;
                     }
                     catch (InvalidOperationException)
                     {
-                        // Process was disposed
                         return false;
                     }
                     catch (ArgumentException)
                     {
-                        // Process no longer exists
                         return false;
                     }
                     
@@ -3712,20 +3755,28 @@ namespace Butterfly.Views
                     {
                         try
                         {
-                            // Check pixel of blue "Entrar" button (near coordinates: 600, 654)
-                            // NOTE: GetPixel with GetDC(gameWindow) uses coordinates relative to window Client Area
-                            // These coordinates are for 1024x768 resolution in windowed mode
-                            uint pixel = Win32Service.GetPixel(hdc, 590, 654);
+                            uint pixelSource = Win32Service.GetPixel(hdc, 590, 654);
+                            byte r1 = (byte)(pixelSource & 0xFF);
+                            byte g1 = (byte)((pixelSource >> 8) & 0xFF);
+                            byte b1 = (byte)((pixelSource >> 16) & 0xFF);                            
+                            bool hasSourceButton = (b1 > 100 && b1 > r1 && b1 > g1) ||
+                                                 (b1 > 80 && g1 > 80 && r1 < 100);
+
+                            uint pixelAdventure = Win32Service.GetPixel(hdc, 590, 654);
+                            byte r2 = (byte)(pixelAdventure & 0xFF);
+                            byte g2 = (byte)((pixelAdventure >> 8) & 0xFF);
+                            byte b2 = (byte)((pixelAdventure >> 16) & 0xFF);
+                            bool hasAdventureButton = (r2 > 225 && r2 < 250) && (g2 > 215 && g2 < 240) && (b2 > 210 && b2 < 235) &&
+                                                      (Math.Abs(r2 - g2) < 20) && (Math.Abs(g2 - b2) < 15);
+
+                            uint pixelLoaded = Win32Service.GetPixel(hdc, 508, 504);
+                            byte r3 = (byte)(pixelLoaded & 0xFF);
+                            byte g3 = (byte)((pixelLoaded >> 8) & 0xFF);
+                            byte b3 = (byte)((pixelLoaded >> 16) & 0xFF);
+                            bool isLoaded = !((r3 > 130 && r3 < 150) && (g3 > 170 && g3 < 185) && (b3 > 125 && b3 < 140) &&
+                                              (g3 > r3 && g3 > b3));
                             
-                            byte r = (byte)(pixel & 0xFF);
-                            byte g = (byte)((pixel >> 8) & 0xFF);
-                            byte b = (byte)((pixel >> 16) & 0xFF);
-                            
-                            // Detect blue "Entrar" button: B > G > R (blue predominant)
-                            bool hasBlueButton = (b > 100 && b > r && b > g) || // Pure blue
-                                                 (b > 80 && g > 80 && r < 100); // Greenish blue
-                            
-                            if (hasBlueButton && attempts > 2) // Wait at least 1 second
+                            if ((hasSourceButton || hasAdventureButton) && isLoaded)
                             {
                                 ReleaseDC(currentWindow, hdc);
                                 return true;
@@ -3737,6 +3788,39 @@ namespace Butterfly.Views
                         }
                     }
                 }
+                
+                // Timeout - close process
+                await Dispatcher.InvokeAsync(() =>
+                {
+                    if (account.GameProcessId == processId)
+                    {
+                        try
+                        {
+                            var process = Process.GetProcessById(processId);
+                            if (!process.HasExited)
+                            {
+                                process.Kill();
+                            }
+                        }
+                        catch (System.ComponentModel.Win32Exception)
+                        {
+                            // Access Denied - process already hung or was closed
+                        }
+                        catch (InvalidOperationException)
+                        {
+                            // Process was already disposed
+                        }
+                        catch (ArgumentException)
+                        {
+                            // Process no longer exists
+                        }
+                        catch
+                        {
+                            // Any other error
+                        }
+                        account.GameProcessId = 0;
+                    }
+                });
                 
                 return false;
             }
@@ -3750,13 +3834,12 @@ namespace Butterfly.Views
             }
         }
 
-        private async Task<bool> WaitForGameMapLoad(IntPtr gameWindow, int processId)
+        private async Task<bool> WaitForGameMapLoad(IntPtr gameWindow, int processId, Account account)
         {
             try
             {
-                // Wait up to 60 seconds for map to load
                 int attempts = 0;
-                int maxAttempts = 120; // 60 seconds (500ms * 120)
+                int maxAttempts = 20;
                 IntPtr currentWindow = gameWindow;
                 
                 while (attempts < maxAttempts)
@@ -3764,18 +3847,15 @@ namespace Butterfly.Views
                     await Task.Delay(500);
                     attempts++;
                     
-                    // PROCESS VALIDATION: Check if process is still alive before continuing
                     try
                     {
                         var process = Process.GetProcessById(processId);
                         process.Refresh();
                         if (process.HasExited)
                         {
-                            // Process died
                             return false;
                         }
                         
-                        // Get handle dynamically (may have changed)
                         IntPtr newWindow = GetWindowHandleDynamically(processId);
                         if (newWindow != IntPtr.Zero && IsWindow(newWindow) && IsWindowVisible(newWindow))
                         {
@@ -3784,17 +3864,14 @@ namespace Butterfly.Views
                     }
                     catch (System.ComponentModel.Win32Exception)
                     {
-                        // Access Denied - process hung or closed incorrectly
                         return false;
                     }
                     catch (InvalidOperationException)
                     {
-                        // Process was disposed
                         return false;
                     }
                     catch (ArgumentException)
                     {
-                        // Process no longer exists
                         return false;
                     }
                     
@@ -3803,17 +3880,8 @@ namespace Butterfly.Views
                     {
                         try
                         {
-                            // Detect fixed UI elements that are always present in game:
-                            // 1. Minimap (upper left corner) - characteristic blue area
-                            // 2. Icon bar (lower part) - always present
-                            
-                            // NOTE: GetPixel with GetDC(gameWindow) uses coordinates relative to window Client Area
-                            // These coordinates are for 1024x768 resolution in windowed mode
-                            
-                            // Check minimap pixel (approximate position: X:80, Y:80)
                             uint minimapPixel = Win32Service.GetPixel(hdc, 80, 80);
                             
-                            // Check bottom icon bar pixel (middle of bar: X:512, Y:738)
                             uint iconBarPixel = Win32Service.GetPixel(hdc, 512, 738);
                             
                             byte rMini = (byte)(minimapPixel & 0xFF);
@@ -3824,12 +3892,11 @@ namespace Butterfly.Views
                             byte gIcon = (byte)((iconBarPixel >> 8) & 0xFF);
                             byte bIcon = (byte)((iconBarPixel >> 16) & 0xFF);
                             
-                            // Detect minimap (usually has blue/green tones) OR icon bar
-                            bool hasMinimapOrUI = (bMini > 50 || gMini > 50) || // Minimap with color
-                                                  (rIcon > 20 && gIcon > 20 && bIcon > 20) || // Icon bar (not black)
-                                                  (rIcon + gIcon + bIcon > 100); // Any visible UI
+                            bool hasMinimapOrUI = (bMini > 50 || gMini > 50) ||
+                                                  (rIcon > 20 && gIcon > 20 && bIcon > 20) ||
+                                                  (rIcon + gIcon + bIcon > 100);
                             
-                            if (hasMinimapOrUI && attempts > 3) // Wait at least 1.5 seconds
+                            if (hasMinimapOrUI && attempts > 3)
                             {
                                 ReleaseDC(currentWindow, hdc);
                                 return true;
@@ -3841,6 +3908,39 @@ namespace Butterfly.Views
                         }
                     }
                 }
+                
+                // Timeout - close process
+                await Dispatcher.InvokeAsync(() =>
+                {
+                    if (account.GameProcessId == processId)
+                    {
+                        try
+                        {
+                            var process = Process.GetProcessById(processId);
+                            if (!process.HasExited)
+                            {
+                                process.Kill();
+                            }
+                        }
+                        catch (System.ComponentModel.Win32Exception)
+                        {
+                            // Access Denied - process already hung or was closed
+                        }
+                        catch (InvalidOperationException)
+                        {
+                            // Process was already disposed
+                        }
+                        catch (ArgumentException)
+                        {
+                            // Process no longer exists
+                        }
+                        catch
+                        {
+                            // Any other error
+                        }
+                        account.GameProcessId = 0;
+                    }
+                });
                 
                 return false;
             }
