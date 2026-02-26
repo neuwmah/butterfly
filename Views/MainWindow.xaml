@@ -609,7 +609,7 @@
                 <Grid Grid.Row="1" Background="#000000" Height="40">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="44"/>
-                        <ColumnDefinition Width="160"/>
+                        <ColumnDefinition Width="150"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
@@ -720,7 +720,7 @@
                             <Grid Height="48" Margin="0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="44"/>
-                                    <ColumnDefinition Width="160"/>
+                                    <ColumnDefinition Width="150"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
